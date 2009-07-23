@@ -1,0 +1,119 @@
+msgid "Archiving your home directory..."
+msgstr "ارشفة دليلك الرئيسي..."
+
+msgid "Compressing the archive..."
+msgstr "ضغظ الارشيف..."
+
+msgid "Testing the integrity of the archive..."
+msgstr "اختبار سلامة الارشيف..."
+
+msgid "The archive is corrupted"
+msgstr "الارشيف معطل"
+
+msgid "Calculating the MD5 signature of the archive..."
+msgstr "حساب ختم تشفير ام دي 5 من الارشيف..."
+
+msgid "Assembling"
+msgstr "تجميع"
+
+msgid "Cleaning up..."
+msgstr "تنظيف..."
+
+msgid "Backup successful"
+msgstr "نجح بعملية النسخة الاحتياطية"
+
+msgid "Your home directory was successfully backed-up into"
+msgstr "نجح بعملية النسخة الاحتياطية بداخل دليلك الرئيسي"
+
+msgid "Backup failed"
+msgstr "النسخة الاحتياطية فشلت"
+
+msgid "An error occurred during the backup:"
+msgstr "حدث خطاء اثتاء النسخ الاحتياطي:"
+
+msgid "Copying the backup file into your home directory..."
+msgstr "نسخ ملف النسخة الاحتياطية بداخل دليلك الرئيسي..."
+
+msgid "Decompressing the backup archive..."
+msgstr "فك ضغط ارشيف النسخة الاحتياطية..."
+
+msgid "Extracting the content of the backup into your home directory..."
+msgstr "استخراج محتوي النسخة الاحتياطية بداخل دليلك الرئيسي..."
+
+msgid "Restoration successful"
+msgstr "نجح الاستعادة"
+
+msgid "Your backup was successfully restored"
+msgstr "نجح فى استعادة نسختك الاحتياطية"
+
+msgid "Restoration failed"
+msgstr "فشل الاستعادة"
+
+msgid "An error occurred while restoring the backup archive:"
+msgstr "حدث خطاء اثناء استعادة ارشيف النسخة الاحتياطية:"
+
+msgid "Opening the backup archive..."
+msgstr "فتح ارشيف النسخة الاحتياطية..."
+
+msgid "Checking the integrity of the backup..."
+msgstr "اختبار سلامة النسخة الاحتياطية..."
+
+msgid "This backup file is corrupted. The internal MD5 signature doesn't match its content."
+msgstr "هذا ملف النسخة الاحتياطية معطلة. ختم تشفير ام دي 5 لا يتناسب مع المحتوي."
+
+msgid "Read error"
+msgstr "قراء الخطاء"
+
+msgid "An error occurred while opening the backup:"
+msgstr "حدث خطاء اثناء فتح النسخة الاحتياطية:"
+
+msgid "Excluded Files and Directories"
+msgstr "استبعاد الملفات و الأدلة"
+
+msgid "Included"
+msgstr "شملت"
+
+msgid "Included hidden directories"
+msgstr "شملت الأدلة المخفية"
+
+msgid "Invalid path"
+msgstr "مسار غير صحيح"
+
+msgid "is not located within your home directory. Not added."
+msgstr "لا تقع بدليلك الرئيسي. لم تضف."
+
+msgid "<big><b>Save the content of your home directory</b></big>"
+msgstr "<big><b>تخزين محتوى دليلك الرئيسي</b></big>"
+
+msgid "Make a backup of your personal data"
+msgstr "صنع النسخة الاحتياطية من بياناتك الشخصية"
+
+msgid "Excluded paths"
+msgstr "استبعاد المسارات"
+
+msgid "Hidden paths"
+msgstr "مسارات مخفية"
+
+msgid "Exclude files"
+msgstr "استبعاد الملفات"
+
+msgid "Exclude folders"
+msgstr "استبعاد المجلدات"
+
+msgid "Backup"
+msgstr "النسخة الاحتياطية"
+
+msgid "<big><b>Load data into your home directory</b></big>"
+msgstr "<big><b>تحميل البيانات بداخل دليلك الرئيسي</b></big>"
+
+msgid "Restore your personal data from this backup"
+msgstr "استعادة بياناتك الشخصية من هذا النسخة الاحتياطية"
+
+msgid "Overwrite existing files"
+msgstr "فوق الملفات الموجودة"
+
+msgid "Restore"
+msgstr "استعادة"
+
+msgid "View content"
+msgstr "عرض المحتوى"

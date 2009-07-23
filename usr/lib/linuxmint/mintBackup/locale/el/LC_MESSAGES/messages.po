@@ -1,0 +1,119 @@
+msgid "Archiving your home directory..."
+msgstr "Εκτελείται αρχειοθέτηση του προσωπικού καταλόγου..."
+
+msgid "Compressing the archive..."
+msgstr "Εκτελείται συμπίεση του αρχείου..."
+
+msgid "Testing the integrity of the archive..."
+msgstr "Εκτελείται έλεγχος ακεραιότητας του αρχείου..."
+
+msgid "The archive is corrupted"
+msgstr "Το αρχείο είναι κατεστραμμένο"
+
+msgid "Calculating the MD5 signature of the archive..."
+msgstr "Εκτελείται υπολογισμός της MD5 υπογραφής του αρχείου..."
+
+msgid "Assembling"
+msgstr "Εκτελείται συναρμολόγηση"
+
+msgid "Cleaning up..."
+msgstr "Εκτελείται καθαρισμός..."
+
+msgid "Backup successful"
+msgstr "Η δημιουργία του εφεδρικού αρχείου είναι επιτυχής"
+
+msgid "Your home directory was successfully backed-up into"
+msgstr "Η δημιουργία του εφεδρικού αρχείου του προσωπικού σας κατάλογου εκτελέστηκε επιτυχώς στο"
+
+msgid "Backup failed"
+msgstr "Η δημιουργία του εφεδρικού αρχείου απέτυχε"
+
+msgid "An error occurred during the backup:"
+msgstr "Ένα λάθος συνέβη κατά την διάρκεια της δημιουργίας του εφεδρικού αρχείου:"
+
+msgid "Copying the backup file into your home directory..."
+msgstr "Εκτελείται αντιγραφή του εφεδρικού αρχείου στο προσωπικού σας κατάλογου..."
+
+msgid "Decompressing the backup archive..."
+msgstr "Εκτελείται αποσυμπίεση του εφεδρικού αρχείου..."
+
+msgid "Extracting the content of the backup into your home directory..."
+msgstr "Εκτελείται εξαγωγή του εφεδρικού αρχείου μέσα στο προσωπικό σας κατάλογο..."
+
+msgid "Restoration successful"
+msgstr "Η αποκατάσταση ήταν επιτυχής"
+
+msgid "Your backup was successfully restored"
+msgstr "Το εφεδρικό αρχείο σας αποκαταστάθηκε επιτυχώς"
+
+msgid "Restoration failed"
+msgstr "Η αποκατάσταση απέτυχε"
+
+msgid "An error occurred while restoring the backup archive:"
+msgstr "Ένα λάθος συνέβη κατά την αποκατάσταση του εφεδρικού αρχείου:"
+
+msgid "Opening the backup archive..."
+msgstr "Εκτελείται άνοιγμα του εφεδρικού αρχείου..."
+
+msgid "Checking the integrity of the backup..."
+msgstr "Εκτελείται έλεγχος της ακεραιότητας του εφεδρικού αρχείου..."
+
+msgid "This backup file is corrupted. The internal MD5 signature doesn't match its content."
+msgstr "Αυτό το εφεδρικό αρχείο είναι κατεστραμμένο. Η ενσωματωμένη MD5 υπογραφή δεν ταιριάζει με το περιεχόμενο."
+
+msgid "Read error"
+msgstr "Λάθος ανάγνωσης"
+
+msgid "An error occurred while opening the backup:"
+msgstr "Κάποιο λάθος συνέβη κατά το άνοιγμα του εφεδρικού αρχείου:"
+
+msgid "Excluded Files and Directories"
+msgstr "Εξαιρούμενα Αρχεία και Φάκελοι"
+
+msgid "Included"
+msgstr "Περιεχόμενα"
+
+msgid "Included hidden directories"
+msgstr "Περιεχόμενοι κρυφοί φάκελοι"
+
+msgid "Invalid path"
+msgstr "Αδύνατη διαδρομή"
+
+msgid "is not located within your home directory. Not added."
+msgstr "δεν βρίσκεται στον προσωπικό σας κατάλογο. Δεν προστέθηκε."
+
+msgid "<big><b>Save the content of your home directory</b></big>"
+msgstr "<big><b>Αποθηκεύστε τα περιεχόμενα του προσωπικού σας καταλόγου</b></big>"
+
+msgid "Make a backup of your personal data"
+msgstr "Φτιάξτε ένα εφεδρικό αρχείο των προσωπικών σας δεδομένων"
+
+msgid "Excluded paths"
+msgstr "Εξαιρούμενες διαδρομές"
+
+msgid "Hidden paths"
+msgstr "Κρυφές διαδρομές"
+
+msgid "Exclude files"
+msgstr "Εξαίρεση αρχείων"
+
+msgid "Exclude folders"
+msgstr "Εξαίρεση φακέλων"
+
+msgid "Backup"
+msgstr "Δημιουργία εφεδρικού αρχείου"
+
+msgid "<big><b>Load data into your home directory</b></big>"
+msgstr "<big><b>Φόρτωση δεδομένων στον προσωπικό σας κατάλογο</b></big>"
+
+msgid "Restore your personal data from this backup"
+msgstr "Επαναφέρετε τα προσωπικά σας δεδομένα από το εφεδρικό αρχείο"
+
+msgid "Overwrite existing files"
+msgstr "Αντικατάσταση υπαρχόντων αρχείων"
+
+msgid "Restore"
+msgstr "Αποκατάσταση"
+
+msgid "View content"
+msgstr "Εμφάνιση περιεχόμενου"

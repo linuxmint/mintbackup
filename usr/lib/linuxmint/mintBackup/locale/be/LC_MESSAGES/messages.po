@@ -1,0 +1,119 @@
+msgid "Archiving your home directory..."
+msgstr "Архiвацыя хатняга каталёґу..."
+
+msgid "Compressing the archive..."
+msgstr "Сьцiсканьне архiву"
+
+msgid "Testing the integrity of the archive..."
+msgstr "Тэставаньне папраўнасьцi архiву..."
+
+msgid "The archive is corrupted"
+msgstr "Архiў пашкоджаны"
+
+msgid "Calculating the MD5 signature of the archive..."
+msgstr "Падлiк кантрольнае сумы MD5..."
+
+msgid "Assembling"
+msgstr "Складаньне"
+
+msgid "Cleaning up..."
+msgstr "Чыстка..."
+
+msgid "Backup successful"
+msgstr "рэзэрвовае капіяваньне праведзены пасьпяхова"
+
+msgid "Your home directory was successfully backed-up into"
+msgstr "рэзэрвовае капіяваньне хатняга каталёґу праведзены пасьпяхова"
+
+msgid "Backup failed"
+msgstr "Не удалася сконьчыць рэзэрвовае капіяваньне"
+
+msgid "An error occurred during the backup:"
+msgstr "Памылка падчас рэзэрвовага капіяваньня:"
+
+msgid "Copying the backup file into your home directory..."
+msgstr "Капiяваньне backup-файла да хатняга каталёґу..."
+
+msgid "Decompressing the backup archive..."
+msgstr "Распакаваньне рэзэрвовае копіi..."
+
+msgid "Extracting the content of the backup into your home directory..."
+msgstr "Распакаваньне рэзэрвовае копіi да хатняга каталёґу..."
+
+msgid "Restoration successful"
+msgstr "Аднаўленьне праведзена пасьпяхова"
+
+msgid "Your backup was successfully restored"
+msgstr "Аднаўленьне рэзэрвовае копіi праведзена пасьпяхова"
+
+msgid "Restoration failed"
+msgstr "Аднаўленьне не удалася"
+
+msgid "An error occurred while restoring the backup archive:"
+msgstr "Памылка падчас аднаўленьня рэзэрвовае копіi:"
+
+msgid "Opening the backup archive..."
+msgstr "Адкрыцьцё архiву рэзэрвовае копіi..."
+
+msgid "Checking the integrity of the backup..."
+msgstr "Праверка папраўнасьцi рэзэрвовае копіi..."
+
+msgid "This backup file is corrupted. The internal MD5 signature doesn't match its content."
+msgstr "Гэтая рэзэрвовая копія пашкоджаная. Зьмест не адпавядае кантрольнай суме MD5"
+
+msgid "Read error"
+msgstr "Памылка чытаньня"
+
+msgid "An error occurred while opening the backup:"
+msgstr "Памылка падчас адкрыцьця рэзэрвовае копіi:"
+
+msgid "Excluded Files and Directories"
+msgstr "Выключаныя файлы i каталёґi"
+
+msgid "Included"
+msgstr "Уключана"
+
+msgid "Included hidden directories"
+msgstr "Уключаныя схаваныя каталёґi"
+
+msgid "Invalid path"
+msgstr "Няспраўны шлях"
+
+msgid "is not located within your home directory. Not added."
+msgstr "Не знаходзiцца у хатнiм каталёґу. Не дадана."
+
+msgid "<big><b>Save the content of your home directory</b></big>"
+msgstr "<big><b>Захаваць зьмест хатняга каталёґу </b></big>"
+
+msgid "Make a backup of your personal data"
+msgstr "Зрабiць рэзэрвовую копію асабiстых дадзеных"
+
+msgid "Excluded paths"
+msgstr "Выключаныя шляхi"
+
+msgid "Hidden paths"
+msgstr "Схаваныя шляхi"
+
+msgid "Exclude files"
+msgstr "Выключаныя файлы"
+
+msgid "Exclude folders"
+msgstr "Выключаныя тэчкi"
+
+msgid "Backup"
+msgstr "Рэзэрвовая копія"
+
+msgid "<big><b>Load data into your home directory</b></big>"
+msgstr "<big><b>Загрузiць дадзеныя да хатняга каталёґу</b></big>"
+
+msgid "Restore your personal data from this backup"
+msgstr "Аднавiць свае асабiстыя дадзеныя з гэтае рэзэрвовае копіi"
+
+msgid "Overwrite existing files"
+msgstr "Перазапiсаць файлы якiя iснуюць"
+
+msgid "Restore"
+msgstr "Аднавiць"
+
+msgid "View content"
+msgstr "Праглядзець зьмест"

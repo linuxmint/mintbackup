@@ -1,0 +1,119 @@
+msgid "Archiving your home directory..."
+msgstr "A Saját mappa archiválása..."
+
+msgid "Compressing the archive..."
+msgstr "Az archívum tömörítése..."
+
+msgid "Testing the integrity of the archive..."
+msgstr "Az archívum épségének ellenőrzése..."
+
+msgid "The archive is corrupted"
+msgstr "Az archívum sérült"
+
+msgid "Calculating the MD5 signature of the archive..."
+msgstr "Az archívum MD5 ellenőrző összegének kiszámítása..."
+
+msgid "Assembling"
+msgstr "Összeállítás"
+
+msgid "Cleaning up..."
+msgstr "Takarítás..."
+
+msgid "Backup successful"
+msgstr "Sikeres mentés"
+
+msgid "Your home directory was successfully backed-up into"
+msgstr "A Saját mappa sikeresen mentve a következő fájlba:"
+
+msgid "Backup failed"
+msgstr "A mentés nem sikerült"
+
+msgid "An error occurred during the backup:"
+msgstr "A következő hiba lépett fel a mentés során:"
+
+msgid "Copying the backup file into your home directory..."
+msgstr "A mentett archívum másolása a Saját mappába..."
+
+msgid "Decompressing the backup archive..."
+msgstr "A mentett archívum kitömörítése..."
+
+msgid "Extracting the content of the backup into your home directory..."
+msgstr "A mentés tartalmának kicsomagolása a Saját mappába..."
+
+msgid "Restoration successful"
+msgstr "Sikeres visszaállítás"
+
+msgid "Your backup was successfully restored"
+msgstr "A mentés sikeresen visszaállítva"
+
+msgid "Restoration failed"
+msgstr "A visszaállítás nem sikerült"
+
+msgid "An error occurred while restoring the backup archive:"
+msgstr "A következő hiba lépett fel a visszaállítás során:"
+
+msgid "Opening the backup archive..."
+msgstr "A mentett archívum megnyitása..."
+
+msgid "Checking the integrity of the backup..."
+msgstr "A mentés épségének ellenőrzése..."
+
+msgid "This backup file is corrupted. The internal MD5 signature doesn't match its content."
+msgstr "A mentett archívum sérült. Az MD5 ellenőrző összeg nem passzol a fájl tartalmához."
+
+msgid "Read error"
+msgstr "Olvasási hiba"
+
+msgid "An error occurred while opening the backup:"
+msgstr "A következő hiba lépett fel a megnyitás során:"
+
+msgid "Excluded Files and Directories"
+msgstr "Kizárt fájlok és könyvtárak"
+
+msgid "Included"
+msgstr "Mentendő"
+
+msgid "Included hidden directories"
+msgstr "Mentendő rejtett fájlok és könyvtárak"
+
+msgid "Invalid path"
+msgstr "Hibás elérési út"
+
+msgid "is not located within your home directory. Not added."
+msgstr "nem a Saját mappában található. Nem lett hozzáadva."
+
+msgid "<big><b>Save the content of your home directory</b></big>"
+msgstr "<big><b>A Saját mappa tartalmának mentése</b></big>"
+
+msgid "Make a backup of your personal data"
+msgstr "Személyes adatainak biztonsági mentése"
+
+msgid "Excluded paths"
+msgstr "Kizárt elemek"
+
+msgid "Hidden paths"
+msgstr "Rejtett elemek"
+
+msgid "Exclude files"
+msgstr "Fájlok kizárása"
+
+msgid "Exclude folders"
+msgstr "Mappák kizárása"
+
+msgid "Backup"
+msgstr "Mentés"
+
+msgid "<big><b>Load data into your home directory</b></big>"
+msgstr "<big><b>Adatok betöltése a Saját mappába</b></big>"
+
+msgid "Restore your personal data from this backup"
+msgstr "Személyes adatainak visszaállítása ebből a mentésből"
+
+msgid "Overwrite existing files"
+msgstr "Létező fájlok felülírása"
+
+msgid "Restore"
+msgstr "Visszaállítás"
+
+msgid "View content"
+msgstr "Tartalom megtekintése"

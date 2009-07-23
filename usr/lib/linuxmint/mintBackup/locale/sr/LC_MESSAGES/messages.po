@@ -1,0 +1,120 @@
+msgid "Archiving your home directory..."
+msgstr "Архивирање вашег фолдера..."
+
+msgid "Compressing the archive..."
+msgstr "Вршење компресије над архивом..."
+
+msgid "Testing the integrity of the archive..."
+msgstr "Тестирање интегритета архиве..."
+
+msgid "The archive is corrupted"
+msgstr "Архива је неисправна"
+
+msgid "Calculating the MD5 signature of the archive..."
+msgstr "Прерачунавање MD5 подписа..."
+
+msgid "Assembling"
+msgstr "Монтирање"
+
+msgid "Cleaning up..."
+msgstr "Чишћење..."
+
+msgid "Backup successful"
+msgstr "Архивирање успешно"
+
+msgid "Your home directory was successfully backed-up into"
+msgstr "Ваш фолдер је успешно архивиран"
+
+msgid "Backup failed"
+msgstr "Архивирање неуспело"
+
+msgid "An error occurred during the backup:"
+msgstr "Појавила се грешка током архивирања:"
+
+msgid "Copying the backup file into your home directory..."
+msgstr "Копирање архиве у ваш фолдер..."
+
+msgid "Decompressing the backup archive..."
+msgstr "Декомпресија архиве..."
+
+msgid "Extracting the content of the backup into your home directory..."
+msgstr "Издвајање садржаја архиве у ваш фолдер..."
+
+msgid "Restoration successful"
+msgstr "Рестаурирање успешно"
+
+msgid "Your backup was successfully restored"
+msgstr "Ваша архива је успешно рестаурирана"
+
+msgid "Restoration failed"
+msgstr "Рестаурирање неуспешно"
+
+msgid "An error occurred while restoring the backup archive:"
+msgstr "Грешка се појавила током рестаурирања архиве:"
+
+msgid "Opening the backup archive..."
+msgstr "Отварање архиве..."
+
+msgid "Checking the integrity of the backup..."
+msgstr "Тестирање интегритета архиве..."
+
+msgid "This backup file is corrupted. The internal MD5 signature doesn't match its content."
+msgstr "Архива је неисправна. MD5 подпис се не поклапа са његовим садржајем."
+
+msgid "Read error"
+msgstr "Грешка при читању"
+
+msgid "An error occurred while opening the backup:"
+msgstr "Грешка се појавила током отварања архиве:"
+
+msgid "Excluded Files and Directories"
+msgstr "Искључене датотеке и фолдери"
+
+msgid "Included"
+msgstr "Укључени"
+
+msgid "Included hidden directories"
+msgstr "Укључени скривени фолдери"
+
+msgid "Invalid path"
+msgstr "Неисправна путања"
+
+msgid "is not located within your home directory. Not added."
+msgstr "се не налази унутар вашег фолдера. Није додато."
+
+msgid "<big><b>Save the content of your home directory</b></big>"
+msgstr "<big><b>Сачувај саб садржај свог фолдера</b></big>"
+
+msgid "Make a backup of your personal data"
+msgstr "Архивирај своје податке"
+
+msgid "Excluded paths"
+msgstr "Искључене путање"
+
+msgid "Hidden paths"
+msgstr "Скривене путање"
+
+msgid "Exclude files"
+msgstr "Искључите податке"
+
+msgid "Exclude folders"
+msgstr "Искључи фолдере"
+
+msgid "Backup"
+msgstr "Архива"
+
+msgid "<big><b>Load data into your home directory</b></big>"
+msgstr "<big><b>Учитај податке у свој фолдер</b></big>"
+
+msgid "Restore your personal data from this backup"
+msgstr "Рестаурирај ваше податке из архиве"
+
+msgid "Overwrite existing files"
+msgstr "Препиши постојеће податке"
+
+msgid "Restore"
+msgstr "Рестаурирај"
+
+msgid "View content"
+msgstr "Види садржај"
+

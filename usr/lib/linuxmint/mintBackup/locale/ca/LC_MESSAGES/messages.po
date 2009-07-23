@@ -1,0 +1,119 @@
+msgid "Archiving your home directory..."
+msgstr "Arxivant el seu directori personal..."
+
+msgid "Compressing the archive..."
+msgstr "Comprimint l'arxiu..."
+
+msgid "Testing the integrity of the archive..."
+msgstr "Comprovant la integritat de l'arxiu..."
+
+msgid "The archive is corrupted"
+msgstr "L'arxiu està corrupte"
+
+msgid "Calculating the MD5 signature of the archive..."
+msgstr "Calculant la signatura MD5 de l'arxiu..."
+
+msgid "Assembling"
+msgstr "Assemblant"
+
+msgid "Cleaning up..."
+msgstr "Netejant..."
+
+msgid "Backup successful"
+msgstr "Còpia de seguretat conclosa amb èxit"
+
+msgid "Your home directory was successfully backed-up into"
+msgstr "S'ha creat satisfactòriament una còpia del seu directori personal"
+
+msgid "Backup failed"
+msgstr "La creació de la còpia de seguretat ha fallat"
+
+msgid "An error occurred during the backup:"
+msgstr "Ha ocorregut un error durant la creació de la còpia de seguretat:"
+
+msgid "Copying the backup file into your home directory..."
+msgstr "Copiant l'arxiu de la còpia de seguretat al seu directori personal..."
+
+msgid "Decompressing the backup archive..."
+msgstr "Descomprimint l'arxiu de la còpia de seguretat..."
+
+msgid "Extracting the content of the backup into your home directory..."
+msgstr "Extraent el contingut de la còpia de seguretat al seu directori personal..."
+
+msgid "Restoration successful"
+msgstr "Restaurat satisfactòriamente"
+
+msgid "Your backup was successfully restored"
+msgstr "La seua còpia de seguretat ha sigut restaurada satisfactòriament"
+
+msgid "Restoration failed"
+msgstr "La restauració ha fallat"
+
+msgid "An error occurred while restoring the backup archive:"
+msgstr "Ha ocorregut un error durant la restauració de la còpia de seguretat:"
+
+msgid "Opening the backup archive..."
+msgstr "Obrint la còpia de seguretat..."
+
+msgid "Checking the integrity of the backup..."
+msgstr "Comprovant la integritat de la còpia de seguretat..."
+
+msgid "This backup file is corrupted. The internal MD5 signature doesn't match its content."
+msgstr "Aquesta còpia de seguretat s'ha corromput. La signatura interna MD5 no concorda amb el contingut."
+
+msgid "Read error"
+msgstr "Error de lectura"
+
+msgid "An error occurred while opening the backup:"
+msgstr "Ha ocorregut un error mentre s'obria la còpia de seguretat:"
+
+msgid "Excluded Files and Directories"
+msgstr "Arxius i directoris exclosos"
+
+msgid "Included"
+msgstr "Inclòs"
+
+msgid "Included hidden directories"
+msgstr "Directoris ocultes inclosos"
+
+msgid "Invalid path"
+msgstr "Ruta d'accés no vàlida"
+
+msgid "is not located within your home directory. Not added."
+msgstr "no es troba al seu directori personal. No s'ha afegit."
+
+msgid "<big><b>Save the content of your home directory</b></big>"
+msgstr "<big><b>Guardant el contingut del seu directori personal</b></big>"
+
+msgid "Make a backup of your personal data"
+msgstr "Fer una còpia de seguretat de les seves dades personals"
+
+msgid "Excluded paths"
+msgstr "Rutes excloses"
+
+msgid "Hidden paths"
+msgstr "Rutes ocultes"
+
+msgid "Exclude files"
+msgstr "Arxius exclosos"
+
+msgid "Exclude folders"
+msgstr "Carpetes excloses"
+
+msgid "Backup"
+msgstr "Còpia de seguretat"
+
+msgid "<big><b>Load data into your home directory</b></big>"
+msgstr "<big><b>Carregar les dades al seu directori personal</b></big>"
+
+msgid "Restore your personal data from this backup"
+msgstr "Restaura les seves dades personals des d'aquesta còpia de seguretat"
+
+msgid "Overwrite existing files"
+msgstr "Sobreescriu els arxius existents"
+
+msgid "Restore"
+msgstr "Restaura"
+
+msgid "View content"
+msgstr "Visualitza el contingut"

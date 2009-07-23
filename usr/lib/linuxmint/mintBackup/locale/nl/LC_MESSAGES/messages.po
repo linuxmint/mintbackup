@@ -1,0 +1,119 @@
+msgid "Archiving your home directory..."
+msgstr "Persoonlijke map wordt gearchiveerd..."
+
+msgid "Compressing the archive..."
+msgstr "Archiefbestand wordt gecomprimeerd..."
+
+msgid "Testing the integrity of the archive..."
+msgstr "Integriteit van archiefbestand wordt getest..."
+
+msgid "The archive is corrupted"
+msgstr "Archiefbestand is beschadigd"
+
+msgid "Calculating the MD5 signature of the archive..."
+msgstr "MD5 handtekening van archief wordt berekend..."
+
+msgid "Assembling"
+msgstr "Verzamelen"
+
+msgid "Cleaning up..."
+msgstr "Opruimen..."
+
+msgid "Backup successful"
+msgstr "Backup succesvol"
+
+msgid "Your home directory was successfully backed-up into"
+msgstr "Uw persoonlijke map is succesvol gebackupt naar"
+
+msgid "Backup failed"
+msgstr "Backup mislukt"
+
+msgid "An error occurred during the backup:"
+msgstr "Er is een fout opgetreden tijdens de backup:"
+
+msgid "Copying the backup file into your home directory..."
+msgstr "Backup bestand wordt naar uw persoonlijke map gekopieerd..."
+
+msgid "Decompressing the backup archive..."
+msgstr "Backup bestand wordt uitgepakt..."
+
+msgid "Extracting the content of the backup into your home directory..."
+msgstr "Inhoud van backup bestand wordt uitgepakt naar uw persoonlijke map..."
+
+msgid "Restoration successful"
+msgstr "Terugzetten succesvol"
+
+msgid "Your backup was successfully restored"
+msgstr "Uw backup is succesvol teruggezet"
+
+msgid "Restoration failed"
+msgstr "Terugzetten mislukt"
+
+msgid "An error occurred while restoring the backup archive:"
+msgstr "Er is een fout opgetreden tijdens het terugzetten van het backup bestand:"
+
+msgid "Opening the backup archive..."
+msgstr "Backup bestand wordt geopend..."
+
+msgid "Checking the integrity of the backup..."
+msgstr "Integriteit van het backup bestand wordt getest..."
+
+msgid "This backup file is corrupted. The internal MD5 signature doesn't match its content."
+msgstr "Dit backup bestand is beschadigd. De MD5 handtekening komt niet overeen met de inhoud."
+
+msgid "Read error"
+msgstr "Leesfout"
+
+msgid "An error occurred while opening the backup:"
+msgstr "Er is een fout opgetreden bij het openen van het backup bestand:"
+
+msgid "Excluded Files and Directories"
+msgstr "Uitgesloten Bestanden en Mappen"
+
+msgid "Included"
+msgstr "Bijgevoegd"
+
+msgid "Included hidden directories"
+msgstr "Bijgevoegde verborgen mappen"
+
+msgid "Invalid path"
+msgstr "Ongeldige bestandslocatie"
+
+msgid "is not located within your home directory. Not added."
+msgstr "bevindt zich niet in uw persoonlijke map. Niet toegevoegd."
+
+msgid "<big><b>Save the content of your home directory</b></big>"
+msgstr "<big><b>Bewaar de inhoud van uw persoonlijke map</b></big>"
+
+msgid "Make a backup of your personal data"
+msgstr "Maak een backup van uw persoonlijke data"
+
+msgid "Excluded paths"
+msgstr "Uitgesloten bestandslocaties"
+
+msgid "Hidden paths"
+msgstr "Verborgen bestandslocaties"
+
+msgid "Exclude files"
+msgstr "Uitgesloten bestanden"
+
+msgid "Exclude folders"
+msgstr "Uitgesloten mappen"
+
+msgid "Backup"
+msgstr "Backup"
+
+msgid "<big><b>Load data into your home directory</b></big>"
+msgstr "<big><b>Laad data in uw persoonlijke map</b></big>"
+
+msgid "Restore your personal data from this backup"
+msgstr "Zet uw persoonlijke gegevens terug uit deze backup"
+
+msgid "Overwrite existing files"
+msgstr "Overschrijf bestaande bestanden"
+
+msgid "Restore"
+msgstr "Zet terug"
+
+msgid "View content"
+msgstr "Bekijk inhoud"

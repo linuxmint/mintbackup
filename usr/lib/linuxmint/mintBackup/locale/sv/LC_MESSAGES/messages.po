@@ -1,0 +1,119 @@
+msgid "Archiving your home directory..."
+msgstr "Arkiverar din hemmakatalog..."
+
+msgid "Compressing the archive..."
+msgstr "Komprimerar arkivet..."
+
+msgid "Testing the integrity of the archive..."
+msgstr "Testar integriteten hos arkivet..."
+
+msgid "The archive is corrupted"
+msgstr "Arkivet är korrupt"
+
+msgid "Calculating the MD5 signature of the archive..."
+msgstr "Räknar ut MD5-signaturen hos arkivet..."
+
+msgid "Assembling"
+msgstr "Samlar ihop"
+
+msgid "Cleaning up..."
+msgstr "Städar..."
+
+msgid "Backup successful"
+msgstr "Backup lyckades"
+
+msgid "Your home directory was successfully backed-up into"
+msgstr "Det gjordes en lyckad backup av din hemmakatalog till "
+
+msgid "Backup failed"
+msgstr "Backup misslyckades"
+
+msgid "An error occurred during the backup:"
+msgstr "Ett fel uppstod under backupen:"
+
+msgid "Copying the backup file into your home directory..."
+msgstr "Kopierar backup-filen till din hemmakatalog..."
+
+msgid "Decompressing the backup archive..."
+msgstr "Packar upp backuparkivet..."
+
+msgid "Extracting the content of the backup into your home directory..."
+msgstr "Packar upp innehållet i backupen till din hemmakatalog..."
+
+msgid "Restoration successful"
+msgstr "Återställningen lyckades"
+
+msgid "Your backup was successfully restored"
+msgstr "Din backup blev återställd."
+
+msgid "Restoration failed"
+msgstr "Återställning misslyckades"
+
+msgid "An error occurred while restoring the backup archive:"
+msgstr "Ett fel uppstod under återställningen av arkivet:"
+
+msgid "Opening the backup archive..."
+msgstr "Öppnar arkivet..."
+
+msgid "Checking the integrity of the backup..."
+msgstr "Kontrollerar arkivets integritet..."
+
+msgid "This backup file is corrupted. The internal MD5 signature doesn't match its content."
+msgstr "Denna backup är skadad. MD5-signaturen motsvarar inte innehållet."
+
+msgid "Read error"
+msgstr "Läsfel"
+
+msgid "An error occurred while opening the backup:"
+msgstr "Ett fel uippstod när arkivet skulle öppnas:"
+
+msgid "Excluded Files and Directories"
+msgstr "Exkluderade Filer och Kataloger"
+
+msgid "Included"
+msgstr "Inkluderade"
+
+msgid "Included hidden directories"
+msgstr "Inkluderade gömda kataloger"
+
+msgid "Invalid path"
+msgstr "Felaktig sökväg"
+
+msgid "is not located within your home directory. Not added."
+msgstr "finns inte i din hemmakatalog. Inte tillagd."
+
+msgid "<big><b>Save the content of your home directory</b></big>"
+msgstr "<big><b>Spara innehållet i din hemmakatalog</b></big>"
+
+msgid "Make a backup of your personal data"
+msgstr "Gör en backup på dina personliga data"
+
+msgid "Excluded paths"
+msgstr "Exkluderade sökvägar"
+
+msgid "Hidden paths"
+msgstr "Gömda sökvägar"
+
+msgid "Exclude files"
+msgstr "Exkluderade filer"
+
+msgid "Exclude folders"
+msgstr "Exkluderade mappar"
+
+msgid "Backup"
+msgstr "Backup"
+
+msgid "<big><b>Load data into your home directory</b></big>"
+msgstr "<big><b>Ladda data till din hemmakatalog</b></big>"
+
+msgid "Restore your personal data from this backup"
+msgstr "Återställ dina personliga data från detta arkiv"
+
+msgid "Overwrite existing files"
+msgstr "Skriv över befintliga filer"
+
+msgid "Restore"
+msgstr "Återställ"
+
+msgid "View content"
+msgstr "Visa innehåll"

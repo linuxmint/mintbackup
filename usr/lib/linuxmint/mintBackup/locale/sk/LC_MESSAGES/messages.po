@@ -1,0 +1,119 @@
+msgid "Archiving your home directory..."
+msgstr "Archivujem váš domovský priečinok..."
+
+msgid "Compressing the archive..."
+msgstr "Komprimujem archív..."
+
+msgid "Testing the integrity of the archive..."
+msgstr "Testujem integritu archívu..."
+
+msgid "The archive is corrupted"
+msgstr "Archív je poškodený"
+
+msgid "Calculating the MD5 signature of the archive..."
+msgstr "Vytváram kontrolný súčet archívu..."
+
+msgid "Assembling"
+msgstr "Dokončovanie"
+
+msgid "Cleaning up..."
+msgstr "Čistenie..."
+
+msgid "Backup successful"
+msgstr "Zálohovanie prebehlo úspešne"
+
+msgid "Your home directory was successfully backed-up into"
+msgstr "Váš domovský priečinok bol úspešne zálohovaný do"
+
+msgid "Backup failed"
+msgstr "Zálohovanie zlyhalo"
+
+msgid "An error occurred during the backup:"
+msgstr "Došlo k chybe pri zálohovaní:"
+
+msgid "Copying the backup file into your home directory..."
+msgstr "Kopírovanie záložného súboru do vášho domovského priečinku..."
+
+msgid "Decompressing the backup archive..."
+msgstr "Rozbaľujem záložný archív..."
+
+msgid "Extracting the content of the backup into your home directory..."
+msgstr "Rozbaľujem obsah zálohy do vášho domovského priečinku..."
+
+msgid "Restoration successful"
+msgstr "Obnova prebehla úspešne"
+
+msgid "Your backup was successfully restored"
+msgstr "Vaša záloha bola úspešne obnovená"
+
+msgid "Restoration failed"
+msgstr "Obnova zlyhala"
+
+msgid "An error occurred while restoring the backup archive:"
+msgstr "Vyskytla sa chyba pri obnove zálohy archívu:"
+
+msgid "Opening the backup archive..."
+msgstr "Otváram záložný archív..."
+
+msgid "Checking the integrity of the backup..."
+msgstr "Kontrolujem integritu zálohy..."
+
+msgid "This backup file is corrupted. The internal MD5 signature doesn't match its content."
+msgstr "Tento záložný súbor je poškodený. Kontrolný súčet MD5 sa nezhoduje s obsahom"
+
+msgid "Read error"
+msgstr "Chyba pri čítaní"
+
+msgid "An error occurred while opening the backup:"
+msgstr "Došlo k chybe pri otváraní zálohy:"
+
+msgid "Excluded Files and Directories"
+msgstr "Vynechané súbory a priečinky"
+
+msgid "Included"
+msgstr "Zahrnuté"
+
+msgid "Included hidden directories"
+msgstr "Zahrnuté skryté priečinky"
+
+msgid "Invalid path"
+msgstr "Neplatná cesta"
+
+msgid "is not located within your home directory. Not added."
+msgstr "nie je umiestnený vo vašom domovskom priečinku. Nebude pridaný."
+
+msgid "<big><b>Save the content of your home directory</b></big>"
+msgstr "<big><b>Uložiť obsah vášho domovského priečinka</b></big>"
+
+msgid "Make a backup of your personal data"
+msgstr "Vytvoriť zálohu vašich súkromných dát"
+
+msgid "Excluded paths"
+msgstr "Vynechané cesty"
+
+msgid "Hidden paths"
+msgstr "Skryté cesty"
+
+msgid "Exclude files"
+msgstr "Vynechať súbory"
+
+msgid "Exclude folders"
+msgstr "Vynechať priečinky"
+
+msgid "Backup"
+msgstr "Záloha"
+
+msgid "<big><b>Load data into your home directory</b></big>"
+msgstr "<big><b>Načítať dáta do vášho domovského priečinku</b></big>"
+
+msgid "Restore your personal data from this backup"
+msgstr "Obnoviť vaše súkromné dáta z tejto zálohy"
+
+msgid "Overwrite existing files"
+msgstr "Prepísať existujúce súbory"
+
+msgid "Restore"
+msgstr "Obnoviť"
+
+msgid "View content"
+msgstr "Zobraziť obsah"

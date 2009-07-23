@@ -1,0 +1,119 @@
+msgid "Archiving your home directory..."
+msgstr "홈 폴더를 묶고 있습니다..."
+
+msgid "Compressing the archive..."
+msgstr "묶음을 압축하고 있습니다..."
+
+msgid "Testing the integrity of the archive..."
+msgstr "압축파일을 검사하고 있습니다..."
+
+msgid "The archive is corrupted"
+msgstr "압축파일이 손상되었습니다"
+
+msgid "Calculating the MD5 signature of the archive..."
+msgstr "압축파일의 MD5 값을 계산하고 있습니다..."
+
+msgid "Assembling"
+msgstr "조립중"
+
+msgid "Cleaning up..."
+msgstr "청소중..."
+
+msgid "Backup successful"
+msgstr "백업이 완료되었습니다"
+
+msgid "Your home directory was successfully backed-up into"
+msgstr "다음 파일에 성공적으로 백업하였습니다:"
+
+msgid "Backup failed"
+msgstr "백업에 실패하였습니다"
+
+msgid "An error occurred during the backup:"
+msgstr "백업하는 중에 오류가 발생하였습니다:"
+
+msgid "Copying the backup file into your home directory..."
+msgstr "백업을 홈 폴더로 복사하고 있습니다..."
+
+msgid "Decompressing the backup archive..."
+msgstr "백업의 압축을 풀고 있습니다..."
+
+msgid "Extracting the content of the backup into your home directory..."
+msgstr "백업의 내용물을 홈 폴더로 복사하고 있습니다..."
+
+msgid "Restoration successful"
+msgstr "복구에 성공하였습니다"
+
+msgid "Your backup was successfully restored"
+msgstr "성공적으로 복구하였습니다"
+
+msgid "Restoration failed"
+msgstr "복구에 실패하였습니다"
+
+msgid "An error occurred while restoring the backup archive:"
+msgstr "복구하는 중에 오류가 발생하였습니다:"
+
+msgid "Opening the backup archive..."
+msgstr "백업 파일을 열고 있습니다..."
+
+msgid "Checking the integrity of the backup..."
+msgstr "백업의 유효성을 검사하고 있습니다..."
+
+msgid "This backup file is corrupted. The internal MD5 signature doesn't match its content."
+msgstr "이 백업 파일은 손상되었습니다. MD5 서명이 옳지 않습니다."
+
+msgid "Read error"
+msgstr "읽기 오류"
+
+msgid "An error occurred while opening the backup:"
+msgstr "백업을 여는 중 오류가 발생하였습니다.:"
+
+msgid "Excluded Files and Directories"
+msgstr "제외된 파일과 폴더"
+
+msgid "Included"
+msgstr "포함됨"
+
+msgid "Included hidden directories"
+msgstr "숨겨진 폴더들"
+
+msgid "Invalid path"
+msgstr "옳지 않은 경로"
+
+msgid "is not located within your home directory. Not added."
+msgstr "은(는) 홈 폴더에 있지 않아 추가되지 않았습니다."
+
+msgid "<big><b>Save the content of your home directory</b></big>"
+msgstr "<big><b>홈 폴더의 내용물을 저장합니다</b></big>"
+
+msgid "Make a backup of your personal data"
+msgstr "사용자의 개인 자료의 백업을 만듭니다."
+
+msgid "Excluded paths"
+msgstr "제외된 경로"
+
+msgid "Hidden paths"
+msgstr "숨겨진 경로"
+
+msgid "Exclude files"
+msgstr "파일 제외"
+
+msgid "Exclude folders"
+msgstr "폴더 제외"
+
+msgid "Backup"
+msgstr "백업"
+
+msgid "<big><b>Load data into your home directory</b></big>"
+msgstr "<big><b>홈 폴더로 자료를 불러들입니다</b></big>"
+
+msgid "Restore your personal data from this backup"
+msgstr "이 백업으로 개인 자료를 복구합니다."
+
+msgid "Overwrite existing files"
+msgstr "있는 파일은 덮어씌움"
+
+msgid "Restore"
+msgstr "복구"
+
+msgid "View content"
+msgstr "내용물 보기"

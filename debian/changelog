@@ -1,0 +1,64 @@
+mintbackup (1.6.2) gloria; urgency=low
+
+  * Updated translations
+
+ -- Clement Lefebvre <root@linuxmint.com>  Tue,  19 May 2009 19:15:00 +0000
+
+mintbackup (1.6.1) gloria; urgency=low
+
+  * Added translations
+
+ -- Clement Lefebvre <root@linuxmint.com>  Sun,  17 May 2009 21:24:00 +0000
+
+mintbackup (1.6) gloria; urgency=low
+
+  * Added /usr/bin/mintbackup
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed,  22 Apr 2009 17:36:00 +0000
+
+mintbackup (1.5.1) felicia; urgency=low
+
+  * Added new translations
+
+ -- Clement Lefebvre <clem@linuxmint.com>  Fri,  5 Dec 2008 22:30:00 +0000
+
+mintbackup (1.5) elyssa; urgency=low
+
+  * Fixed compatibility problem with dl module and AMD64 architecture
+
+ -- Clement Lefebvre <clem@linuxmint.com>  Sun,  14 Sep 2008 20:03:00 +0000
+
+mintbackup (1.4) elyssa; urgency=low
+
+  * Fixed typo in German translation
+
+ -- Clement Lefebvre <clem@linuxmint.com>  Tue,  3 Jun 2008 22:15:00 +0000
+
+mintbackup (1.3) elyssa; urgency=low
+
+  * Removed Gzip compression and MD5 integrity check (took too long and too much space)
+  * Windows are now centered
+
+ -- Clement Lefebvre <clem@linuxmint.com>  Fri,  16 May 2008 22:15:00 +0000
+
+mintbackup (1.2) elyssa; urgency=low
+
+  * Corrections to translations: fr, nb, no
+  * New translations: it, ru, uk
+
+ -- Clement Lefebvre <clem@linuxmint.com>  Sun,  17 Feb 2008 20:34:00 +0000
+
+mintbackup (1.1) elyssa; urgency=low
+
+  * HIG (Cancel button on the left)
+  * Better fault-management
+  * Translations: de  el  es  fr  nb  nl  pl  pt_BR  pt_PT  sv
+
+ -- Clement Lefebvre <clem@linuxmint.com>  Thu,  17 Jan 2008 23:50:00 +0000  
+
+mintbackup (1.0) romeo; urgency=low
+
+  * Initial release
+
+ -- clem <root@linuxmint.com>  Wed,  2 Jan 2008 18:18:00 +0000
+

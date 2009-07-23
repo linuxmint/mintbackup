@@ -1,0 +1,119 @@
+msgid "Archiving your home directory..."
+msgstr "Arquivando a pasta pessoal..."
+
+msgid "Compressing the archive..."
+msgstr "Comprimindo o arquivo..."
+
+msgid "Testing the integrity of the archive..."
+msgstr "Testando a integridade do arquivo..."
+
+msgid "The archive is corrupted"
+msgstr "O arquivo encontra-se corrupto"
+
+msgid "Calculating the MD5 signature of the archive..."
+msgstr "Calculando o MD5 do arquivo ..."
+
+msgid "Assembling"
+msgstr "Montando"
+
+msgid "Cleaning up..."
+msgstr "A limpar..."
+
+msgid "Backup successful"
+msgstr "Cópia de segurança feita com sucesso"
+
+msgid "Your home directory was successfully backed-up into"
+msgstr "A Pasta Pessoal foi copiada com sucesso"
+
+msgid "Backup failed"
+msgstr "Falha durante o processo"
+
+msgid "An error occurred during the backup:"
+msgstr "Um erro ocorreu durante o processo:"
+
+msgid "Copying the backup file into your home directory..."
+msgstr "A copiar a cópia de segurança para a Pasta Pessoal..."
+
+msgid "Decompressing the backup archive..."
+msgstr "Descomprimindo a cópia de segurança..."
+
+msgid "Extracting the content of the backup into your home directory..."
+msgstr "Extraindo o conteúdo da cópia para a Pasta Pessoal... "
+
+msgid "Restoration successful"
+msgstr "Restauro feito com sucesso"
+
+msgid "Your backup was successfully restored"
+msgstr "A cópia de restauro foi restaurada com sucesso"
+
+msgid "Restoration failed"
+msgstr "O restauro falhou"
+
+msgid "An error occurred while restoring the backup archive:"
+msgstr "Um erro ocorreu durante o restauro:"
+
+msgid "Opening the backup archive..."
+msgstr "Abrindo a cópia de segurança..."
+
+msgid "Checking the integrity of the backup..."
+msgstr "Verificando a integridade da cópia de segurança..."
+
+msgid "This backup file is corrupted. The internal MD5 signature doesn't match its content."
+msgstr "A cópia de segurança encontra-se danificada. A assinatura MD5 não corresponde a conteúdo."
+
+msgid "Read error"
+msgstr "Erro de leitura"
+
+msgid "An error occurred while opening the backup:"
+msgstr "Um erro ocorreu enquato a cópia abria:"
+
+msgid "Excluded Files and Directories"
+msgstr "Ficheiros e Pastas excluídas"
+
+msgid "Included"
+msgstr "Incluído"
+
+msgid "Included hidden directories"
+msgstr "Directórios ocultos incluídos"
+
+msgid "Invalid path"
+msgstr "Caminho inválido"
+
+msgid "is not located within your home directory. Not added."
+msgstr "Não se encontra dentro da Pasta Pessoal. Não adicionado."
+
+msgid "<big><b>Save the content of your home directory</b></big>"
+msgstr "<big><b>Guarda o conteúdo da Pasta Pessoal</b></big>"
+
+msgid "Make a backup of your personal data"
+msgstr "Faz um cópia de segurança da Pasta Pessoal"
+
+msgid "Excluded paths"
+msgstr "Caminhos excluídos"
+
+msgid "Hidden paths"
+msgstr "Caminhos ocultos"
+
+msgid "Exclude files"
+msgstr "Ficheiros exluídos"
+
+msgid "Exclude folders"
+msgstr "Pastas excluídas"
+
+msgid "Backup"
+msgstr "Cópia de Segurança"
+
+msgid "<big><b>Load data into your home directory</b></big>"
+msgstr "<big><b>Carregar dados para a Pasta Pessoal</b></big>"
+
+msgid "Restore your personal data from this backup"
+msgstr "Restaurar os dados pessoais da cópia de segurança"
+
+msgid "Overwrite existing files"
+msgstr "Sobrescrever ficheiros existentes"
+
+msgid "Restore"
+msgstr "Restaurar"
+
+msgid "View content"
+msgstr "Ver o conteúdo"

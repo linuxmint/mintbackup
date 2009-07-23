@@ -1,0 +1,119 @@
+msgid "Archiving your home directory..."
+msgstr "Arhivarea dosarului personal..."
+
+msgid "Compressing the archive..."
+msgstr "Comprimarea arhivei..."
+
+msgid "Testing the integrity of the archive..."
+msgstr "Testul de integritate al arhivei..."
+
+msgid "The archive is corrupted"
+msgstr "Arhiva este coruptă"
+
+msgid "Calculating the MD5 signature of the archive..."
+msgstr "Calculul semnăturii MD5 pentru arhivă..."
+
+msgid "Assembling"
+msgstr "Se asamblează"
+
+msgid "Cleaning up..."
+msgstr "Curățare..."
+
+msgid "Backup successful"
+msgstr "Salvarea s-a terminat cu succes"
+
+msgid "Your home directory was successfully backed-up into"
+msgstr "Dosarul dumneavoastră personal a fost salvat cu succes în arhivă"
+
+msgid "Backup failed"
+msgstr "Salvarea arhivei a eșuat"
+
+msgid "An error occurred during the backup:"
+msgstr "O eroare a intervenit în timpul salvării arhivei:"
+
+msgid "Copying the backup file into your home directory..."
+msgstr "Copierea arhivei în dosarul dumneavoastră personal..."
+
+msgid "Decompressing the backup archive..."
+msgstr "Decomprimarea arhivei..."
+
+msgid "Extracting the content of the backup into your home directory..."
+msgstr "Extragerea conținutului arhivei în dosarul dumneavoastră personal..."
+
+msgid "Restoration successful"
+msgstr "Restaurarea s-a terminat cu succes"
+
+msgid "Your backup was successfully restored"
+msgstr "Arhiva a fost restaurată cu succes"
+
+msgid "Restoration failed"
+msgstr "Restaurarea a eșuat"
+
+msgid "An error occurred while restoring the backup archive:"
+msgstr "O eroare a intervenit în timpul restaurării arhivei:"
+
+msgid "Opening the backup archive..."
+msgstr "Deschiderea arhivei..."
+
+msgid "Checking the integrity of the backup..."
+msgstr "Testarea integrității arhivei..."
+
+msgid "This backup file is corrupted. The internal MD5 signature doesn't match its content."
+msgstr "Arhiva este coruptă. Semnătura MD5 internă nu corespunde conținutului arhivei."
+
+msgid "Read error"
+msgstr "Eroare de citire"
+
+msgid "An error occurred while opening the backup:"
+msgstr "O eroare a intervenit în timpul deschiderii arhivei:"
+
+msgid "Excluded Files and Directories"
+msgstr "Fișiere și dosare excluse"
+
+msgid "Included"
+msgstr "Inclus"
+
+msgid "Included hidden directories"
+msgstr "Dosarele ascunse sunt incluse"
+
+msgid "Invalid path"
+msgstr "Calea nu există"
+
+msgid "is not located within your home directory. Not added."
+msgstr "nu se află în dosarul dumneavoastră personal. Nu a fost adăugat."
+
+msgid "<big><b>Save the content of your home directory</b></big>"
+msgstr "<big><b>Salvați conținutul dosarului dumneavoastră personal</b></big>"
+
+msgid "Make a backup of your personal data"
+msgstr "Efectuează salvarea datelor dumneavoastră personale"
+
+msgid "Excluded paths"
+msgstr "Căi excluse"
+
+msgid "Hidden paths"
+msgstr "Căi ascunse"
+
+msgid "Exclude files"
+msgstr "Exclude fișierele"
+
+msgid "Exclude folders"
+msgstr "Exclude dosarele"
+
+msgid "Backup"
+msgstr "Salvează"
+
+msgid "<big><b>Load data into your home directory</b></big>"
+msgstr "<big><b>Încarcă arhiva în dosarul dumneavoastră personal</b></big>"
+
+msgid "Restore your personal data from this backup"
+msgstr "Restaurează datele personale din această arhivă"
+
+msgid "Overwrite existing files"
+msgstr "Suprascrie fișierele existente"
+
+msgid "Restore"
+msgstr "Restaurează"
+
+msgid "View content"
+msgstr "Afișează conținutul"

@@ -1,0 +1,119 @@
+msgid "Archiving your home directory..."
+msgstr "Архівація домашнього каталогу..."
+
+msgid "Compressing the archive..."
+msgstr "Стиснення архіву..."
+
+msgid "Testing the integrity of the archive..."
+msgstr "Тестування цілісності архіву..."
+
+msgid "The archive is corrupted"
+msgstr "Архів пошкоджено"
+
+msgid "Calculating the MD5 signature of the archive..."
+msgstr "Визначення підпису MD5 для архіву..."
+
+msgid "Assembling"
+msgstr "Монтаж"
+
+msgid "Cleaning up..."
+msgstr "Очищення..."
+
+msgid "Backup successful"
+msgstr "Резервне копіювання виконано успішно"
+
+msgid "Your home directory was successfully backed-up into"
+msgstr "Резервну копію вашого домашнього каталогу було успішно записано у"
+
+msgid "Backup failed"
+msgstr "Резервне копіювання не виконано"
+
+msgid "An error occurred during the backup:"
+msgstr "Помилка під час резвного копіювання:"
+
+msgid "Copying the backup file into your home directory..."
+msgstr "Копіювання резервної копії у домашній каталог..."
+
+msgid "Decompressing the backup archive..."
+msgstr "Розпаковування резрвної копії..."
+
+msgid "Extracting the content of the backup into your home directory..."
+msgstr "Розпаковування вмісту резервної копії у домашній каталог..."
+
+msgid "Restoration successful"
+msgstr "Відновлення виконано успішно"
+
+msgid "Your backup was successfully restored"
+msgstr "Вашу резервну копію було успішно відновлено"
+
+msgid "Restoration failed"
+msgstr "Відновлення не виконано"
+
+msgid "An error occurred while restoring the backup archive:"
+msgstr "Виникла помилка під час відновлення:"
+
+msgid "Opening the backup archive..."
+msgstr "Відкриття резервної копії..."
+
+msgid "Checking the integrity of the backup..."
+msgstr "Перевірка цілісності резервної копії..."
+
+msgid "This backup file is corrupted. The internal MD5 signature doesn't match its content."
+msgstr "Даний файл з резервною копією пошкоджено. Підпис MD5 не відповідає вмісту."
+
+msgid "Read error"
+msgstr "Помилка читання"
+
+msgid "An error occurred while opening the backup:"
+msgstr "Помилка під час відкриття резервної копії:"
+
+msgid "Excluded Files and Directories"
+msgstr "Виключити файли і каталоги"
+
+msgid "Included"
+msgstr "Додані"
+
+msgid "Included hidden directories"
+msgstr "Додані приховані каталоги"
+
+msgid "Invalid path"
+msgstr "Невірний шлях"
+
+msgid "is not located within your home directory. Not added."
+msgstr "не є у вашому домашньому каталозі. Не додано."
+
+msgid "<big><b>Save the content of your home directory</b></big>"
+msgstr "<big><b>Зберегти вміст вашого домашнього каталогу</b></big>"
+
+msgid "Make a backup of your personal data"
+msgstr "Виконати резервне копіювання ваших особистих даних"
+
+msgid "Excluded paths"
+msgstr "Виключені шляхи"
+
+msgid "Hidden paths"
+msgstr "Приховані шляхи"
+
+msgid "Exclude files"
+msgstr "Виключити файли"
+
+msgid "Exclude folders"
+msgstr "Виключити каталоги"
+
+msgid "Backup"
+msgstr "Резервне копіювання"
+
+msgid "<big><b>Load data into your home directory</b></big>"
+msgstr "<big><b>Завантажити дані у ваш домашній каталог</b></big>"
+
+msgid "Restore your personal data from this backup"
+msgstr "Відновити особисті дані з цієї резервної копії"
+
+msgid "Overwrite existing files"
+msgstr "Переписати існуючі файли"
+
+msgid "Restore"
+msgstr "Відновити"
+
+msgid "View content"
+msgstr "Переглянути вміст"

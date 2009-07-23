@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=mintBackup
+GenericName=Home Directory Backup Tool
+Comment=Make a backup of your home directory
+Exec=mintbackup
+Icon=/usr/lib/linuxmint/mintBackup/icon_desktop.png
+Terminal=false
+Type=Application
+Encoding=UTF-8
+Categories=Application;System;Settings
+

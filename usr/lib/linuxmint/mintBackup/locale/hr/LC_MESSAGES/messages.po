@@ -1,0 +1,119 @@
+msgid "Archiving your home directory..."
+msgstr "Arhiviranje vašeg home direktorija..."
+
+msgid "Compressing the archive..."
+msgstr "Kompresiranje arhiva..."
+
+msgid "Testing the integrity of the archive..."
+msgstr "Testiranje integriteta arhiva..."
+
+msgid "The archive is corrupted"
+msgstr "Arhiv je pokvaren"
+
+msgid "Calculating the MD5 signature of the archive..."
+msgstr "Izračunavanje MD5 oznake arhiva..."
+
+msgid "Assembling"
+msgstr "Montiranje"
+
+msgid "Cleaning up..."
+msgstr "Čišćenje..."
+
+msgid "Backup successful"
+msgstr "Sigurnosna kopija podataka (backup) pohranjena uspješno"
+
+msgid "Your home directory was successfully backed-up into"
+msgstr "Vaš home direktorij je uspješno pohranjen (backup-iran) u"
+
+msgid "Backup failed"
+msgstr "Backup nije uspio"
+
+msgid "An error occurred during the backup:"
+msgstr "Došlo je do greške za vrijeme backupiranja podataka:"
+
+msgid "Copying the backup file into your home directory..."
+msgstr "Kopiranje backup datoteke u vaš home direktorij..."
+
+msgid "Decompressing the backup archive..."
+msgstr "Dekompresiranje backup arhiva..."
+
+msgid "Extracting the content of the backup into your home directory..."
+msgstr "Prebacivanje sadržaja backupa u vaš home direktorij..."
+
+msgid "Restoration successful"
+msgstr "Restauriranje uspješno"
+
+msgid "Your backup was successfully restored"
+msgstr "Vaš backup je uspješno vraćen"
+
+msgid "Restoration failed"
+msgstr "Restauriranje nije uspjelo"
+
+msgid "An error occurred while restoring the backup archive:"
+msgstr "Greška se pojavila prilikom restauriranja backup arhiva:"
+
+msgid "Opening the backup archive..."
+msgstr "Otvaranje backup arhiva..."
+
+msgid "Checking the integrity of the backup..."
+msgstr "Testiranje integriteta backupa..."
+
+msgid "This backup file is corrupted. The internal MD5 signature doesn't match its content."
+msgstr "Backup arhiv je pokvaren. Interna MD5 oznaka se ne poklapa sa njegovim sadržajem."
+
+msgid "Read error"
+msgstr "Greška u čitanju"
+
+msgid "An error occurred while opening the backup:"
+msgstr "Pojavila se greška prilikom otvaranja backupa:"
+
+msgid "Excluded Files and Directories"
+msgstr "Isključene datoteke i direktoriji"
+
+msgid "Included"
+msgstr "Uključeno"
+
+msgid "Included hidden directories"
+msgstr "Uključeni skriveni direktoriji"
+
+msgid "Invalid path"
+msgstr "Neispravna staza"
+
+msgid "is not located within your home directory. Not added."
+msgstr "nije lociran unutar vašeg home direktorija. Nije dodan."
+
+msgid "<big><b>Save the content of your home directory</b></big>"
+msgstr "<big><b>Spasi sadržaj svog home direktorija</b></big>"
+
+msgid "Make a backup of your personal data"
+msgstr "Napravite backup vaših osobnih podataka"
+
+msgid "Excluded paths"
+msgstr "Isključene staze"
+
+msgid "Hidden paths"
+msgstr "Skrivene staze"
+
+msgid "Exclude files"
+msgstr "Isključene datoteke"
+
+msgid "Exclude folders"
+msgstr "Isključeni direktoriji"
+
+msgid "Backup"
+msgstr "Backup"
+
+msgid "<big><b>Load data into your home directory</b></big>"
+msgstr "<big><b>Ubaci padatke u svoj home direktorij</b></big>"
+
+msgid "Restore your personal data from this backup"
+msgstr "Obnovi svoje osobne podatke iz ovog backupa"
+
+msgid "Overwrite existing files"
+msgstr "Piši preko postojećih datoteka"
+
+msgid "Restore"
+msgstr "Restauriraj"
+
+msgid "View content"
+msgstr "Vidi sadržaj"

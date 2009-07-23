@@ -1,0 +1,119 @@
+msgid "Archiving your home directory..."
+msgstr "Arhiviram osebno mapo..."
+
+msgid "Compressing the archive..."
+msgstr "Stiskam arhiv..."
+
+msgid "Testing the integrity of the archive..."
+msgstr "Testiram integriteto arhiva..."
+
+msgid "The archive is corrupted"
+msgstr "Arhiv je pokvarjen"
+
+msgid "Calculating the MD5 signature of the archive..."
+msgstr "Računam podpis MD5..."
+
+msgid "Assembling"
+msgstr "Montiram"
+
+msgid "Cleaning up..."
+msgstr "Pospravljam..."
+
+msgid "Backup successful"
+msgstr "Arhiviranje uspešno"
+
+msgid "Your home directory was successfully backed-up into"
+msgstr "Vaša Osebna mapa uspešno arhivirana"
+
+msgid "Backup failed"
+msgstr "Arhiviranje neuspešno"
+
+msgid "An error occurred during the backup:"
+msgstr "Napaka med arhiviranjem:"
+
+msgid "Copying the backup file into your home directory..."
+msgstr "Kopiram arhiv v vašo osebno mapo..."
+
+msgid "Decompressing the backup archive..."
+msgstr "Razpakiram arhiv..."
+
+msgid "Extracting the content of the backup into your home directory..."
+msgstr "Razpakiranje vsebine arhiva v vašo osebno mapo..."
+
+msgid "Restoration successful"
+msgstr "Restavriranje uspešno"
+
+msgid "Your backup was successfully restored"
+msgstr "Vaš ariv je bil uspešno restavriran"
+
+msgid "Restoration failed"
+msgstr "Restavriranje neuspešno"
+
+msgid "An error occurred while restoring the backup archive:"
+msgstr "Med restavriranjem, se je pojavila napaka:"
+
+msgid "Opening the backup archive..."
+msgstr "Odpiram arhiv..."
+
+msgid "Checking the integrity of the backup..."
+msgstr "Testiram integriteto arhiva..."
+
+msgid "This backup file is corrupted. The internal MD5 signature doesn't match its content."
+msgstr "Arhiv je okvarjen. Podpis MD5 ne ustreza vsebini."
+
+msgid "Read error"
+msgstr "Napaka pri branju"
+
+msgid "An error occurred while opening the backup:"
+msgstr "Med odpiranjem arhiva, se je pojavila napaka:"
+
+msgid "Excluded Files and Directories"
+msgstr "Izpuščene datoteke in mape"
+
+msgid "Included"
+msgstr "Vključeni"
+
+msgid "Included hidden directories"
+msgstr "Vključeni skrite mape"
+
+msgid "Invalid path"
+msgstr "Neveljavna pot"
+
+msgid "is not located within your home directory. Not added."
+msgstr "ni v vaši osebni mapi. Ni dodano."
+
+msgid "<big><b>Save the content of your home directory</b></big>"
+msgstr "<big><b>Shrani vsebino tvoje osebne mape</b></big>"
+
+msgid "Make a backup of your personal data"
+msgstr "Arhiviraj osebne podatke"
+
+msgid "Excluded paths"
+msgstr "Izključene poti"
+
+msgid "Hidden paths"
+msgstr "Skrite poti"
+
+msgid "Exclude files"
+msgstr "Izključene datoteke"
+
+msgid "Exclude folders"
+msgstr "Izključi mape"
+
+msgid "Backup"
+msgstr "Arhiv"
+
+msgid "<big><b>Load data into your home directory</b></big>"
+msgstr "<big><b>Naloži podatke v tvoj o osebno mapo</b></big>"
+
+msgid "Restore your personal data from this backup"
+msgstr "Restavriraj osebne podatke iz tega arhiva"
+
+msgid "Overwrite existing files"
+msgstr "Prepiši obstoječe datoteke"
+
+msgid "Restore"
+msgstr "Restavriraj"
+
+msgid "View content"
+msgstr "Poglej vsebino"

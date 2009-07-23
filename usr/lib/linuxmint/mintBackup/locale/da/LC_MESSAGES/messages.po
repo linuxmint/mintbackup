@@ -1,0 +1,119 @@
+msgid "Archiving your home directory..."
+msgstr "Gemmer din hjemmemappe..."
+
+msgid "Compressing the archive..."
+msgstr "Komprimerer arkivet..."
+
+msgid "Testing the integrity of the archive..."
+msgstr "Tester arkivets integritet..."
+
+msgid "The archive is corrupted"
+msgstr "Arkivet er ødelagt"
+
+msgid "Calculating the MD5 signature of the archive..."
+msgstr "Beregner arkivets MD5-signatur..."
+
+msgid "Assembling"
+msgstr "Samler"
+
+msgid "Cleaning up..."
+msgstr "Rydder op..."
+
+msgid "Backup successful"
+msgstr "Sikkerhedskopiering gennemført uden problemer"
+
+msgid "Your home directory was successfully backed-up into"
+msgstr "Din hjemmemappe blev gemt her:"
+
+msgid "Backup failed"
+msgstr "Sikkerhedskopieringen blev ikke gennemført"
+
+msgid "An error occurred during the backup:"
+msgstr "Der skete en fejl under sikkerhedskopieringen:"
+
+msgid "Copying the backup file into your home directory..."
+msgstr "Kopierer sikkerhedskopien til din hjemmemappe..."
+
+msgid "Decompressing the backup archive..."
+msgstr "Pakker sikkerhedskopien ud..."
+
+msgid "Extracting the content of the backup into your home directory..."
+msgstr "Pakker sikkerhedskopien ud i din hjemmemappe..."
+
+msgid "Restoration successful"
+msgstr "Gendannelse færdig"
+
+msgid "Your backup was successfully restored"
+msgstr "Din sikkerhedskopi blev gendannet"
+
+msgid "Restoration failed"
+msgstr "Det lykkedes ikke at gendanne"
+
+msgid "An error occurred while restoring the backup archive:"
+msgstr "Der skete en fejl under gendannelse af sikkerhedskopien:"
+
+msgid "Opening the backup archive..."
+msgstr "Åbner sikkerhedskopien..."
+
+msgid "Checking the integrity of the backup..."
+msgstr "Tester sikkerhedskopiens integritet..."
+
+msgid "This backup file is corrupted. The internal MD5 signature doesn't match its content."
+msgstr "Denne sikkerhedskopi er ødelagt, dets MD5-signatur stemmer ikke overens med indholdet."
+
+msgid "Read error"
+msgstr "Læsnings-fejl"
+
+msgid "An error occurred while opening the backup:"
+msgstr "Der skete en fejl under åbningen af sikkerhedskopien:"
+
+msgid "Excluded Files and Directories"
+msgstr "Ignorerede filer og mapper"
+
+msgid "Included"
+msgstr "Inkluderede"
+
+msgid "Included hidden directories"
+msgstr "Inkluderede skjulte filer"
+
+msgid "Invalid path"
+msgstr "Ugyldig sti"
+
+msgid "is not located within your home directory. Not added."
+msgstr "er ikke i din hjemmemappe og blev derfor ikke tilføjet."
+
+msgid "<big><b>Save the content of your home directory</b></big>"
+msgstr "<big><b>Gem indholdet af din hjemmemappe</b></big>"
+
+msgid "Make a backup of your personal data"
+msgstr "Lav en backup af dine personlige data"
+
+msgid "Excluded paths"
+msgstr "Ignorerede stier"
+
+msgid "Hidden paths"
+msgstr "Skjulte stier"
+
+msgid "Exclude files"
+msgstr "Ignorerede filer"
+
+msgid "Exclude folders"
+msgstr "Ignorerede mapper"
+
+msgid "Backup"
+msgstr "Sikkerhedskopi"
+
+msgid "<big><b>Load data into your home directory</b></big>"
+msgstr "<big><b>Læg dataene i din hjemmemappe</b></big>"
+
+msgid "Restore your personal data from this backup"
+msgstr "Brug denne sikkerhedskopi til at gendanne dine personlige data"
+
+msgid "Overwrite existing files"
+msgstr "Overskriv eksisterende filer"
+
+msgid "Restore"
+msgstr "Gendan"
+
+msgid "View content"
+msgstr "Vis indhold"

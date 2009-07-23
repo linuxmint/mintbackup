@@ -1,0 +1,119 @@
+msgid "Archiving your home directory..."
+msgstr "Archivando su directorio personal..."
+
+msgid "Compressing the archive..."
+msgstr "Comprimiendo el archivo..."
+
+msgid "Testing the integrity of the archive..."
+msgstr "Comprobando la integridad del archivo..."
+
+msgid "The archive is corrupted"
+msgstr "El archivo está corrupto"
+
+msgid "Calculating the MD5 signature of the archive..."
+msgstr "Calculando la firma MD5 del archivo..."
+
+msgid "Assembling"
+msgstr "Ensamblando"
+
+msgid "Cleaning up..."
+msgstr "Limpiando..."
+
+msgid "Backup successful"
+msgstr "Respaldo exitoso"
+
+msgid "Your home directory was successfully backed-up into"
+msgstr "Su directorio personal fue satisfactoriamente respaldado"
+
+msgid "Backup failed"
+msgstr "Fallo al crear el respaldo"
+
+msgid "An error occurred during the backup:"
+msgstr "Un error ocurrió durante el proceso de respaldo:"
+
+msgid "Copying the backup file into your home directory..."
+msgstr "Copiando el archivo previamente respaldado en su directorio personal..."
+
+msgid "Decompressing the backup archive..."
+msgstr "Descomprimiendo el archivo de respaldo..."
+
+msgid "Extracting the content of the backup into your home directory..."
+msgstr "Extrayendo el contenido del respaldo en su directorio personal..."
+
+msgid "Restoration successful"
+msgstr "Restaurado satisfactoriamente"
+
+msgid "Your backup was successfully restored"
+msgstr "Su respaldo fue satisfactoriamente restaurado"
+
+msgid "Restoration failed"
+msgstr "Fallo al restaurar"
+
+msgid "An error occurred while restoring the backup archive:"
+msgstr "Un error ocurrió mientras se restauraba el archivo de respaldo:"
+
+msgid "Opening the backup archive..."
+msgstr "Abriendo el archivo de respaldo..."
+
+msgid "Checking the integrity of the backup..."
+msgstr "Comprobando la integridad del respaldo..."
+
+msgid "This backup file is corrupted. The internal MD5 signature doesn't match its content."
+msgstr "Este archivo de respaldo está corrupto. La firma interna MD5 no concuerda con el contenido."
+
+msgid "Read error"
+msgstr "Error de lectura"
+
+msgid "An error occurred while opening the backup:"
+msgstr "Un error ocurrió mientras se abría el respaldo:"
+
+msgid "Excluded Files and Directories"
+msgstr "Archivos y directorios excluidos"
+
+msgid "Included"
+msgstr "Incluido"
+
+msgid "Included hidden directories"
+msgstr "Directorios ocultos incluidos"
+
+msgid "Invalid path"
+msgstr "Ruta inválida"
+
+msgid "is not located within your home directory. Not added."
+msgstr "No se encuentra en su directorio personal. No se añadió."
+
+msgid "<big><b>Save the content of your home directory</b></big>"
+msgstr "<big><b>Guardando el contenido de su directorio personal</b></big>"
+
+msgid "Make a backup of your personal data"
+msgstr "Hacer un respaldo de sus datos personales"
+
+msgid "Excluded paths"
+msgstr "Rutas excluidas"
+
+msgid "Hidden paths"
+msgstr "Rutas ocultas"
+
+msgid "Exclude files"
+msgstr "Archivos excluidos"
+
+msgid "Exclude folders"
+msgstr "Carpetas excluidas"
+
+msgid "Backup"
+msgstr "Respaldo"
+
+msgid "<big><b>Load data into your home directory</b></big>"
+msgstr "<big><b>Cargar datos en su directorio personal</b></big>"
+
+msgid "Restore your personal data from this backup"
+msgstr "Restaurar sus datos personales desde este respaldo"
+
+msgid "Overwrite existing files"
+msgstr "Sobreescribiendo archivos existentes"
+
+msgid "Restore"
+msgstr "Restaurar"
+
+msgid "View content"
+msgstr "Ver el contenido"

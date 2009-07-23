@@ -1,0 +1,119 @@
+msgid "Archiving your home directory..."
+msgstr "Arquivando o seu Cartafol Persoal..."
+
+msgid "Compressing the archive..."
+msgstr "Comprimindo o arquivo..."
+
+msgid "Testing the integrity of the archive..."
+msgstr "Comprobando a integridade do arquivo..."
+
+msgid "The archive is corrupted"
+msgstr "O arquivo atópase danado"
+
+msgid "Calculating the MD5 signature of the archive..."
+msgstr "Calculando a sinatura MD5 do arquivo ..."
+
+msgid "Assembling"
+msgstr "Ensamblando"
+
+msgid "Cleaning up..."
+msgstr "A limpar..."
+
+msgid "Backup successful"
+msgstr "Copia de seguridade rematada exitosamente"
+
+msgid "Your home directory was successfully backed-up into"
+msgstr "O Cartafol Persoal foi copiado exitosamente"
+
+msgid "Backup failed"
+msgstr "Erro durante o proceso"
+
+msgid "An error occurred during the backup:"
+msgstr "Aconteceu un erro durante o proceso:"
+
+msgid "Copying the backup file into your home directory..."
+msgstr "A move-la copia de seguridade para o Cartafol Persoal..."
+
+msgid "Decompressing the backup archive..."
+msgstr "Descomprimindo a copia de seguridade..."
+
+msgid "Extracting the content of the backup into your home directory..."
+msgstr "Extraíndo o contenido da copia para o Cartafol Persoal..."
+
+msgid "Restoration successful"
+msgstr "Restauración exitosa"
+
+msgid "Your backup was successfully restored"
+msgstr "A copia de seguridade foi restaurada exitosamente"
+
+msgid "Restoration failed"
+msgstr "Erro na restauración"
+
+msgid "An error occurred while restoring the backup archive:"
+msgstr "Aconteceu un erro durante a restauración:"
+
+msgid "Opening the backup archive..."
+msgstr "Abrindo a copia de seguridade..."
+
+msgid "Checking the integrity of the backup..."
+msgstr "Verificando a integridade da copia de seguridade..."
+
+msgid "This backup file is corrupted. The internal MD5 signature doesn't match its content."
+msgstr "A copia de seguridade atópase danada. A sinatura MD5 non corresponde ao contenido."
+
+msgid "Read error"
+msgstr "Erro de lectura"
+
+msgid "An error occurred while opening the backup:"
+msgstr "Aconteceu un erro durante a apertura da copia:"
+
+msgid "Excluded Files and Directories"
+msgstr "Arquivos e Cartafoles excluídos"
+
+msgid "Included"
+msgstr "Incluído"
+
+msgid "Included hidden directories"
+msgstr "Cartafoles ocultos incluídos"
+
+msgid "Invalid path"
+msgstr "Vieiro non válido"
+
+msgid "is not located within your home directory. Not added."
+msgstr "Non se atopa dentro do Cartafol Persoal. Non engadido."
+
+msgid "<big><b>Save the content of your home directory</b></big>"
+msgstr "<big><b>Garda-lo contenido do Cartafol Persoal</b></big>"
+
+msgid "Make a backup of your personal data"
+msgstr "Facer unha copia de seguridade dos seus datos persoais"
+
+msgid "Excluded paths"
+msgstr "Vieiros excluídos"
+
+msgid "Hidden paths"
+msgstr "Vieiros ocultos"
+
+msgid "Exclude files"
+msgstr "Arquivos exluídos"
+
+msgid "Exclude folders"
+msgstr "Cartafoles excluídos"
+
+msgid "Backup"
+msgstr "Copia de Seguridade"
+
+msgid "<big><b>Load data into your home directory</b></big>"
+msgstr "<big><b>Cargar datos no seu Cartafol Persoal</b></big>"
+
+msgid "Restore your personal data from this backup"
+msgstr "Restaurar os datos persoais da copia de seguridade"
+
+msgid "Overwrite existing files"
+msgstr "Sobreescreber arquivos existentes"
+
+msgid "Restore"
+msgstr "Restaurar"
+
+msgid "View content"
+msgstr "Ve-lo contenido"

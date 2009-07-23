@@ -1,0 +1,119 @@
+msgid "Archiving your home directory..."
+msgstr "Архивиране на домашната Ви директория..."
+
+msgid "Compressing the archive..."
+msgstr "Компресиране на архива..."
+
+msgid "Testing the integrity of the archive..."
+msgstr "Проверка на целостта на архива..."
+
+msgid "The archive is corrupted"
+msgstr "Архивът е повреден"
+
+msgid "Calculating the MD5 signature of the archive..."
+msgstr "Пресмятане на MD5-сигнатурата на архива..."
+
+msgid "Assembling"
+msgstr "Сглобяване на"
+
+msgid "Cleaning up..."
+msgstr "Почистване..."
+
+msgid "Backup successful"
+msgstr "Резервното копие е успешно създадено"
+
+msgid "Your home directory was successfully backed-up into"
+msgstr "Резервно копие на домашната Ви директория е успешно създадено в(ъв)"
+
+msgid "Backup failed"
+msgstr "Създаването на резервно копие е провалено"
+
+msgid "An error occurred during the backup:"
+msgstr "Възникнала е грешка по време на създаването на резервно копие:"
+
+msgid "Copying the backup file into your home directory..."
+msgstr "Копиране на резервното копие в домашната Ви директория..."
+
+msgid "Decompressing the backup archive..."
+msgstr "Разкомпресиране на архивираното резервно копие..."
+
+msgid "Extracting the content of the backup into your home directory..."
+msgstr "Извличане на съдържанието на резервното копие в домашната Ви директория..."
+
+msgid "Restoration successful"
+msgstr "Възстановяването е успешно"
+
+msgid "Your backup was successfully restored"
+msgstr "Резервното Ви копие е успешно възстановено"
+
+msgid "Restoration failed"
+msgstr "Възстановяването е провалено"
+
+msgid "An error occurred while restoring the backup archive:"
+msgstr "Възникнала е грешка по време на възстановяването на архивираното резервно копие:"
+
+msgid "Opening the backup archive..."
+msgstr "Отваряне на архивираното резервно копие..."
+
+msgid "Checking the integrity of the backup..."
+msgstr "Проверка на целостта на резервното копие..."
+
+msgid "This backup file is corrupted. The internal MD5 signature doesn't match its content."
+msgstr "Файлът съдържащ резервното копие е повреден. Вътрешната MD5-сигнатура не съответства на съдържанието му."
+
+msgid "Read error"
+msgstr "Грешка при четенето"
+
+msgid "An error occurred while opening the backup:"
+msgstr "Възникнала е грешка при отваряне на резервното копие:"
+
+msgid "Excluded Files and Directories"
+msgstr "Файлове и директории, които да не се включват"
+
+msgid "Included"
+msgstr "Включена"
+
+msgid "Included hidden directories"
+msgstr "Включени скрити директории"
+
+msgid "Invalid path"
+msgstr "Невалиден път"
+
+msgid "is not located within your home directory. Not added."
+msgstr "не се намира в домашната Ви директория. Не е включена."
+
+msgid "<big><b>Save the content of your home directory</b></big>"
+msgstr "<big><b>Запазете съдържанието на домашната си директория</b></big>"
+
+msgid "Make a backup of your personal data"
+msgstr "Създайте резервно копие на личните си данни"
+
+msgid "Excluded paths"
+msgstr "Изключени пътища"
+
+msgid "Hidden paths"
+msgstr "Скрити пътища"
+
+msgid "Exclude files"
+msgstr "Изключени файлове"
+
+msgid "Exclude folders"
+msgstr "Изключени папки"
+
+msgid "Backup"
+msgstr "Копиране"
+
+msgid "<big><b>Load data into your home directory</b></big>"
+msgstr "<big><b>Заредете данните в домашната си директория</b></big>"
+
+msgid "Restore your personal data from this backup"
+msgstr "Възстановяване на личните Ви данни от резервното копие"
+
+msgid "Overwrite existing files"
+msgstr "Презапис на съществуващите файлове"
+
+msgid "Restore"
+msgstr "Възстановяване"
+
+msgid "View content"
+msgstr "Разглеждане на съдържанието"
