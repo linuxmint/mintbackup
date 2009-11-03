@@ -44,7 +44,11 @@ else:
 	libc.call('prctl', 15, 'mintBackup', 0, 0, 0)
 
 # i18n
-gettext.install("messages", "/usr/lib/linuxmint/mintBackup/locale")
+gettext.install("mintbackup", "/usr/share/linuxmint/locale")
+
+# i18n for menu item
+menuName = _("Backup Tool")
+menuComment = _("Make a backup of your home directory")
 
 class PerformBackup(threading.Thread):
 

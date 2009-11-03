@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-07-23 13:10+0200\n"
+"POT-Creation-Date: 2009-11-03 19:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,122 +16,130 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:66
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:50
+msgid "Backup Tool"
+msgstr ""
+
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:51
+msgid "Make a backup of your home directory"
+msgstr ""
+
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:70
 msgid "Archiving your home directory..."
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:96
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:100
 msgid "Backup successful"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:96
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:100
 msgid "Your home directory was successfully backed-up into"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:111
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:115
 msgid "Backup failed"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:111
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:115
 msgid "An error occurred during the backup:"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:131
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:135
 msgid "Copying the backup file into your home directory..."
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:142
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:146
 msgid "Extracting the content of the backup into your home directory..."
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:158
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:162
 msgid "Cleaning up..."
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:164
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:168
 msgid "Restoration successful"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:164
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:168
 msgid "Your backup was successfully restored"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:180
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:184
 msgid "Restoration failed"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:180
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:184
 msgid "An error occurred while restoring the backup archive:"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:200
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:204
 msgid "Opening the backup archive..."
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:226
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:230
 msgid "Read error"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:226
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:230
 msgid "An error occurred while opening the backup:"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:261
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:265
 msgid "Excluded paths"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:262
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:266
 msgid "Hidden paths"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:263
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:267
 msgid "Exclude files"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:264
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:268
 msgid "Exclude folders"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:265
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:269
 msgid "Backup"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:268
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:272
 msgid "Excluded Files and Directories"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:288
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:292
 msgid "Included"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:292
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:296
 msgid "Included hidden directories"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:356
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:360
 msgid "Invalid path"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:356
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:360
 msgid "is not located within your home directory. Not added."
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:387
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:391
 msgid "<big><b>Load data into your home directory</b></big>"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:389
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:393
 msgid "Restore your personal data from this backup"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:390
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:394
 msgid "Overwrite existing files"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:391
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:395
 msgid "Restore"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:392
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:396
 msgid "View content"
 msgstr ""
