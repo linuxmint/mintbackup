@@ -1,3 +1,9 @@
+mintbackup (1.6.3) helena; urgency=low
+
+  * Generic branding
+
+ -- Clement Lefebvre <root@linuxmint.com>  Tue,  3 Nov 2009 19:26:00 +0000
+
 mintbackup (1.6.2) gloria; urgency=low
 
   * Updated translations

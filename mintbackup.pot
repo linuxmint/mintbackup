@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-03 19:16+0000\n"
+"POT-Creation-Date: 2009-11-03 19:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: usr/lib/linuxmint/mintBackup/mintBackup.py:50
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:245
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:258
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:342
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:352
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:387
 msgid "Backup Tool"
 msgstr ""
 
@@ -84,62 +89,62 @@ msgstr ""
 msgid "An error occurred while opening the backup:"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:265
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:266
 msgid "Excluded paths"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:266
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:267
 msgid "Hidden paths"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:267
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:268
 msgid "Exclude files"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:268
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:269
 msgid "Exclude folders"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:269
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:270
 msgid "Backup"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:272
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:273
 msgid "Excluded Files and Directories"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:292
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:293
 msgid "Included"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:296
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:297
 msgid "Included hidden directories"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:360
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:361
 msgid "Invalid path"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:360
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:361
 msgid "is not located within your home directory. Not added."
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:391
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:393
 msgid "<big><b>Load data into your home directory</b></big>"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:393
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:395
 msgid "Restore your personal data from this backup"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:394
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:396
 msgid "Overwrite existing files"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:395
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:397
 msgid "Restore"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:396
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:398
 msgid "View content"
 msgstr ""

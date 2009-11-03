@@ -56,14 +56,14 @@ for directory in os.listdir("/usr/share/linuxmint/locale"):
 			pass
 
 desktopFile.writelines("""Exec=mintbackup
-Icon=/usr/lib/linuxmint/mintBackup/icon_desktop.png
+Icon=/usr/lib/linuxmint/mintBackup/icon.png
 Terminal=false
 Type=Application
 Encoding=UTF-8
 Categories=Application;System;Settings
 """)
 desktopFile2.writelines("""Exec=mintBackup
-Icon=/usr/lib/linuxmint/mintBackup/icon_desktop.png
+Icon=/usr/lib/linuxmint/mintBackup/icon.png
 Terminal=false
 Type=Application
 Encoding=UTF-8

@@ -5,7 +5,6 @@
   <widget class="GtkWindow" id="main_window">
     <property name="visible">True</property>
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-    <property name="title" translatable="yes">mintBackup</property>
     <property name="resizable">False</property>
     <property name="window_position">center-always</property>
     <property name="icon">icon.png</property>
@@ -132,7 +131,7 @@
                     </child>
                     <child>
                       <widget class="GtkButton" id="remove_button">
-                        <property name="label" translatable="yes">gtk-remove</property>
+                        <property name="label">gtk-remove</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -213,7 +212,7 @@
                 <property name="layout_style">spread</property>
                 <child>
                   <widget class="GtkButton" id="cancel_button">
-                    <property name="label" translatable="yes">gtk-cancel</property>
+                    <property name="label">gtk-cancel</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -293,7 +292,6 @@
   <widget class="GtkWindow" id="restore_window">
     <property name="visible">True</property>
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-    <property name="title" translatable="yes">mintBackup</property>
     <property name="resizable">False</property>
     <property name="window_position">center-always</property>
     <property name="icon">icon.png</property>
@@ -404,7 +402,7 @@
                 <property name="layout_style">spread</property>
                 <child>
                   <widget class="GtkButton" id="cancel_button2">
-                    <property name="label" translatable="yes">gtk-cancel</property>
+                    <property name="label">gtk-cancel</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>

@@ -129,7 +129,7 @@ class PerformRestore(threading.Thread):
 			#Tell the GUI we're busy
 			gtk.gdk.threads_enter()
 			self.wTree.get_widget("restore_window").window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))		
-			self.wTree.get_widget("restore_window").set_sensitive(False)
+			self.wTree.get_widget("restore_window").set_sensitive(False)			
 			self.statusbar = self.wTree.get_widget("statusbar_restore")
 			self.context_id = self.statusbar.get_context_id("mintBackup")
 			self.statusbar.push(self.context_id, _("Copying the backup file into your home directory..."))
@@ -242,7 +242,7 @@ class MessageDialog:
 		
 		dialog = gtk.MessageDialog(None, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, self.style, gtk.BUTTONS_OK, self.message)
 		dialog.set_icon_from_file("/usr/lib/linuxmint/mintBackup/icon.png")
-		dialog.set_title("mintBackup")
+		dialog.set_title(_("Backup Tool"))
 		dialog.set_position(gtk.WIN_POS_CENTER)
 	        dialog.run()
 	        dialog.destroy()		
@@ -255,6 +255,7 @@ class mintBackupWindow:
         self.gladefile = "/usr/lib/linuxmint/mintBackup/mintBackup.glade"
         self.wTree = gtk.glade.XML(self.gladefile,"main_window")
 	self.wTree.get_widget("main_window").connect("destroy", gtk.main_quit)
+	self.wTree.get_widget("main_window").set_title(_("Backup Tool"))
 	self.wTree.get_widget("cancel_button").connect("clicked", gtk.main_quit)
 	self.wTree.get_widget("apply_button").connect("clicked", self.performBackup)
 	self.wTree.get_widget("add_file_button").connect("clicked", self.addFileExclude)
@@ -338,7 +339,7 @@ class mintBackupWindow:
 
 
     def addFileExclude(self, widget):
-	dialog = gtk.FileChooserDialog("mintBackup", None, gtk.FILE_CHOOSER_ACTION_OPEN, (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+	dialog = gtk.FileChooserDialog(_("Backup Tool"), None, gtk.FILE_CHOOSER_ACTION_OPEN, (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))
 	dialog.set_current_folder(home)
 	dialog.set_select_multiple(True)
 	if dialog.run() == gtk.RESPONSE_OK:
@@ -348,7 +349,7 @@ class mintBackupWindow:
 	dialog.destroy()
 
     def addFolderExclude(self, widget):
-	dialog = gtk.FileChooserDialog("mintBackup", None, gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER, (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+	dialog = gtk.FileChooserDialog(_("Backup Tool"), None, gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER, (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))
 	dialog.set_current_folder(home)
 	dialog.set_select_multiple(True)
 	if dialog.run() == gtk.RESPONSE_OK:
@@ -383,6 +384,7 @@ class mintRestoreWindow:
         self.gladefile = "/usr/lib/linuxmint/mintBackup/mintBackup.glade"
         self.wTree = gtk.glade.XML(self.gladefile,"restore_window")
 	self.wTree.get_widget("restore_window").connect("destroy", gtk.main_quit)
+	self.wTree.get_widget("restore_window").set_title(_("Backup Tool"))
 	self.wTree.get_widget("cancel_button2").connect("clicked", gtk.main_quit)
 	self.wTree.get_widget("restore_button").connect("clicked", self.performRestore)
 	self.wTree.get_widget("view_content_button").connect("clicked", self.viewContent)
