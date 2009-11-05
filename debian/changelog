@@ -1,3 +1,9 @@
+mintbackup (1.6.4) helena; urgency=low
+
+  * Fixed problems with postinst script
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu,  5 Nov 2009 16:01:00 +0000
+
 mintbackup (1.6.3) helena; urgency=low
 
   * Generic branding
