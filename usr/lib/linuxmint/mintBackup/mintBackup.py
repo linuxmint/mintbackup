@@ -23,6 +23,7 @@ try:
     import commands
     import threading
     import datetime
+    from configobj import ConfigObj
     import gettext
     from user import home
 except:
@@ -78,7 +79,12 @@ class PerformBackup(threading.Thread):
 				gtk.gdk.threads_leave()
 				return
 			else:
-				from configobj import ConfigObj
+				# sanity checks, move to main
+				if ( not os.path.exists(home + "/.mintbackup") ):
+					os.system("mkdir " + home + "/.mintbackup")
+				if ( not os.path.exists(home + "/.mintbackup/mintbackup.conf") ):
+					os.system("touch " + home + "/.mintbackup/mintbackup.conf")
+
 				config = ConfigObj(home + "/.mintbackup/mintbackup.conf")				
 				config['destination'] = self.destination
 				config.write()
