@@ -31,7 +31,7 @@ except:
     print "You do not have all the dependencies!"
     sys.exit(1)
 
-#gtk.gdk.threads_init()
+gtk.gdk.threads_init()
 from subprocess import Popen, PIPE
 
 
@@ -364,7 +364,11 @@ class mintBackupWindow:
 		excludeList.close()
 		excludeListConf.close()
 		os.system("mkdir -p " + self.destination)
-		self.rsync(self.source, self.destination)
+
+		#rsync = threading.Thread(self.rsync)
+		rsync = threading.Thread(group=None, target=self.rsync, name="mintBackup-rsync", args=(), kwargs={})
+		rsync.start()
+		#self.rsync(self.source, self.destination)
 
 		message = MessageDialog(_("Backup successful"), _("Your home directory was successfully backed-up into") + " " + self.destination, gtk.MESSAGE_INFO)
 		message = MessageDialog(_("Backup successful"), "Backed up directory: " + self.source, gtk.MESSAGE_INFO)
@@ -385,8 +389,9 @@ class mintBackupWindow:
 
     ''' Execute rsync
         TODO: Make threaded '''
-    def rsync(self, source, dest):
-	out = subprocess.Popen("rsync -avz " + source + " " + dest + " --delete --exclude-from=/tmp/mintbackup_exclude.list", shell=True, bufsize=256, stdout=subprocess.PIPE)
+    def rsync(self):
+	cmd = "rsync -avz " + self.source + " " + self.destination + " --delete --exclude-from=/tmp/mintbackup_exclude.list"
+	out = subprocess.Popen(cmd, shell=True, bufsize=256, stdout=subprocess.PIPE)
 	for line in out.stdout:
 		self.update_terminal(self.terminal, line + "\r\n")
 	# TODO: Return error code
@@ -426,9 +431,7 @@ class mintBackupWindow:
                 w.hide()
         dlg.connect("response", close)
         dlg.show()
-
-	
-
+		
 class mintRestoreWindow:
 
     def __init__(self, filename):
