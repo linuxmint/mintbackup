@@ -26,6 +26,7 @@ try:
     from configobj import ConfigObj
     import gettext
     from user import home
+    import subprocess
 except:
     print "You do not have all the dependencies!"
     sys.exit(1)
@@ -339,17 +340,9 @@ class mintBackupWindow:
 		config['destination'] = self.destination
 		config.write()
 
-		#gtk.gdk.threads_enter()
-		#import vte
-		#v = vte.Terminal ()
-		#v.connect ("child-exited", lambda term: gtk.main_quit())
-		#v.fork_command()
-		#v.feed_child('echo "Hello World"\n')
-		#self.wTree.get_widget("main_window").connect('delete-event', lambda window, event: gtk.main_quit())
 		from VirtualTerminal import VirtualTerminal
-		terminal = VirtualTerminal()
-		terminal.connect("child-exited", self.process_ended)
-		self.wTree.get_widget("scrolled_terminal").add(terminal)
+		self.terminal = VirtualTerminal()
+		self.wTree.get_widget("scrolled_terminal").add(self.terminal)
 	        self.wTree.get_widget("scrolled_terminal").show_all()
 		self.wTree.get_widget("notebook1").next_page()
 
@@ -371,16 +364,7 @@ class mintBackupWindow:
 		excludeList.close()
 		excludeListConf.close()
 		os.system("mkdir -p " + self.destination)
-		#terminal.run_command("rsync -avz " + home + "/ " + self.destination + "/ --delete --exclude-from=/tmp/mintbackup_exclude.list")	
-		terminal.run_command("rsync -avz " + self.source + " " + self.destination + " --delete --exclude-from=/tmp/mintbackup_exclude.list")
-		#retval = os.system("rsync -avz " + home + "/ " + self.destination + "/ --delete --exclude-from=/tmp/mintbackup_exclude.list")
-
-		#if (retval != 0):
-		#	raise Exception("rsync -avz " + home + "/ " + self.destination + "/ --delete --exclude-from=/tmp/mintbackup_exclude.list --> " + str(retval))
-
-
-		#gtk.gdk.threads_enter()
-		#gtk.gdk.threads_leave()
+		self.rsync(self.source, self.destination)
 
 		message = MessageDialog(_("Backup successful"), _("Your home directory was successfully backed-up into") + " " + self.destination, gtk.MESSAGE_INFO)
 		message = MessageDialog(_("Backup successful"), "Backed up directory: " + self.source, gtk.MESSAGE_INFO)
@@ -395,8 +379,23 @@ class mintBackupWindow:
 	self.wTree.get_widget("main_window").set_sensitive(True)
 	self.wTree.get_widget("notebook1").set_current_page(0)
 
-    def process_ended(self, widget):
-	print "TODO: Find out exit code"
+    ''' Nasty hack... :) '''
+    def countFiles(self, where):
+	return commands.getoutput("find " + where + " -type f | wc -l")
+
+    ''' Execute rsync
+        TODO: Make threaded '''
+    def rsync(self, source, dest):
+	out = subprocess.Popen("rsync -avz " + source + " " + dest + " --delete --exclude-from=/tmp/mintbackup_exclude.list", shell=True, bufsize=256, stdout=subprocess.PIPE)
+	for line in out.stdout:
+		self.update_terminal(self.terminal, line + "\r\n")
+	# TODO: Return error code
+
+    ''' Stick a message on the terminal '''
+    def update_terminal(self, terminal, message):
+        spaces = ''
+	print message
+	terminal.feed(message)
 
     def open_about(self, widget):
 	dlg = gtk.AboutDialog()
@@ -419,7 +418,7 @@ class mintBackupWindow:
 	except Exception, detail:
 		print detail
 
-        dlg.set_authors(["Clement Lefebvre <root@linuxmint.com>"]) 
+        dlg.set_authors(["Clement Lefebvre <root@linuxmint.com>", "Ikey Doherty <contactjfreak@googlemail.com>"]) 
 	dlg.set_icon_from_file("/usr/lib/linuxmint/mintBackup/icon_desktop.png")
 	dlg.set_logo(gtk.gdk.pixbuf_new_from_file("/usr/lib/linuxmint/mintBackup/icon.png"))
         def close(w, res):
