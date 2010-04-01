@@ -53,11 +53,12 @@ class PerformBackup(threading.Thread):
 		threading.Thread.__init__(self)		
 		self.wTree = wTree		
 		#timestamp = datetime.datetime.utcnow().strftime("%Y%m%d%H%M%S")
-		self.destination = wTree.get_widget("entry_path").get_text()		
-
+		#self.destination = wTree.get_widget("entry_path").get_text()		
+		self.destination = wTree.get_widget("filechooserbutton_dest").get_filename()
+		self.source = wTree.get_widget("filechooserbutton_source").get_filename()
 	def run(self):
 		try:			
-			os.chdir(home)			
+			os.chdir(self.source)			
 			
 			#Tell the GUI we're busy
 			gtk.gdk.threads_enter()
@@ -65,9 +66,11 @@ class PerformBackup(threading.Thread):
 			self.wTree.get_widget("main_window").set_sensitive(False)
 			self.statusbar = self.wTree.get_widget("statusbar")
 			self.context_id = self.statusbar.get_context_id("mintBackup")
-			self.statusbar.push(self.context_id, _("Archiving your home directory..."))
+			#self.statusbar.push(self.context_id, _("Archiving your home directory..."))
+			self.statusbar.push(self.context_id, "Archiving " + self.source)
 			gtk.gdk.threads_leave()
 
+			# TODO: Remove checks as they're not required..
 			#Empty destination?
 			if self.destination == "":
 				gtk.gdk.threads_enter()
@@ -123,8 +126,8 @@ class PerformBackup(threading.Thread):
 			excludeList.close()
 			excludeListConf.close()
 			os.system("mkdir -p " + self.destination)
-			terminal.run_command("rsync -avz " + home + "/ " + self.destination + "/ --delete --exclude-from=/tmp/mintbackup_exclude.list")	
-	
+			#terminal.run_command("rsync -avz " + home + "/ " + self.destination + "/ --delete --exclude-from=/tmp/mintbackup_exclude.list")	
+			terminal.run_command("rsync -avz " + self.source + " " + self.destination + " --delete --exclude-from=/tmp/mintbackup_exclude.list")
 			#retval = os.system("rsync -avz " + home + "/ " + self.destination + "/ --delete --exclude-from=/tmp/mintbackup_exclude.list")
 
 			#if (retval != 0):
@@ -133,7 +136,8 @@ class PerformBackup(threading.Thread):
 			gtk.gdk.threads_leave()
 
 			gtk.gdk.threads_enter()
-			message = MessageDialog(_("Backup successful"), _("Your home directory was successfully backed-up into") + " " + self.destination, gtk.MESSAGE_INFO)
+			#message = MessageDialog(_("Backup successful"), _("Your home directory was successfully backed-up into") + " " + self.destination, gtk.MESSAGE_INFO)
+			message = MessageDiaolog(_("Backup successful"), "Backed up directory: " + self.source)
 	    		message.show()
 			gtk.gdk.threads_leave()
 
@@ -308,8 +312,8 @@ class mintBackupWindow:
 		destination = config['destination']
 	else:
 		destination = ""
-
-	self.wTree.get_widget("entry_path").set_text(destination)
+	self.wTree.get_widget("filechooserbutton_dest").set_filename(destination)
+	self.wTree.get_widget("filechooserbutton_source").set_filename(home)
 
 	#i18n
 	self.wTree.get_widget("label6").set_text(_("Exclude directories"))
