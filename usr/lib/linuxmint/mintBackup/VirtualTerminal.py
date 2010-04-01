@@ -61,7 +61,7 @@ class VirtualTerminal(vte.Terminal):
         self.connect('window-title-changed', self.activate_action, 'window-title-changed')
 
     def activate_action(self, action, string, opt1=None, opt2=None):
-        print 'Action ' + action.get_name() + ' activated ' + string
+        print 'Action ' + str(action.get_name()) + ' activated ' + str(string)
 
     def child_done(self, terminal):
         print 'child done'

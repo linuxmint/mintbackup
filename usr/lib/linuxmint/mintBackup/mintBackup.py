@@ -30,7 +30,7 @@ except:
     print "You do not have all the dependencies!"
     sys.exit(1)
 
-gtk.gdk.threads_init()
+#gtk.gdk.threads_init()
 from subprocess import Popen, PIPE
 
 
@@ -57,106 +57,15 @@ class PerformBackup(threading.Thread):
 		self.destination = wTree.get_widget("filechooserbutton_dest").get_filename()
 		self.source = wTree.get_widget("filechooserbutton_source").get_filename()
 	def run(self):
-		try:			
-			os.chdir(self.source)			
-			
-			#Tell the GUI we're busy
-			gtk.gdk.threads_enter()
-			self.wTree.get_widget("main_window").window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))		
-			self.wTree.get_widget("main_window").set_sensitive(False)
-			self.statusbar = self.wTree.get_widget("statusbar")
-			self.context_id = self.statusbar.get_context_id("mintBackup")
-			#self.statusbar.push(self.context_id, _("Archiving your home directory..."))
-			self.statusbar.push(self.context_id, "Archiving " + self.source)
-			gtk.gdk.threads_leave()
-
-			# TODO: Remove checks as they're not required..
-			#Empty destination?
-			if self.destination == "":
-				gtk.gdk.threads_enter()
-				message = MessageDialog(_("Wrong destination"), _("Please choose a valid destination"), gtk.MESSAGE_ERROR)
-	    			message.show()
-				self.wTree.get_widget("main_window").window.set_cursor(None)		
-				self.wTree.get_widget("main_window").set_sensitive(True)
-				self.statusbar.push(self.context_id, "")
-				gtk.gdk.threads_leave()
-				return
-			else:
-				# sanity checks, move to main
-				if ( not os.path.exists(home + "/.mintbackup") ):
-					os.system("mkdir " + home + "/.mintbackup")
-				if ( not os.path.exists(home + "/.mintbackup/mintbackup.conf") ):
-					os.system("touch " + home + "/.mintbackup/mintbackup.conf")
-
-				config = ConfigObj(home + "/.mintbackup/mintbackup.conf")				
-				config['destination'] = self.destination
-				config.write()
-	
-			gtk.gdk.threads_enter()
-			#import vte
-			#v = vte.Terminal ()
-			#v.connect ("child-exited", lambda term: gtk.main_quit())
-			#v.fork_command()
-			#v.feed_child('echo "Hello World"\n')
-			
-			#self.wTree.get_widget("main_window").connect('delete-event', lambda window, event: gtk.main_quit())
-
-			from VirtualTerminal import VirtualTerminal
-			terminal = VirtualTerminal()
-			self.wTree.get_widget("scrolled_terminal").add(terminal)
-		        self.wTree.get_widget("scrolled_terminal").show_all()
-			self.wTree.get_widget("notebook1").next_page()
+		print "I IS GONED"
+	''' Child process exited '''
+	def process_ended(self, widget):
+		#gtk.gdk.threads_leave()
 
 
-			#Perform the backup			
-			model = self.wTree.get_widget("treeview").get_model()		
-			treeiter = model.get_iter_first()		
-			excludeList = open("/tmp/mintbackup_exclude.list", "w")
-			os.system("mkdir -p " + home + "/.mintbackup")						
-			excludeList.writelines(self.destination[len(home) +1:] + "\n")
-			excludeListConf = open(home + "/.mintbackup/exclude.list", "w")
-			while (treeiter != None):
-				exclude = model.get_value(treeiter, 0)
-				#if (exclude.find(" ")):
-				#	exclude = "'" + exclude + "'"
-				#excludeList = excludeList + " --exclude=" + exclude
-				excludeList.writelines(exclude + "\n")
-				excludeListConf.writelines(exclude + "\n")
-				treeiter = model.iter_next(treeiter)
-			excludeList.close()
-			excludeListConf.close()
-			os.system("mkdir -p " + self.destination)
-			#terminal.run_command("rsync -avz " + home + "/ " + self.destination + "/ --delete --exclude-from=/tmp/mintbackup_exclude.list")	
-			terminal.run_command("rsync -avz " + self.source + " " + self.destination + " --delete --exclude-from=/tmp/mintbackup_exclude.list")
-			#retval = os.system("rsync -avz " + home + "/ " + self.destination + "/ --delete --exclude-from=/tmp/mintbackup_exclude.list")
-
-			#if (retval != 0):
-			#	raise Exception("rsync -avz " + home + "/ " + self.destination + "/ --delete --exclude-from=/tmp/mintbackup_exclude.list --> " + str(retval))
-
-			gtk.gdk.threads_leave()
-
-			gtk.gdk.threads_enter()
-			#message = MessageDialog(_("Backup successful"), _("Your home directory was successfully backed-up into") + " " + self.destination, gtk.MESSAGE_INFO)
-			message = MessageDiaolog(_("Backup successful"), "Backed up directory: " + self.source)
-	    		message.show()
-			gtk.gdk.threads_leave()
-
-			#Tell the GUI we're back
-			gtk.gdk.threads_enter()
-			self.wTree.get_widget("main_window").window.set_cursor(None)		
-			self.wTree.get_widget("main_window").set_sensitive(True)
-			self.statusbar.push(self.context_id, "")
-			gtk.gdk.threads_leave()
-
-			gtk.main_quit()
-
-		except Exception, detail:	
-			print detail		
-			gtk.gdk.threads_enter()
-			message = MessageDialog(_("Backup failed"), _("An error occurred during the backup:") + " " + str(detail), gtk.MESSAGE_ERROR)
-	    		message.show()			
-			gtk.gdk.threads_leave()	
-			gtk.main_quit()
+		self.wTree.get_widget("main_window").window.set_cursor(None)		
+		self.wTree.get_widget("main_window").set_sensitive(True)
+		self.statusbar.push(self.context_id, "")
 
 class PerformRestore(threading.Thread):
 
@@ -409,8 +318,85 @@ class mintBackupWindow:
             self.model.remove(iter)
 
     def performBackup(self, widget):
-	backup = PerformBackup(self.wTree)
-	backup.start()	
+	self.destination = self.wTree.get_widget("filechooserbutton_dest").get_filename()
+	self.source = self.wTree.get_widget("filechooserbutton_source").get_filename()
+	try:			
+		os.chdir(self.source)			
+
+		self.wTree.get_widget("main_window").window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))		
+		self.wTree.get_widget("main_window").set_sensitive(False)
+		self.statusbar = self.wTree.get_widget("statusbar")
+		self.context_id = self.statusbar.get_context_id("mintBackup")
+		#self.statusbar.push(self.context_id, _("Archiving your home directory..."))
+		self.statusbar.push(self.context_id, "Archiving " + self.source)
+
+		# sanity checks, move to main
+		if ( not os.path.exists(home + "/.mintbackup") ):
+			os.system("mkdir " + home + "/.mintbackup")
+		if ( not os.path.exists(home + "/.mintbackup/mintbackup.conf") ):
+			os.system("touch " + home + "/.mintbackup/mintbackup.conf")
+		config = ConfigObj(home + "/.mintbackup/mintbackup.conf")				
+		config['destination'] = self.destination
+		config.write()
+
+		#gtk.gdk.threads_enter()
+		#import vte
+		#v = vte.Terminal ()
+		#v.connect ("child-exited", lambda term: gtk.main_quit())
+		#v.fork_command()
+		#v.feed_child('echo "Hello World"\n')
+		#self.wTree.get_widget("main_window").connect('delete-event', lambda window, event: gtk.main_quit())
+		from VirtualTerminal import VirtualTerminal
+		terminal = VirtualTerminal()
+		terminal.connect("child-exited", self.process_ended)
+		self.wTree.get_widget("scrolled_terminal").add(terminal)
+	        self.wTree.get_widget("scrolled_terminal").show_all()
+		self.wTree.get_widget("notebook1").next_page()
+
+		#Perform the backup			
+		model = self.wTree.get_widget("treeview").get_model()		
+		treeiter = model.get_iter_first()		
+		excludeList = open("/tmp/mintbackup_exclude.list", "w")
+		os.system("mkdir -p " + home + "/.mintbackup")						
+		excludeList.writelines(self.destination[len(home) +1:] + "\n")
+		excludeListConf = open(home + "/.mintbackup/exclude.list", "w")
+		while (treeiter != None):
+			exclude = model.get_value(treeiter, 0)
+			#if (exclude.find(" ")):
+			#	exclude = "'" + exclude + "'"
+			#excludeList = excludeList + " --exclude=" + exclude
+			excludeList.writelines(exclude + "\n")
+			excludeListConf.writelines(exclude + "\n")
+			treeiter = model.iter_next(treeiter)
+		excludeList.close()
+		excludeListConf.close()
+		os.system("mkdir -p " + self.destination)
+		#terminal.run_command("rsync -avz " + home + "/ " + self.destination + "/ --delete --exclude-from=/tmp/mintbackup_exclude.list")	
+		terminal.run_command("rsync -avz " + self.source + " " + self.destination + " --delete --exclude-from=/tmp/mintbackup_exclude.list")
+		#retval = os.system("rsync -avz " + home + "/ " + self.destination + "/ --delete --exclude-from=/tmp/mintbackup_exclude.list")
+
+		#if (retval != 0):
+		#	raise Exception("rsync -avz " + home + "/ " + self.destination + "/ --delete --exclude-from=/tmp/mintbackup_exclude.list --> " + str(retval))
+
+
+		#gtk.gdk.threads_enter()
+		#gtk.gdk.threads_leave()
+
+		message = MessageDialog(_("Backup successful"), _("Your home directory was successfully backed-up into") + " " + self.destination, gtk.MESSAGE_INFO)
+		message = MessageDialog(_("Backup successful"), "Backed up directory: " + self.source, gtk.MESSAGE_INFO)
+		message.show()
+	except Exception, detail:	
+		print detail		
+		message = MessageDialog(_("Backup failed"), _("An error occurred during the backup:") + " " + str(detail), gtk.MESSAGE_ERROR)
+	 	message.show()			
+
+	# Restore window control
+	self.wTree.get_widget("main_window").window.set_cursor(None)		
+	self.wTree.get_widget("main_window").set_sensitive(True)
+	self.wTree.get_widget("notebook1").set_current_page(0)
+
+    def process_ended(self, widget):
+	print "TODO: Find out exit code"
 
     def open_about(self, widget):
 	dlg = gtk.AboutDialog()
@@ -442,6 +428,7 @@ class mintBackupWindow:
         dlg.connect("response", close)
         dlg.show()
 
+	
 
 class mintRestoreWindow:
 
