@@ -88,8 +88,8 @@
                 <child>
                   <widget class="GtkFileChooserButton" id="filechooserbutton_source">
                     <property name="visible">True</property>
-                    <property name="action">select-folder</property>
                     <property name="create_folders">False</property>
+                    <property name="action">select-folder</property>
                   </widget>
                   <packing>
                     <property name="left_attach">1</property>
@@ -114,7 +114,6 @@
                   <widget class="GtkFileChooserButton" id="filechooserbutton_dest">
                     <property name="visible">True</property>
                     <property name="action">select-folder</property>
-                    <property name="create_folders">False</property>
                   </widget>
                   <packing>
                     <property name="left_attach">1</property>

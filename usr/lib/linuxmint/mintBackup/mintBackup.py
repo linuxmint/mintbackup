@@ -200,7 +200,6 @@ class mintBackupWindow:
 
 	# terminal
 	self.terminal = VirtualTerminal()
-
 	self.wTree.get_widget("scrolled_terminal").add(self.terminal)
 	self.wTree.get_widget("scrolled_terminal").show_all()
 
@@ -362,8 +361,8 @@ class mintBackupWindow:
 		os.system("mkdir -p " + self.destination)
 
 		#rsync = threading.Thread(self.rsync)
-		self.total_files = int(self.count_files(self.source)) + 1
-		self.current_file = 0
+		self.total_files = int(self.count_files(self.source))
+		self.current_file = -1
 
 		rsync = threading.Thread(group=None, target=self.rsync, name="mintBackup-rsync", args=(), kwargs={})
 		rsync.start()
@@ -425,9 +424,19 @@ class mintBackupWindow:
 		message = MessageDialog("Backup Failed!", "rsync aborted with the following exit code: " + str(out.returncode), gtk.MESSAGE_ERROR)
 		message.show()
 	else:
-		#message = MessageDialog(_("Backup successful"), _("Your home directory was successfully backed-up into") + " " + self.destination, gtk.MESSAGE_INFO)
-		message = MessageDialog(_("Backup successful"), "Backed up directory: " + self.source, gtk.MESSAGE_INFO)
-		message.show()
+		if(self.current_file == 0):
+			# in sync
+			message = MessageDialog(_("Backup successful"), "Directory was already in sync", gtk.MESSAGE_INFO)
+			message.show()
+		elif (self.current_file < self.total_files):
+			# completed previous operation
+			message = MessageDialog(_("Backup successful"), "Synchronization complete", gtk.MESSAGE_INFO)
+			message.show()
+		else:
+			# full backup
+			#message = MessageDialog(_("Backup successful"), _("Your home directory was successfully backed-up into") + " " + self.destination, gtk.MESSAGE_INFO)
+			message = MessageDialog(_("Backup successful"), "Backed up directory: " + self.source, gtk.MESSAGE_INFO)
+			message.show()
 
 	# Restore window control
 	self.wTree.get_widget("main_window").window.set_cursor(None)		
