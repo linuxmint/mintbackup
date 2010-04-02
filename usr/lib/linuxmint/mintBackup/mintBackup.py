@@ -395,7 +395,7 @@ class mintBackupWindow:
 		if("/" in line):
 			# if it spits out an existing file, then up the total count
 			self.update_current()
-		self.update_terminal(self.terminal, line + "\r\n")
+		self.update_terminal(line + "\r\n")
 	out.poll()
 	self.rsync_pid = None
 	if self.wTree.get_widget("checkbutton_compress").get_active():
@@ -408,16 +408,16 @@ class mintBackupWindow:
 		cmd = "tar cvf " + filename + " " + self.destination
 		p = subprocess.Popen(cmd, shell=True, bufsize=256, stdout=subprocess.PIPE)
 		for line in p.stdout:
-			self.update_terminal(self.terminal, line + "\r\n")
+			self.update_terminal(line + "\r\n")
 		p.poll()
 		# add checking..
-		self.update_terminal(self.terminal, "Compressing...\r\n")
+		self.update_terminal("Compressing...\r\n")
 		os.system("gzip " + filename)
 		# add checking
-		self.update_terminal(self.terminal, "Created " + filename + ".gz\r\n")
-		#os.system("tar cvf " + self.destination + "
+		self.update_terminal("Created " + filename + ".gz\r\n")
+
 	gtk.gdk.threads_enter()
-	self.update_terminal(self.terminal, "rsync exited with status: " + str(out.returncode))
+	self.update_terminal("rsync exited with status: " + str(out.returncode))
 	if (out.returncode != 0):
 		message = MessageDialog("Backup Failed!", "rsync aborted with the following exit code: " + str(out.returncode), gtk.MESSAGE_ERROR)
 		message.show()
@@ -434,8 +434,8 @@ class mintBackupWindow:
 	gtk.gdk.threads_leave()
 
     ''' Stick a message on the terminal '''
-    def update_terminal(self, terminal, message):
-	terminal.feed(message)
+    def update_terminal(self, message):
+	self.terminal.feed(message)
 
     def open_about(self, widget):
 	dlg = gtk.AboutDialog()
