@@ -26,6 +26,7 @@ try:
     from configobj import ConfigObj
     import gettext
     from user import home
+    from VirtualTerminal import VirtualTerminal
     import subprocess
 except:
     print "You do not have all the dependencies!"
@@ -197,7 +198,12 @@ class mintBackupWindow:
 	self.wTree.get_widget("menu_quit").connect('activate', gtk.main_quit)
 	self.wTree.get_widget("menu_about").connect('activate', self.open_about)
 
-	from configobj import ConfigObj
+	# terminal
+	self.terminal = VirtualTerminal()
+
+	self.wTree.get_widget("scrolled_terminal").add(self.terminal)
+	self.wTree.get_widget("scrolled_terminal").show_all()
+
 	config = ConfigObj(home + "/.mintbackup/mintbackup.conf")	
 	if config.has_key('destination'):
 		destination = config['destination']
@@ -333,10 +339,7 @@ class mintBackupWindow:
 		config['destination'] = self.destination
 		config.write()
 
-		from VirtualTerminal import VirtualTerminal
-		self.terminal = VirtualTerminal()
-		self.wTree.get_widget("scrolled_terminal").add(self.terminal)
-	        self.wTree.get_widget("scrolled_terminal").show_all()
+		self.terminal.reset(True, True)
 		self.wTree.get_widget("notebook1").next_page()
 
 		#Perform the backup			
