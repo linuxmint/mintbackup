@@ -276,6 +276,7 @@ class mintBackupWindow:
 		model.set_value(iter, 0, "true")
 
 
+    ''' NO CLUE WHATS HAPPENING. Everything is valid but its still the wrong way around???? Possibly PyGTK Bug '''
     def addFileExclude(self, widget):
 	dialog = gtk.FileChooserDialog("mintBackup", None, gtk.FILE_CHOOSER_ACTION_OPEN, (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))
 	dialog.set_current_folder(home)
