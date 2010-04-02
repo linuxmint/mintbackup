@@ -55,7 +55,8 @@ restore a previously created backup</property>
                 <child>
                   <widget class="GtkImage" id="image_wizard">
                     <property name="visible">True</property>
-                    <property name="stock">gtk-home</property>
+                    <property name="pixel_size">48</property>
+                    <property name="icon_name">user-home</property>
                     <property name="icon-size">6</property>
                   </widget>
                 </child>
@@ -102,7 +103,7 @@ restore a previously created backup</property>
                 <child>
                   <widget class="GtkImage" id="image_backup_dirs">
                     <property name="visible">True</property>
-                    <property name="pixel_size">36</property>
+                    <property name="pixel_size">48</property>
                     <property name="icon_name">folder</property>
                     <property name="icon-size">6</property>
                   </widget>
@@ -142,8 +143,8 @@ directories for the backup</property>
                     <child>
                       <widget class="GtkFileChooserButton" id="filechooserbutton_backup_source">
                         <property name="visible">True</property>
-                        <property name="action">select-folder</property>
                         <property name="create_folders">False</property>
+                        <property name="action">select-folder</property>
                       </widget>
                       <packing>
                         <property name="left_attach">1</property>
@@ -168,7 +169,6 @@ directories for the backup</property>
                       <widget class="GtkFileChooserButton" id="filechooserbutton_backup_dest">
                         <property name="visible">True</property>
                         <property name="action">select-folder</property>
-                        <property name="create_folders">False</property>
                       </widget>
                       <packing>
                         <property name="left_attach">1</property>
@@ -231,7 +231,7 @@ ignored</property>
                   <widget class="GtkImage" id="image1">
                     <property name="visible">True</property>
                     <property name="xpad">5</property>
-                    <property name="pixel_size">36</property>
+                    <property name="pixel_size">48</property>
                     <property name="icon_name">folder-new</property>
                   </widget>
                 </child>
@@ -411,7 +411,7 @@ ignored</property>
                 <child>
                   <widget class="GtkImage" id="image5">
                     <property name="visible">True</property>
-                    <property name="pixel_size">36</property>
+                    <property name="pixel_size">48</property>
                     <property name="icon_name">dialog-question</property>
                   </widget>
                   <packing>
@@ -436,9 +436,6 @@ the apply button to continue.</property>
                   </packing>
                 </child>
                 <child>
-                  <placeholder/>
-                </child>
-                <child>
                   <widget class="GtkScrolledWindow" id="scrolledwindow1">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -452,6 +449,8 @@ the apply button to continue.</property>
                           <widget class="GtkTreeView" id="treeview_overview">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
+                            <property name="headers_visible">False</property>
+                            <property name="headers_clickable">False</property>
                           </widget>
                         </child>
                       </widget>
@@ -463,6 +462,9 @@ the apply button to continue.</property>
                     <property name="top_attach">1</property>
                     <property name="bottom_attach">2</property>
                   </packing>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
               </widget>
               <packing>
@@ -588,12 +590,6 @@ Currently backing up. This may take some time.</property>
                 <property name="n_rows">2</property>
                 <property name="n_columns">2</property>
                 <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
                   <widget class="GtkImage" id="image_finished">
                     <property name="visible">True</property>
                     <property name="pixel_size">36</property>
@@ -616,6 +612,12 @@ Currently backing up. This may take some time.</property>
                     <property name="x_options"></property>
                     <property name="y_options"></property>
                   </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
               </widget>
               <packing>

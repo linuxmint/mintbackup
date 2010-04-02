@@ -40,16 +40,26 @@ class MintBackup:
 		self.glade = 'main_window.glade'
 		self.wTree = gtk.glade.XML(self.glade, 'main_window')
 
-		# set up treeview
+		# set up exclusions page
 		ren = gtk.CellRendererText()
 		column = gtk.TreeViewColumn("Excluded paths", ren)
 		column.add_attribute(ren, "text", 0)
 		self.wTree.get_widget("treeview_excludes").append_column(column)
 		self.wTree.get_widget("treeview_excludes").set_model(gtk.ListStore(str))
-
 		self.wTree.get_widget("button_add_file").connect("clicked", self.add_file_exclude)
 		self.wTree.get_widget("button_add_folder").connect("clicked", self.add_folder_exclude)
 		self.wTree.get_widget("button_remove_exclude").connect("clicked", self.remove_exclude)
+
+		# set up overview page
+		ren = gtk.CellRendererText()
+		column = gtk.TreeViewColumn("Type", ren)
+		column.add_attribute(ren, "markup", 0)
+		self.wTree.get_widget("treeview_overview").append_column(column)
+		ren = gtk.CellRendererText()
+		column = gtk.TreeViewColumn("Detail", ren)
+		column.add_attribute(ren, "text", 1)
+		self.wTree.get_widget("treeview_overview").append_column(column)
+
 		# nav buttons
 		self.wTree.get_widget("button_back").connect("clicked", self.back_callback)
 		self.wTree.get_widget("button_forward").connect("clicked", self.forward_callback)
@@ -137,6 +147,16 @@ class MintBackup:
 			else:
 				book.set_current_page(2)
 		# TODO: Support all pages..
+		elif(sel == 2):
+			# show overview
+			model = gtk.ListStore(str, str)
+			model.append(["<b>Source</b>", self.backup_source])
+			model.append(["<b>Destination</b>", self.backup_dest])
+			excludes = self.wTree.get_widget("treeview_excludes").get_model()
+			for row in excludes:
+				model.append(["<b>Exclude</b>", row[0]])
+			self.wTree.get_widget("treeview_overview").set_model(model)
+			book.set_current_page(3)
 
 	''' Back button '''
 	def back_callback(self, widget):
