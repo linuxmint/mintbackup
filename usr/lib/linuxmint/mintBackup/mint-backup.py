@@ -168,19 +168,26 @@ class MintBackup:
 			self.wTree.get_widget("button_back").set_sensitive(False)
 			thread = threading.Thread(group=None, target=self.backup, name="mintBackup-copy", args=(), kwargs={})
 			thread.start()
-
+		elif(sel == 4):
+			# show info page.
+			self.wTree.get_widget("button_forward").set_sensitive(False)
+			self.wTree.get_widget("button_back").set_sensitive(False)
+			book.set_current_page(5)
 	''' Back button '''
 	def back_callback(self, widget):
 		self.wTree.get_widget("notebook1").prev_page()
 
 	''' Does the actual copying '''
 	def backup(self):
-		os.chdir(self.backup_source)
-		# We should catch errors.. i.e. subprocess's stderr
-		sztotal = commands.getoutput("find . 2>/dev/null | wc -l")
-		total = float(sztotal)
 		pbar = self.wTree.get_widget("progressbar1")
 		label = self.wTree.get_widget("label_current_file_value")
+		os.chdir(self.backup_source)
+		# We should catch errors.. i.e. subprocess's stderr
+		label.set_label("Calculating...")
+		pbar.set_text("Calculating...")
+		sztotal = commands.getoutput("find . 2>/dev/null | wc -l")
+		total = float(sztotal)
+
 		current_file = 0
 	#	dirs = subprocess.Popen("find . -type d 2>/dev/null", shell=True, bufsize=256, stdout=subprocess.PIPE)
 	#	for d in dirs.stdout:

@@ -143,8 +143,8 @@ directories for the backup</property>
                     <child>
                       <widget class="GtkFileChooserButton" id="filechooserbutton_backup_source">
                         <property name="visible">True</property>
-                        <property name="create_folders">False</property>
                         <property name="action">select-folder</property>
+                        <property name="create_folders">False</property>
                       </widget>
                       <packing>
                         <property name="left_attach">1</property>
@@ -369,6 +369,8 @@ ignored</property>
                       <widget class="GtkTreeView" id="treeview_excludes">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="headers_visible">False</property>
+                        <property name="headers_clickable">False</property>
                       </widget>
                     </child>
                   </widget>
@@ -426,7 +428,7 @@ ignored</property>
                     <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
 Please review your options below.
 When you are happy with your choice select
-the apply button to continue.</property>
+the Forward button to continue.</property>
                     <property name="use_markup">True</property>
                   </widget>
                   <packing>
@@ -536,6 +538,7 @@ Currently backing up. This may take some time.</property>
                           <widget class="GtkLabel" id="label_current_file_value">
                             <property name="visible">True</property>
                             <property name="label" translatable="yes">/home/ikey/Projects/mintBot.jar</property>
+                            <property name="ellipsize">start</property>
                           </widget>
                           <packing>
                             <property name="position">1</property>
@@ -603,7 +606,10 @@ Currently backing up. This may take some time.</property>
                 <child>
                   <widget class="GtkLabel" id="label_finished">
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;</property>
+                    <property name="xalign">0.05000000074505806</property>
+                    <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
+
+Backup complete.</property>
                     <property name="use_markup">True</property>
                   </widget>
                   <packing>
@@ -646,7 +652,7 @@ Currently backing up. This may take some time.</property>
             <property name="layout_style">end</property>
             <child>
               <widget class="GtkButton" id="button_cancel">
-                <property name="label">gtk-cancel</property>
+                <property name="label">gtk-close</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
