@@ -11,6 +11,7 @@ try:
 	import gtk.glade
 	import gettext
 	import subprocess
+	import threading
 except Exception, detail:
 	print "You do not have the required dependancies"
 
@@ -163,7 +164,10 @@ class MintBackup:
 		elif(sel == 3):
 			# start copying :D
 			book.set_current_page(4)
-			self.backup()
+			self.wTree.get_widget("button_forward").set_sensitive(False)
+			self.wTree.get_widget("button_back").set_sensitive(False)
+			thread = threading.Thread(group=None, target=self.backup, name="mintBackup-copy", args=(), kwargs={})
+			thread.start()
 
 	''' Back button '''
 	def back_callback(self, widget):
@@ -195,12 +199,19 @@ class MintBackup:
 			os.system("cp " + f + " " + self.backup_dest + "/" + path)
 			current_file = current_file + 1
 			fraction = float(current_file / total)
-			pbar.set_fraction(fraction)
+
+			gtk.gdk.threads_enter()
 			pbar.set_fraction(fraction)
 			label.set_label(f)
 			pbar.set_text("File " + str(current_file) + " of " + sztotal + " files")
-		
+			gtk.gdk.threads_leave()
+		#TODO: Check for errors..
+		gtk.gdk.threads_enter()
+		label.set_label("Done")
+		self.wTree.get_widget("button_forward").set_sensitive(True)
+		gtk.gdk.threads_leave()
 
 if __name__ == "__main__":
+	gtk.gdk.threads_init()
 	MintBackup()
 	gtk.main()
