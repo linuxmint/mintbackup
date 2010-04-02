@@ -48,26 +48,6 @@ else:
 # i18n
 gettext.install("messages", "/usr/lib/linuxmint/mintBackup/locale")
 
-class PerformBackup(threading.Thread):
-
-	def __init__(self, wTree):
-		threading.Thread.__init__(self)		
-		self.wTree = wTree		
-		#timestamp = datetime.datetime.utcnow().strftime("%Y%m%d%H%M%S")
-		#self.destination = wTree.get_widget("entry_path").get_text()		
-		self.destination = wTree.get_widget("filechooserbutton_dest").get_filename()
-		self.source = wTree.get_widget("filechooserbutton_source").get_filename()
-	def run(self):
-		print "I IS GONED"
-	''' Child process exited '''
-	def process_ended(self, widget):
-		#gtk.gdk.threads_leave()
-
-
-		self.wTree.get_widget("main_window").window.set_cursor(None)		
-		self.wTree.get_widget("main_window").set_sensitive(True)
-		self.statusbar.push(self.context_id, "")
-
 class PerformRestore(threading.Thread):
 
 	def __init__(self, wTree):
@@ -329,6 +309,7 @@ class mintBackupWindow:
             self.model.remove(iter)
 
     def performBackup(self, widget):
+	#TODO: Move the init'ing of components to __init__
 	self.destination = self.wTree.get_widget("filechooserbutton_dest").get_filename()
 	self.source = self.wTree.get_widget("filechooserbutton_source").get_filename()
 	try:			
@@ -449,6 +430,7 @@ class mintBackupWindow:
 	self.wTree.get_widget("main_window").window.set_cursor(None)		
 	self.wTree.get_widget("main_window").set_sensitive(True)
 	self.wTree.get_widget("notebook1").set_current_page(0)
+	self.statusbar.push(self.context_id, "")
 	gtk.gdk.threads_leave()
 
     ''' Stick a message on the terminal '''
