@@ -197,9 +197,6 @@ directories for the backup</property>
                       </packing>
                     </child>
                     <child>
-                      <placeholder/>
-                    </child>
-                    <child>
                       <widget class="GtkExpander" id="expander1">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
@@ -242,6 +239,9 @@ directories for the backup</property>
                         <property name="top_attach">2</property>
                         <property name="bottom_attach">3</property>
                       </packing>
+                    </child>
+                    <child>
+                      <placeholder/>
                     </child>
                   </widget>
                   <packing>
@@ -431,11 +431,16 @@ ignored</property>
                     <property name="hscrollbar_policy">automatic</property>
                     <property name="vscrollbar_policy">automatic</property>
                     <child>
-                      <widget class="GtkTreeView" id="treeview_excludes">
+                      <widget class="GtkViewport" id="viewport2">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="headers_visible">False</property>
-                        <property name="headers_clickable">False</property>
+                        <property name="resize_mode">queue</property>
+                        <child>
+                          <widget class="GtkTreeView" id="treeview_excludes">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="headers_visible">False</property>
+                          </widget>
+                        </child>
                       </widget>
                     </child>
                   </widget>
@@ -853,24 +858,12 @@ press the Forward button to restore your backup</property>
                   </packing>
                 </child>
                 <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
                   <widget class="GtkTable" id="table11">
                     <property name="visible">True</property>
                     <property name="n_rows">2</property>
                     <property name="n_columns">3</property>
                     <property name="column_spacing">5</property>
                     <property name="row_spacing">5</property>
-                    <child>
-                      <placeholder/>
-                    </child>
                     <child>
                       <widget class="GtkLabel" id="label_overview_source">
                         <property name="visible">True</property>
@@ -963,6 +956,9 @@ press the Forward button to restore your backup</property>
                         <property name="y_options"></property>
                       </packing>
                     </child>
+                    <child>
+                      <placeholder/>
+                    </child>
                   </widget>
                   <packing>
                     <property name="left_attach">1</property>
@@ -970,6 +966,15 @@ press the Forward button to restore your backup</property>
                     <property name="top_attach">1</property>
                     <property name="bottom_attach">2</property>
                   </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
               </widget>
               <packing>
@@ -983,6 +988,107 @@ press the Forward button to restore your backup</property>
               </widget>
               <packing>
                 <property name="position">7</property>
+                <property name="tab_fill">False</property>
+                <property name="type">tab</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkTable" id="table12">
+                <property name="visible">True</property>
+                <property name="n_rows">2</property>
+                <property name="n_columns">2</property>
+                <child>
+                  <widget class="GtkImage" id="image10">
+                    <property name="visible">True</property>
+                    <property name="pixel_size">48</property>
+                    <property name="icon_name">system-run</property>
+                  </widget>
+                  <packing>
+                    <property name="x_options"></property>
+                    <property name="y_options"></property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkVBox" id="vbox4">
+                    <property name="visible">True</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <widget class="GtkHBox" id="hbox3">
+                        <property name="visible">True</property>
+                        <child>
+                          <widget class="GtkLabel" id="label_restore_status">
+                            <property name="visible">True</property>
+                            <property name="xalign">0.05000000074505806</property>
+                            <property name="label" translatable="yes">Current file:</property>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkLabel" id="label_restore_status_value">
+                            <property name="visible">True</property>
+                            <property name="xalign">0.05000000074505806</property>
+                            <property name="label" translatable="yes">label</property>
+                          </widget>
+                          <packing>
+                            <property name="padding">3</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkProgressBar" id="progressbar_restore">
+                        <property name="visible">True</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkLabel" id="label_restore_progress">
+                    <property name="visible">True</property>
+                    <property name="xalign">0.05000000074505806</property>
+                    <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
+Now restoring your backup, this may take
+some time so please be patient</property>
+                    <property name="use_markup">True</property>
+                  </widget>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+              </widget>
+              <packing>
+                <property name="position">8</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkLabel" id="label11">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">restore progress</property>
+              </widget>
+              <packing>
+                <property name="position">8</property>
                 <property name="tab_fill">False</property>
                 <property name="type">tab</property>
               </packing>

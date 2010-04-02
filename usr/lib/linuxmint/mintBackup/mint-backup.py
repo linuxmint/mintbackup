@@ -187,6 +187,13 @@ class MintBackup:
 				book.set_current_page(7)
 			else:
 				MessageDialog("Backup Tool", "Please choose a valid archive file", gtk.MESSAGE_WARNING).show()
+		elif(sel == 7):
+			# start restoring :D
+			self.wTree.get_widget("button_forward").set_sensitive(False)
+			self.wTree.get_widget("button_back").set_sensitive(False)
+			book.set_current_page(8)
+			thread = threading.Thread(group=None, target=self.restore, name="mintBackup-restore", args=(), kwargs={})
+			thread.start()
 	''' Back button '''
 	def back_callback(self, widget):
 		book = self.wTree.get_widget("notebook1")
@@ -217,7 +224,6 @@ class MintBackup:
 
 		current_file = 0
 		out = subprocess.Popen("find . 2>/dev/null", shell=True, bufsize=256, stdout=subprocess.PIPE)
-		self.rsync_pid = out.pid
 		for f in out.stdout:
 			# nasty hacks.. whole thing needs rewriting..
 			f = f.rstrip("\r\n")
@@ -258,6 +264,34 @@ class MintBackup:
 		# for non gnome environments
 		os.system("file-roller \"" + self.restore_source + "\" &")
 
+	''' Restore from archive '''
+	def restore(self):
+		pbar = self.wTree.get_widget("progressbar_restore")
+		pbar.set_text("Calculating...")
+		label = self.wTree.get_widget("label_restore_status_value")
+		label.set_label("Calculating...")
+		sztotal = commands.getoutput("tar tf \"" + self.restore_source + "\" | wc -l")
+		total = float(sztotal)
+		current_file = 0
+
+		cmd = "tar xvf \"" + self.restore_source + "\" -C \"" + self.restore_dest + "\""
+		out = subprocess.Popen(cmd, shell=True, bufsize=256, stdout=subprocess.PIPE)
+		for z in out.stdout:
+			z = z.rstrip("\r\n")
+			current_file = current_file + 1
+			fraction = float(current_file / total)
+
+			gtk.gdk.threads_enter()
+			label.set_label(z)
+			pbar.set_fraction(fraction)
+			pbar.set_text("File " + str(current_file) + " of " + sztotal + " files")
+			gtk.gdk.threads_leave()
+
+		# TODO: Add returncode checking
+		gtk.gdk.threads_enter()
+		label.set_label("Done")
+		pbar.set_text("Done")
+		gtk.gdk.threads_leave()
 if __name__ == "__main__":
 	gtk.gdk.threads_init()
 	MintBackup()
