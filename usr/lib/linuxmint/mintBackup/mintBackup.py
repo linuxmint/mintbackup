@@ -326,6 +326,7 @@ class mintBackupWindow:
 
 		self.wTree.get_widget("main_window").window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))		
 		self.wTree.get_widget("main_window").set_sensitive(False)
+		self.wTree.get_widget("progressbar").set_sensitive(True)
 		self.statusbar = self.wTree.get_widget("statusbar")
 		self.context_id = self.statusbar.get_context_id("mintBackup")
 		#self.statusbar.push(self.context_id, _("Archiving your home directory..."))
@@ -366,6 +367,9 @@ class mintBackupWindow:
 		os.system("mkdir -p " + self.destination)
 
 		#rsync = threading.Thread(self.rsync)
+		self.total_files = int(self.count_files(self.source)) + 1
+		self.current_file = 0
+
 		rsync = threading.Thread(group=None, target=self.rsync, name="mintBackup-rsync", args=(), kwargs={})
 		rsync.start()
 		#self.rsync(self.source, self.destination)
@@ -384,8 +388,18 @@ class mintBackupWindow:
 	self.wTree.get_widget("notebook1").set_current_page(0)
 
     ''' Nasty hack... :) '''
-    def countFiles(self, where):
-	return commands.getoutput("find " + where + " -type f | wc -l")
+    def count_files(self, where):
+	return commands.getoutput("find " + where + " | wc -l")
+
+    ''' Update the "file of file" count '''
+    def update_current(self):
+	self.current_file = self.current_file + 1
+	pbar = self.wTree.get_widget("progressbar")
+	pbar.set_text(str(self.current_file) + " / " + str(self.total_files))
+
+	total = float(self.total_files)
+	fraction = float(self.current_file / total)
+	pbar.set_fraction(fraction)
 
     ''' Execute rsync
         TODO: Make threaded '''
@@ -393,6 +407,9 @@ class mintBackupWindow:
 	cmd = "rsync -avz " + self.source + " " + self.destination + " --delete --exclude-from=/tmp/mintbackup_exclude.list"
 	out = subprocess.Popen(cmd, shell=True, bufsize=256, stdout=subprocess.PIPE)
 	for line in out.stdout:
+		if("/" in line):
+			# if it spits out an existing file, then up the total count
+			self.update_current()
 		self.update_terminal(self.terminal, line + "\r\n")
 	# TODO: Return error code
 
