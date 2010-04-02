@@ -45,11 +45,18 @@ class MintBackup:
 		self.wTree = gtk.glade.XML(self.glade, 'main_window')
 
 		# set up exclusions page
+		self.iconTheme = gtk.icon_theme_get_default()
+		self.dirIcon = self.iconTheme.load_icon("folder", 16, 0)
+		self.fileIcon = self.iconTheme.load_icon("document-new", 16, 0)
+		ren = gtk.CellRendererPixbuf()
+		column = gtk.TreeViewColumn("", ren)
+		column.add_attribute(ren, "pixbuf", 1)
+		self.wTree.get_widget("treeview_excludes").append_column(column)
 		ren = gtk.CellRendererText()
 		column = gtk.TreeViewColumn("Excluded paths", ren)
 		column.add_attribute(ren, "text", 0)
 		self.wTree.get_widget("treeview_excludes").append_column(column)
-		self.wTree.get_widget("treeview_excludes").set_model(gtk.ListStore(str))
+		self.wTree.get_widget("treeview_excludes").set_model(gtk.ListStore(str, gtk.gdk.Pixbuf, str))
 		self.wTree.get_widget("button_add_file").connect("clicked", self.add_file_exclude)
 		self.wTree.get_widget("button_add_folder").connect("clicked", self.add_folder_exclude)
 		self.wTree.get_widget("button_remove_exclude").connect("clicked", self.remove_exclude)
@@ -83,7 +90,7 @@ class MintBackup:
 			filenames = dialog.get_filenames()
 			for filename in filenames:					
 				if (not filename.find(self.backup_source)):
-					model.append([filename[len(self.backup_source)+1:]])
+					model.append([filename[len(self.backup_source)+1:], self.fileIcon, filename])
 				else:
 					message = MessageDialog(_("Invalid path"), filename + " " + _("is not located within your source directory. Not added."), gtk.MESSAGE_WARNING)
 		    			message.show()
@@ -99,7 +106,7 @@ class MintBackup:
 			filenames = dialog.get_filenames()					
 			for filename in filenames:
 				if (not filename.find(self.backup_source)):
-					model.append([filename[len(self.backup_source)+1:]])
+					model.append([filename[len(self.backup_source)+1:], self.dirIcon, filename])
 				else:
 					message = MessageDialog(_("Invalid path"), filename + " " + _("is not located within your source directory. Not added."), gtk.MESSAGE_WARNING)
 		    			message.show()
@@ -125,16 +132,14 @@ class MintBackup:
 	def forward_callback(self, widget):
 		book = self.wTree.get_widget("notebook1")
 		sel = book.get_current_page()
-		# TODO: Check present page - disable buttons
+		self.wTree.get_widget("button_back").set_sensitive(True)
 		if(sel == 0):
 			# start page
 			if(self.wTree.get_widget("radiobutton_backup").get_active()):
 				# go to backup wizard
 				book.set_current_page(1)
 			else:
-				# TODO: Implement restore wizard..
-				MessageDialog("Backup Tool", "Restoration mode not yet implemented", gtk.MESSAGE_ERROR).show()
-				book.set_current_page(0)
+				book.set_current_page(6)
 		elif(sel == 1):
 			# choose source/dest
 			self.backup_source = self.wTree.get_widget("filechooserbutton_backup_source").get_filename()
@@ -158,7 +163,7 @@ class MintBackup:
 			model.append(["<b>Destination</b>", self.backup_dest])
 			excludes = self.wTree.get_widget("treeview_excludes").get_model()
 			for row in excludes:
-				model.append(["<b>Exclude</b>", row[0]])
+				model.append(["<b>Exclude</b>", row[2]])
 			self.wTree.get_widget("treeview_overview").set_model(model)
 			book.set_current_page(3)
 		elif(sel == 3):
@@ -175,7 +180,16 @@ class MintBackup:
 			book.set_current_page(5)
 	''' Back button '''
 	def back_callback(self, widget):
-		self.wTree.get_widget("notebook1").prev_page()
+		book = self.wTree.get_widget("notebook1")
+		sel = book.get_current_page()
+		if(sel == 6):
+			book.set_current_page(0)
+			self.wTree.get_widget("button_back").set_sensitive(False)
+		else:
+			sel = sel -1
+			if(sel == 0):
+				self.wTree.get_widget("button_back").set_sensitive(False)
+			book.set_current_page(sel)
 
 	''' Does the actual copying '''
 	def backup(self):
@@ -185,39 +199,49 @@ class MintBackup:
 		# We should catch errors.. i.e. subprocess's stderr
 		label.set_label("Calculating...")
 		pbar.set_text("Calculating...")
-		sztotal = commands.getoutput("find . 2>/dev/null | wc -l")
+		cmd = "find . 2>/dev/null"
+		for row in self.wTree.get_widget("treeview_excludes"):
+			cmd = cmd + " | grep -v \"" + row[2] + "\""
+		cmd = cmd + " | wc -l"
+		sztotal = commands.getoutput(cmd)
 		total = float(sztotal)
 
 		current_file = 0
-	#	dirs = subprocess.Popen("find . -type d 2>/dev/null", shell=True, bufsize=256, stdout=subprocess.PIPE)
-	#	for d in dirs.stdout:
-	#		d = d.rstrip("\r\n")
-	#		if(not os.path.exists(self.backup_dest + "/" + d)):
-	#			os.mkdir(self.backup_dest + "/" + d)
-	#	dirs.poll()
 		out = subprocess.Popen("find . 2>/dev/null", shell=True, bufsize=256, stdout=subprocess.PIPE)
 		self.rsync_pid = out.pid
 		for f in out.stdout:
-			# nasty hacks..
+			# nasty hacks.. whole thing needs rewriting..
 			f = f.rstrip("\r\n")
 			path = os.path.relpath(f)
-			if(os.path.isdir(path)):
-				os.system("mkdir " + self.backup_dest + "/" + path)
-			os.system("cp " + f + " " + self.backup_dest + "/" + path)
-			current_file = current_file + 1
-			fraction = float(current_file / total)
+			rpath = os.path.join(self.backup_source, path)
+			print rpath + " - " + path
+			# Don't deal with excluded files..
+			if(not self.is_excluded(rpath)):
+				#if(os.path.isdir(path)):
+				#	os.system("mkdir " + self.backup_dest + "/" + path)
 
-			gtk.gdk.threads_enter()
-			pbar.set_fraction(fraction)
-			label.set_label(f)
-			pbar.set_text("File " + str(current_file) + " of " + sztotal + " files")
-			gtk.gdk.threads_leave()
+				#os.system("cp " + f + " " + self.backup_dest + "/" + path)
+				current_file = current_file + 1
+				fraction = float(current_file / total)
+
+				gtk.gdk.threads_enter()
+				pbar.set_fraction(fraction)
+				label.set_label(f)
+				pbar.set_text("File " + str(current_file) + " of " + sztotal + " files")
+				gtk.gdk.threads_leave()
 		#TODO: Check for errors..
 		gtk.gdk.threads_enter()
 		label.set_label("Done")
 		self.wTree.get_widget("button_forward").set_sensitive(True)
 		gtk.gdk.threads_leave()
 
+	''' Returns true if the file/directory is on the exclude list '''
+	def is_excluded(self, filename):
+		for row in self.wTree.get_widget("treeview_excludes").get_model():
+			if(filename in row[2]):
+				print row[2]
+				return True
+		return False
 if __name__ == "__main__":
 	gtk.gdk.threads_init()
 	MintBackup()
