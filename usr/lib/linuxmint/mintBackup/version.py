@@ -5,8 +5,8 @@ import sys
 
 try:
 	cache = apt.Cache()	
-	pkg = cache["mintupdate"]
-	print pkg.installedVersion
+	pkg = cache["mintbackup"]
+	print pkg.installed.version
 except:
 	pass
 
