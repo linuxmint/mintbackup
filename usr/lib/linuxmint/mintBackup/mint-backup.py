@@ -5,9 +5,12 @@ except Exception, detail:
 	print "You do not have a recent version of GTK"
 
 try:
+	import os
+	import commands
 	import gtk
 	import gtk.glade
 	import gettext
+	import subprocess
 except Exception, detail:
 	print "You do not have the required dependancies"
 
@@ -157,10 +160,46 @@ class MintBackup:
 				model.append(["<b>Exclude</b>", row[0]])
 			self.wTree.get_widget("treeview_overview").set_model(model)
 			book.set_current_page(3)
+		elif(sel == 3):
+			# start copying :D
+			book.set_current_page(4)
+			self.backup()
 
 	''' Back button '''
 	def back_callback(self, widget):
 		self.wTree.get_widget("notebook1").prev_page()
+
+	''' Does the actual copying '''
+	def backup(self):
+		os.chdir(self.backup_source)
+		# We should catch errors.. i.e. subprocess's stderr
+		sztotal = commands.getoutput("find . 2>/dev/null | wc -l")
+		total = float(sztotal)
+		pbar = self.wTree.get_widget("progressbar1")
+		label = self.wTree.get_widget("label_current_file_value")
+		current_file = 0
+	#	dirs = subprocess.Popen("find . -type d 2>/dev/null", shell=True, bufsize=256, stdout=subprocess.PIPE)
+	#	for d in dirs.stdout:
+	#		d = d.rstrip("\r\n")
+	#		if(not os.path.exists(self.backup_dest + "/" + d)):
+	#			os.mkdir(self.backup_dest + "/" + d)
+	#	dirs.poll()
+		out = subprocess.Popen("find . 2>/dev/null", shell=True, bufsize=256, stdout=subprocess.PIPE)
+		self.rsync_pid = out.pid
+		for f in out.stdout:
+			# nasty hacks..
+			f = f.rstrip("\r\n")
+			path = os.path.relpath(f)
+			if(os.path.isdir(path)):
+				os.system("mkdir " + self.backup_dest + "/" + path)
+			os.system("cp " + f + " " + self.backup_dest + "/" + path)
+			current_file = current_file + 1
+			fraction = float(current_file / total)
+			pbar.set_fraction(fraction)
+			pbar.set_fraction(fraction)
+			label.set_label(f)
+			pbar.set_text("File " + str(current_file) + " of " + sztotal + " files")
+		
 
 if __name__ == "__main__":
 	MintBackup()
