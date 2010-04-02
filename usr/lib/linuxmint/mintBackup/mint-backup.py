@@ -80,6 +80,9 @@ class MintBackup:
 		self.wTree.get_widget("main_window").set_title("Backup Tool")
 		self.wTree.get_widget("main_window").show_all()
 
+		# open archive button, opens an archive... :P
+		self.wTree.get_widget("button_open_archive").connect("clicked", self.open_archive_callback)
+
 	''' Exclude file '''
 	def add_file_exclude(self, widget):
 		model = self.wTree.get_widget("treeview_excludes").get_model()
@@ -143,18 +146,8 @@ class MintBackup:
 		elif(sel == 1):
 			# choose source/dest
 			self.backup_source = self.wTree.get_widget("filechooserbutton_backup_source").get_filename()
-			if(not self.backup_source or self.backup_source == ""):
-				# moan
-				MessageBox("Backup Tool", "Please select a valid backup source", gtk.MESSAGE_ERROR).show()
-				book.set_current_page(1)
-			else:
-				book.set_current_page(2)
 			self.backup_dest = self.wTree.get_widget("filechooserbutton_backup_dest").get_filename()
-			if(not self.backup_dest or self.backup_dest == ""):
-				# moan
-				book.set_current_page(1)
-			else:
-				book.set_current_page(2)
+			book.set_current_page(2)
 		# TODO: Support all pages..
 		elif(sel == 2):
 			# show overview
@@ -178,6 +171,22 @@ class MintBackup:
 			self.wTree.get_widget("button_forward").set_sensitive(False)
 			self.wTree.get_widget("button_back").set_sensitive(False)
 			book.set_current_page(5)
+		elif(sel == 6):
+			# sanity check the files (file --mimetype)
+			self.restore_source = self.wTree.get_widget("filechooserbutton_restore_source").get_filename()
+			self.restore_dest = self.wTree.get_widget("filechooserbutton_restore_dest").get_filename()
+			if(not self.restore_source or self.restore_source == ""):
+				MessageDialog("Backup Tool", "Please choose a file to restore from", gtk.MESSAGE_WARNING).show()
+				return
+			# test that file is indeed compressed.
+			out = commands.getoutput("file \"" + self.restore_source + "\"")
+			if("compressed" in out or "archive" in out):
+				# valid archive, continue.
+				self.wTree.get_widget("label_overview_source_value").set_label(self.restore_source)
+				self.wTree.get_widget("label_overview_dest_value").set_label(self.restore_dest)
+				book.set_current_page(7)
+			else:
+				MessageDialog("Backup Tool", "Please choose a valid archive file", gtk.MESSAGE_WARNING).show()
 	''' Back button '''
 	def back_callback(self, widget):
 		book = self.wTree.get_widget("notebook1")
@@ -241,6 +250,13 @@ class MintBackup:
 			if(filename in row[2]):
 				return True
 		return False
+
+
+	''' Open the relevant archive manager '''
+	def open_archive_callback(self, widget):
+		# TODO: Add code to find out which archive manager is available
+		# for non gnome environments
+		os.system("file-roller \"" + self.restore_source + "\" &")
 
 if __name__ == "__main__":
 	gtk.gdk.threads_init()
