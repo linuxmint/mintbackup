@@ -26,7 +26,7 @@ try:
     from configobj import ConfigObj
     import gettext
     from user import home
-    from VirtualTerminal import VirtualTerminal
+    from vte import Terminal
     import subprocess
 except:
     print "You do not have all the dependencies!"
@@ -199,7 +199,7 @@ class mintBackupWindow:
 	self.wTree.get_widget("menu_about").connect('activate', self.open_about)
 
 	# terminal
-	self.terminal = VirtualTerminal()
+	self.terminal = Terminal()
 	self.wTree.get_widget("scrolled_terminal").add(self.terminal)
 	self.wTree.get_widget("scrolled_terminal").show_all()
 
