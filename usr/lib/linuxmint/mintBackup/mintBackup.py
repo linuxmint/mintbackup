@@ -406,6 +406,7 @@ class mintBackupWindow:
     ''' Execute rsync
         TODO: Make threaded '''
     def rsync(self):
+	# TODO: Grab checkbox states and build command accordingly
 	cmd = "rsync -avz " + self.source + " " + self.destination + " --delete --exclude-from=/tmp/mintbackup_exclude.list"
 	out = subprocess.Popen(cmd, shell=True, bufsize=256, stdout=subprocess.PIPE)
 	self.rsync_pid = out.pid
@@ -416,6 +417,24 @@ class mintBackupWindow:
 		self.update_terminal(self.terminal, line + "\r\n")
 	out.poll()
 	self.rsync_pid = None
+	if self.wTree.get_widget("checkbutton_compress").get_active():
+		# compress it.
+		os.chdir(self.destination)
+		os.chdir("..")
+		path = os.path.relpath(self.destination)
+		#os.chdir(self.destination)
+		filename = path + ".tar"
+		cmd = "tar cvf " + filename + " " + self.destination
+		p = subprocess.Popen(cmd, shell=True, bufsize=256, stdout=subprocess.PIPE)
+		for line in p.stdout:
+			self.update_terminal(self.terminal, line + "\r\n")
+		p.poll()
+		# add checking..
+		self.update_terminal(self.terminal, "Compressing...\r\n")
+		os.system("gzip " + filename)
+		# add checking
+		self.update_terminal(self.terminal, "Created " + filename + ".gz\r\n")
+		#os.system("tar cvf " + self.destination + "
 	gtk.gdk.threads_enter()
 	self.update_terminal(self.terminal, "rsync exited with status: " + str(out.returncode))
 	if (out.returncode != 0):
