@@ -267,7 +267,7 @@ class mintBackupWindow:
     def cancel_callback(self, widget):
 	if(self.rsync_pid):
 		# rsync is running, kill it
-		os.system("kill " + self.rsync_pid)
+		os.system("kill " + str(self.rsync_pid))
 	else:
 		# no rsync, just quit
 		gtk.main_quit()
@@ -384,19 +384,10 @@ class mintBackupWindow:
 		rsync = threading.Thread(group=None, target=self.rsync, name="mintBackup-rsync", args=(), kwargs={})
 		rsync.start()
 		#self.rsync(self.source, self.destination)
-
-		message = MessageDialog(_("Backup successful"), _("Your home directory was successfully backed-up into") + " " + self.destination, gtk.MESSAGE_INFO)
-		message = MessageDialog(_("Backup successful"), "Backed up directory: " + self.source, gtk.MESSAGE_INFO)
-		message.show()
 	except Exception, detail:	
 		print detail		
 		message = MessageDialog(_("Backup failed"), _("An error occurred during the backup:") + " " + str(detail), gtk.MESSAGE_ERROR)
 	 	message.show()			
-
-	# Restore window control
-	self.wTree.get_widget("main_window").window.set_cursor(None)		
-	self.wTree.get_widget("main_window").set_sensitive(True)
-	self.wTree.get_widget("notebook1").set_current_page(0)
 
     ''' Nasty hack... :) '''
     def count_files(self, where):
@@ -423,9 +414,23 @@ class mintBackupWindow:
 			# if it spits out an existing file, then up the total count
 			self.update_current()
 		self.update_terminal(self.terminal, line + "\r\n")
+	out.poll()
 	self.rsync_pid = None
-	#self.update_terminal(self.terminal, "rsync exited with status: " + out.returncode)
-	return out.returncode
+	gtk.gdk.threads_enter()
+	self.update_terminal(self.terminal, "rsync exited with status: " + str(out.returncode))
+	if (out.returncode != 0):
+		message = MessageDialog("Backup Failed!", "rsync aborted with the following exit code: " + str(out.returncode), gtk.MESSAGE_ERROR)
+		message.show()
+	else:
+		#message = MessageDialog(_("Backup successful"), _("Your home directory was successfully backed-up into") + " " + self.destination, gtk.MESSAGE_INFO)
+		message = MessageDialog(_("Backup successful"), "Backed up directory: " + self.source, gtk.MESSAGE_INFO)
+		message.show()
+
+	# Restore window control
+	self.wTree.get_widget("main_window").window.set_cursor(None)		
+	self.wTree.get_widget("main_window").set_sensitive(True)
+	self.wTree.get_widget("notebook1").set_current_page(0)
+	gtk.gdk.threads_leave()
 
     ''' Stick a message on the terminal '''
     def update_terminal(self, terminal, message):
