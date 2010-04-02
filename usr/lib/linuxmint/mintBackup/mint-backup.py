@@ -217,10 +217,10 @@ class MintBackup:
 			print rpath + " - " + path
 			# Don't deal with excluded files..
 			if(not self.is_excluded(rpath)):
-				#if(os.path.isdir(path)):
-				#	os.system("mkdir " + self.backup_dest + "/" + path)
+				if(os.path.isdir(path)):
+					os.system("mkdir " + self.backup_dest + "/" + path)
+				os.system("cp " + f + " " + self.backup_dest + "/" + path)
 
-				#os.system("cp " + f + " " + self.backup_dest + "/" + path)
 				current_file = current_file + 1
 				fraction = float(current_file / total)
 
@@ -239,9 +239,9 @@ class MintBackup:
 	def is_excluded(self, filename):
 		for row in self.wTree.get_widget("treeview_excludes").get_model():
 			if(filename in row[2]):
-				print row[2]
 				return True
 		return False
+
 if __name__ == "__main__":
 	gtk.gdk.threads_init()
 	MintBackup()
