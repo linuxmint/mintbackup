@@ -202,13 +202,14 @@ class mintBackupWindow:
     """This is the main class for the application"""
 
     def __init__(self):
+	self.rsync_pid = None
 	#Set the Glade file
         self.gladefile = "/usr/lib/linuxmint/mintBackup/mintBackup.glade"
         self.wTree = gtk.glade.XML(self.gladefile,"main_window")
 	self.wTree.get_widget("main_window").connect("destroy", gtk.main_quit)
 	self.wTree.get_widget("main_window").set_icon_from_file("/usr/lib/linuxmint/mintBackup/icon_desktop.png")
 	self.wTree.get_widget("main_window").set_title(_("Backup Tool"))
-	self.wTree.get_widget("cancel_button").connect("clicked", gtk.main_quit)
+	self.wTree.get_widget("cancel_button").connect("clicked", self.cancel_callback)
 	self.wTree.get_widget("apply_button").connect("clicked", self.performBackup)
 	self.wTree.get_widget("add_file_button").connect("clicked", self.addFileExclude)
 	self.wTree.get_widget("add_folder_button").connect("clicked", self.addFolderExclude)
@@ -261,6 +262,15 @@ class mintBackupWindow:
 			self.model.append(["Network"])
 		if (os.path.exists(home + "/.local/share/Trash")):
 			self.model.append([".local/share/Trash"])
+
+    ''' Cancel button, if rsync is running it will kill rsync, else quit the app '''
+    def cancel_callback(self, widget):
+	if(self.rsync_pid):
+		# rsync is running, kill it
+		os.system("kill " + self.rsync_pid)
+	else:
+		# no rsync, just quit
+		gtk.main_quit()
 
     def celldatafunction_checkbox(self, column, cell, model, iter):
         cell.set_property("activatable", True)
@@ -327,6 +337,7 @@ class mintBackupWindow:
 		self.wTree.get_widget("main_window").window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))		
 		self.wTree.get_widget("main_window").set_sensitive(False)
 		self.wTree.get_widget("progressbar").set_sensitive(True)
+		self.wTree.get_widget("cancel_button").set_sensitive(True)
 		self.statusbar = self.wTree.get_widget("statusbar")
 		self.context_id = self.statusbar.get_context_id("mintBackup")
 		#self.statusbar.push(self.context_id, _("Archiving your home directory..."))
@@ -406,17 +417,18 @@ class mintBackupWindow:
     def rsync(self):
 	cmd = "rsync -avz " + self.source + " " + self.destination + " --delete --exclude-from=/tmp/mintbackup_exclude.list"
 	out = subprocess.Popen(cmd, shell=True, bufsize=256, stdout=subprocess.PIPE)
+	self.rsync_pid = out.pid
 	for line in out.stdout:
 		if("/" in line):
 			# if it spits out an existing file, then up the total count
 			self.update_current()
 		self.update_terminal(self.terminal, line + "\r\n")
-	# TODO: Return error code
+	self.rsync_pid = None
+	#self.update_terminal(self.terminal, "rsync exited with status: " + out.returncode)
+	return out.returncode
 
     ''' Stick a message on the terminal '''
     def update_terminal(self, terminal, message):
-        spaces = ''
-	print message
 	terminal.feed(message)
 
     def open_about(self, widget):
