@@ -44,11 +44,12 @@ class MintBackup:
 		ren = gtk.CellRendererText()
 		column = gtk.TreeViewColumn("Excluded paths", ren)
 		column.add_attribute(ren, "text", 0)
-		self.wTree.get_widget("treeview1").append_column(column)
-		self.wTree.get_widget("treeview1").set_model(gtk.ListStore(str))
+		self.wTree.get_widget("treeview_excludes").append_column(column)
+		self.wTree.get_widget("treeview_excludes").set_model(gtk.ListStore(str))
 
-		notebook = self.wTree.get_widget("notebook1")
-
+		self.wTree.get_widget("button_add_file").connect("clicked", self.add_file_exclude)
+		self.wTree.get_widget("button_add_folder").connect("clicked", self.add_folder_exclude)
+		self.wTree.get_widget("button_remove_exclude").connect("clicked", self.remove_exclude)
 		# nav buttons
 		self.wTree.get_widget("button_back").connect("clicked", self.back_callback)
 		self.wTree.get_widget("button_forward").connect("clicked", self.forward_callback)
@@ -58,6 +59,49 @@ class MintBackup:
 		self.wTree.get_widget("main_window").set_title("Backup Tool")
 		self.wTree.get_widget("main_window").show_all()
 
+	''' Exclude file '''
+	def add_file_exclude(self, widget):
+		model = self.wTree.get_widget("treeview_excludes").get_model()
+		dialog = gtk.FileChooserDialog("Backup Tool", None, gtk.FILE_CHOOSER_ACTION_OPEN, (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+		dialog.set_current_folder(self.backup_source)
+		dialog.set_select_multiple(True)
+		if dialog.run() == gtk.RESPONSE_OK:
+			filenames = dialog.get_filenames()
+			for filename in filenames:					
+				if (not filename.find(self.backup_source)):
+					model.append([filename[len(self.backup_source)+1:]])
+				else:
+					message = MessageDialog(_("Invalid path"), filename + " " + _("is not located within your source directory. Not added."), gtk.MESSAGE_WARNING)
+		    			message.show()
+		dialog.destroy()
+
+	''' Exclude directory '''
+	def add_folder_exclude(self, widget):
+		model = self.wTree.get_widget("treeview_excludes").get_model()
+		dialog = gtk.FileChooserDialog("Backup Tool", None, gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER, (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+		dialog.set_current_folder(self.backup_source)
+		dialog.set_select_multiple(True)
+		if dialog.run() == gtk.RESPONSE_OK:
+			filenames = dialog.get_filenames()					
+			for filename in filenames:
+				if (not filename.find(self.backup_source)):
+					model.append([filename[len(self.backup_source)+1:]])
+				else:
+					message = MessageDialog(_("Invalid path"), filename + " " + _("is not located within your source directory. Not added."), gtk.MESSAGE_WARNING)
+		    			message.show()
+		dialog.destroy()
+
+	''' Remove the exclude '''
+	def remove_exclude(self, widget):
+		model = self.wTree.get_widget("treeview_excludes").get_model()
+		selection = self.wTree.get_widget("treeview_excludes").get_selection()
+		selected_rows = selection.get_selected_rows()[1]
+		# don't you just hate python? :) Here's another hack for python not to get confused with its own paths while we're deleting multiple stuff. 
+		# actually.. gtk is probably to blame here. 
+		args = [(model.get_iter(path)) for path in selected_rows] 
+		for iter in args:
+        		model.remove(iter)
+	
 	''' Cancel clicked '''
 	def cancel_callback(self, widget):
 		# TODO: Status-checking, confirmation
