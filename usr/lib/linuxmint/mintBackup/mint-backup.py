@@ -45,6 +45,9 @@ class MintBackup:
 		self.glade = 'main_window.glade'
 		self.wTree = gtk.glade.XML(self.glade, 'main_window')
 
+		# inidicates whether an operation is taking place.
+		self.operating = False
+
 		# set up exclusions page
 		self.iconTheme = gtk.icon_theme_get_default()
 		self.dirIcon = self.iconTheme.load_icon("folder", 16, 0)
@@ -130,7 +133,13 @@ class MintBackup:
 	''' Cancel clicked '''
 	def cancel_callback(self, widget):
 		# TODO: Status-checking, confirmation
-		gtk.main_quit()
+		if(self.operating):
+			# in the middle of a job, let the appropriate thread
+			# handle the cancel
+			self.operating = False
+		else:
+			# just quit :)
+			gtk.main_quit()
 
 	''' Next button '''
 	def forward_callback(self, widget):
@@ -165,6 +174,7 @@ class MintBackup:
 			book.set_current_page(4)
 			self.wTree.get_widget("button_forward").set_sensitive(False)
 			self.wTree.get_widget("button_back").set_sensitive(False)
+			self.operating = True
 			thread = threading.Thread(group=None, target=self.backup, name="mintBackup-copy", args=(), kwargs={})
 			thread.start()
 		elif(sel == 4):
@@ -193,6 +203,7 @@ class MintBackup:
 			self.wTree.get_widget("button_forward").set_sensitive(False)
 			self.wTree.get_widget("button_back").set_sensitive(False)
 			book.set_current_page(8)
+			self.operating = True
 			thread = threading.Thread(group=None, target=self.restore, name="mintBackup-restore", args=(), kwargs={})
 			thread.start()
 	''' Back button '''
@@ -243,6 +254,8 @@ class MintBackup:
 				filename = os.path.join(self.backup_dest, "backup.tar.gz")
 				tar = tarfile.open(filename, "w:gz")
 				for f in out.stdout:
+					if(not self.operating):
+						break
 					f = f.rstrip("\r\n")
 					path = os.path.relpath(f)
 					rpath = os.path.join(self.backup_source, path)
@@ -261,7 +274,9 @@ class MintBackup:
 			else:
 				# Copy to other directory, possibly on another device
 				for f in out.stdout:
-					# nasty hacks.. whole thing needs rewriting..
+					if(not self.operating):
+						break
+
 					f = f.rstrip("\r\n")
 					path = os.path.relpath(f)
 					rpath = os.path.join(self.backup_source, path)
@@ -285,10 +300,22 @@ class MintBackup:
 			print detail
 			
 		#TODO: Check for errors..
-		gtk.gdk.threads_enter()
-		label.set_label("Done")
-		self.wTree.get_widget("button_forward").set_sensitive(True)
-		gtk.gdk.threads_leave()
+		if(not self.operating):
+			gtk.gdk.threads_enter()
+			img = self.iconTheme.load_icon("dialog-warning", 48, 0)
+			self.wTree.get_widget("label_finished_status").set_label("Backup was aborted")
+			self.wTree.get_widget("image_finished").set_from_pixbuf(img)
+			self.wTree.get_widget("notebook1").next_page()
+			gtk.gdk.threads_leave()
+		else:
+			gtk.gdk.threads_enter()
+			label.set_label("Done")
+			img = self.iconTheme.load_icon("dialog-information", 48, 0)
+			self.wTree.get_widget("label_finished_status").set_label("Backup completed without error")
+			self.wTree.get_widget("image_finished").set_from_pixbuf(img)
+			self.wTree.get_widget("button_forward").set_sensitive(True)
+			gtk.gdk.threads_leave()
+		self.operating = False
 
 	''' Returns true if the file/directory is on the exclude list '''
 	def is_excluded(self, filename):
