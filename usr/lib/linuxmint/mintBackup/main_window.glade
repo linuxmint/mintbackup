@@ -1145,6 +1145,70 @@ some time so please be patient</property>
                 <property name="type">tab</property>
               </packing>
             </child>
+            <child>
+              <widget class="GtkTable" id="table14">
+                <property name="visible">True</property>
+                <property name="n_rows">2</property>
+                <property name="n_columns">2</property>
+                <property name="column_spacing">6</property>
+                <property name="row_spacing">6</property>
+                <child>
+                  <widget class="GtkImage" id="image_restore_finished">
+                    <property name="visible">True</property>
+                    <property name="pixel_size">48</property>
+                    <property name="icon_name">dialog-information</property>
+                  </widget>
+                  <packing>
+                    <property name="x_options"></property>
+                    <property name="y_options"></property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <widget class="GtkLabel" id="label_restore_finished">
+                    <property name="visible">True</property>
+                    <property name="xalign">0.05000000074505806</property>
+                    <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;</property>
+                    <property name="use_markup">True</property>
+                  </widget>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="y_options"></property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkLabel" id="label_restore_finished_value">
+                    <property name="visible">True</property>
+                    <property name="xalign">0.05000000074505806</property>
+                    <property name="label" translatable="yes">label</property>
+                  </widget>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="right_attach">2</property>
+                    <property name="top_attach">1</property>
+                    <property name="bottom_attach">2</property>
+                    <property name="y_options"></property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="position">9</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkLabel" id="label12">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">restore done</property>
+              </widget>
+              <packing>
+                <property name="position">9</property>
+                <property name="tab_fill">False</property>
+                <property name="type">tab</property>
+              </packing>
+            </child>
           </widget>
           <packing>
             <property name="position">1</property>

@@ -235,6 +235,12 @@ class MintBackup:
 			self.operating = True
 			thread = threading.Thread(group=None, target=self.restore, name="mintBackup-restore", args=(), kwargs={})
 			thread.start()
+		elif(sel == 8):
+			# show last page(restore finished status)
+			self.wTree.get_widget("button_forward").set_sensitive(False)
+			self.wTree.get_widget("button_back").set_sensitive(False)
+			book.set_current_page(9)
+
 	''' Back button '''
 	def back_callback(self, widget):
 		book = self.wTree.get_widget("notebook1")
@@ -405,11 +411,14 @@ class MintBackup:
 
 	''' Restore from archive '''
 	def restore(self):
+		gtk.gdk.threads_enter()
 		pbar = self.wTree.get_widget("progressbar_restore")
 		pbar.set_text("Calculating...")
 		label = self.wTree.get_widget("label_restore_status_value")
 		label.set_label("Calculating...")
+		gtk.gdk.threads_leave()
 
+		self.error = None
 		try:			
 			tar = tarfile.open(self.restore_source, "r")
 			members = tar.getmembers()
@@ -427,13 +436,25 @@ class MintBackup:
 				tar.extract(record, self.restore_dest)
 			tar.close()
 		except Exception, detail:
-			# warn the user.
-			print detail
-			
-		gtk.gdk.threads_enter()
-		label.set_label("Done")
-		pbar.set_text("Done")
-		gtk.gdk.threads_leave()
+			self.error = str(detail)
+
+		if(self.error is not None):
+			gtk.gdk.threads_enter()
+			self.wTree.get_widget("label_restore_finished_value").set_label("An error occured during restoration:\n" + self.error)
+			img = self.iconTheme.load_icon("dialog-error", 48, 0)
+			self.wTree.get_widget("image_restore_finished").set_from_pixbuf(img)
+			self.wTree.get_widget("notebook1").next_page()
+			gtk.gdk.threads_leave()
+		else:			
+			gtk.gdk.threads_enter()
+			label.set_label("Done")
+			pbar.set_text("Done")
+			self.wTree.get_widget("label_restore_finished_value").set_label("The following archive was successfully restored:\n" + self.restore_source)
+			img = self.iconTheme.load_icon("dialog-information", 48, 0)
+			self.wTree.get_widget("image_restore_finished").set_from_pixbuf(img)
+			self.wTree.get_widget("button_forward").set_sensitive(True)
+			gtk.gdk.threads_leave()
+
 if __name__ == "__main__":
 	gtk.gdk.threads_init()
 	MintBackup()
