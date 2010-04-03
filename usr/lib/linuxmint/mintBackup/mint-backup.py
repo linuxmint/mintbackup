@@ -13,6 +13,7 @@ try:
 	import subprocess
 	import threading
 	import tarfile
+	from shutil import copy2
 except Exception, detail:
 	print "You do not have the required dependancies"
 
@@ -249,6 +250,7 @@ class MintBackup:
 
 	''' Does the actual copying '''
 	def backup(self):
+		self.error = None
 		pbar = self.wTree.get_widget("progressbar1")
 		label = self.wTree.get_widget("label_current_file_value")
 		os.chdir(self.backup_source)
@@ -319,7 +321,7 @@ class MintBackup:
 					if(not self.is_excluded(rpath)):
 						target = os.path.join(self.backup_dest, path)
 						if(os.path.isdir(rpath) and not os.path.exists(target)):
-							os.system("mkdir " + target)
+							os.mkdir(target)
 						else:
 							if(os.path.exists(target)):
 								if(del_policy == 1):
@@ -327,28 +329,28 @@ class MintBackup:
 									file1 = os.path.getsize(rpath)
 									file2 = os.path.getsize(target)
 									if(file1 > file2):
-										os.system("rm \"" + target + "\"")
-										os.system("cp \"" + rpath + "\" \"" + target + "\"")
+										os.remove(target)
+										copy2(rpath, target)
 								elif(del_policy == 2):
 									# source size < dest size
 									file1 = os.path.getsize(rpath)
 									file2 = os.path.getsize(target)
 									if(file1 < file2):
-										os.system("rm \"" + target + "\"")
-										os.system("cp \"" + rpath + "\" \"" + target + "\"")
+										os.remove(target)
+										copy2(rpath, target)
 								elif(del_policy == 3):
 									# source newer (less seconds from epoch)
 									file1 = os.path.getmtime(rpath)
 									file2 = os.path.getmtime(target)
 									if(file1 < file2):
-										os.system("rm \"" + target + "\"")
-										os.system("cp \"" + rpath + "\" \"" + target + "\"")
+										os.remove(target)
+										copy2(rpath, target)
 								elif(del_policy == 4):
 									# always delete
-									os.system("rm \"" + target + "\"")
-									os.system("cp \"" + rpath + "\" \"" + target + "\"")
+									os.remove(target)
+									copy2(rpath, target)
 							else:
-								os.system("cp \"" + rpath + "\" \"" + target + "\"")
+								copy2(rpath, target)
 
 						current_file = current_file + 1
 						fraction = float(current_file / total)
@@ -359,25 +361,32 @@ class MintBackup:
 						pbar.set_text("File " + str(current_file) + " of " + sztotal + " files")
 						gtk.gdk.threads_leave()
 		except Exception, detail:
-			# Should alert user..
-			print detail
+			self.error = str(detail)
 			
 		#TODO: Check for errors..
-		if(not self.operating):
+		if(self.error is not None):
 			gtk.gdk.threads_enter()
-			img = self.iconTheme.load_icon("dialog-warning", 48, 0)
-			self.wTree.get_widget("label_finished_status").set_label("Backup was aborted")
+			img = self.iconTheme.load_icon("dialog-error", 48, 0)
+			self.wTree.get_widget("label_finished_status").set_markup("An error occured during backup:\n" + self.error)
 			self.wTree.get_widget("image_finished").set_from_pixbuf(img)
 			self.wTree.get_widget("notebook1").next_page()
 			gtk.gdk.threads_leave()
 		else:
-			gtk.gdk.threads_enter()
-			label.set_label("Done")
-			img = self.iconTheme.load_icon("dialog-information", 48, 0)
-			self.wTree.get_widget("label_finished_status").set_label("Backup completed without error")
-			self.wTree.get_widget("image_finished").set_from_pixbuf(img)
-			self.wTree.get_widget("button_forward").set_sensitive(True)
-			gtk.gdk.threads_leave()
+			if(not self.operating):
+				gtk.gdk.threads_enter()
+				img = self.iconTheme.load_icon("dialog-warning", 48, 0)
+				self.wTree.get_widget("label_finished_status").set_label("Backup was aborted")
+				self.wTree.get_widget("image_finished").set_from_pixbuf(img)
+				self.wTree.get_widget("notebook1").next_page()
+				gtk.gdk.threads_leave()
+			else:
+				gtk.gdk.threads_enter()
+				label.set_label("Done")
+				img = self.iconTheme.load_icon("dialog-information", 48, 0)
+				self.wTree.get_widget("label_finished_status").set_label("Backup completed without error")
+				self.wTree.get_widget("image_finished").set_from_pixbuf(img)
+				self.wTree.get_widget("button_forward").set_sensitive(True)
+				gtk.gdk.threads_leave()
 		self.operating = False
 
 	''' Returns true if the file/directory is on the exclude list '''
