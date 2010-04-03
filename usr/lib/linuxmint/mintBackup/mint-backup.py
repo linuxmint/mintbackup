@@ -48,6 +48,16 @@ class MintBackup:
 		# inidicates whether an operation is taking place.
 		self.operating = False
 
+		# set up backup page 1 (source/dest/options)
+		# Displayname, [tarfile mode, file extension]
+		comps = gtk.ListStore(str,str,str)
+		comps.append(["Do not archive", None, None])
+		comps.append(["Archive with no compression", "w", ".tar"])
+		comps.append(["Archive and compress with bzip2", "w:bz2", ".tar.bz2"])
+		comps.append(["Archive and compress with gzip", "w:gz", "tar.gz"])
+		self.wTree.get_widget("combobox_compress").set_model(comps)
+		self.wTree.get_widget("combobox_compress").set_active(0)
+
 		# set up exclusions page
 		self.iconTheme = gtk.icon_theme_get_default()
 		self.dirIcon = self.iconTheme.load_icon("folder", 16, 0)
@@ -164,6 +174,10 @@ class MintBackup:
 			model = gtk.ListStore(str, str)
 			model.append(["<b>Source</b>", self.backup_source])
 			model.append(["<b>Destination</b>", self.backup_dest])
+			# find compression format
+			sel = self.wTree.get_widget("combobox_compress").get_active()
+			comp = self.wTree.get_widget("combobox_compress").get_model()
+			model.append(["<b>Compression</b>", comp[sel][0]])
 			excludes = self.wTree.get_widget("treeview_excludes").get_model()
 			for row in excludes:
 				model.append(["<b>Exclude</b>", row[2]])
@@ -246,13 +260,17 @@ class MintBackup:
 		total = float(total)
 
 		current_file = 0
+
+		# find out compression format, if any
+		sel = self.wTree.get_widget("combobox_compress").get_active()
+		comp = self.wTree.get_widget("combobox_compress").get_model()[sel]
 		try:
 			out = subprocess.Popen("find . 2>/dev/null", shell=True, bufsize=256, stdout=subprocess.PIPE)
-			if(self.wTree.get_widget("checkbutton_compress").get_active()):
+			if(comp[1] is not None):
 				# Use tar/gzip, may change to tar/bz2 in the future
 				# TODO: Use more intuitive file name (i.e. timestamp)
-				filename = os.path.join(self.backup_dest, "backup.tar.gz")
-				tar = tarfile.open(filename, "w:gz")
+				filename = os.path.join(self.backup_dest, "backup" + comp[2])
+				tar = tarfile.open(filename, comp[1])
 				for f in out.stdout:
 					if(not self.operating):
 						break
