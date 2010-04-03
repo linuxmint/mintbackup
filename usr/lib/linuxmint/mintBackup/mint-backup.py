@@ -224,27 +224,52 @@ class MintBackup:
 		total = float(sztotal)
 
 		current_file = 0
-		out = subprocess.Popen("find . 2>/dev/null", shell=True, bufsize=256, stdout=subprocess.PIPE)
-		for f in out.stdout:
-			# nasty hacks.. whole thing needs rewriting..
-			f = f.rstrip("\r\n")
-			path = os.path.relpath(f)
-			rpath = os.path.join(self.backup_source, path)
-			print rpath + " - " + path
-			# Don't deal with excluded files..
-			if(not self.is_excluded(rpath)):
-				if(os.path.isdir(path)):
-					os.system("mkdir " + self.backup_dest + "/" + path)
-				os.system("cp " + f + " " + self.backup_dest + "/" + path)
+		try:
+			out = subprocess.Popen("find . 2>/dev/null", shell=True, bufsize=256, stdout=subprocess.PIPE)
+			if(self.wTree.get_widget("checkbutton_compress").get_active()):
+				# Use tar/gzip, may change to tar/bz2 in the future
+				# TODO: Use more intuitive file name (i.e. timestamp)
+				filename = os.path.join(self.backup_dest, "backup.tar.gz")
+				tar = tarfile.open(filename, "w:gz")
+				for f in out.stdout:
+					current_file = current_file + 1
+					fraction = float(current_file / total)
+					f = f.rstrip("\r\n")
+					gtk.gdk.threads_enter()
+					pbar.set_fraction(fraction)
+					label.set_label(f)
+					pbar.set_text("File " + str(current_file) + " of " + sztotal + " files")
+					gtk.gdk.threads_leave()
+					
+					path = os.path.join(self.backup_source, f)
+					tar.add(path)
+				tar.close()
+			else:
+				# Copy to other directory, possibly on another device
+				for f in out.stdout:
+					# nasty hacks.. whole thing needs rewriting..
+					f = f.rstrip("\r\n")
+					path = os.path.relpath(f)
+					rpath = os.path.join(self.backup_source, path)
+					print rpath + " - " + path
+					# Don't deal with excluded files..
+					if(not self.is_excluded(rpath)):
+						if(os.path.isdir(path)):
+							os.system("mkdir " + self.backup_dest + "/" + path)
+						os.system("cp " + f + " " + self.backup_dest + "/" + path)
 
-				current_file = current_file + 1
-				fraction = float(current_file / total)
+						current_file = current_file + 1
+						fraction = float(current_file / total)
 
-				gtk.gdk.threads_enter()
-				pbar.set_fraction(fraction)
-				label.set_label(f)
-				pbar.set_text("File " + str(current_file) + " of " + sztotal + " files")
-				gtk.gdk.threads_leave()
+						gtk.gdk.threads_enter()
+						pbar.set_fraction(fraction)
+						label.set_label(f)
+						pbar.set_text("File " + str(current_file) + " of " + sztotal + " files")
+						gtk.gdk.threads_leave()
+		except Exception, detail:
+			# Should alert user..
+			print detail
+			
 		#TODO: Check for errors..
 		gtk.gdk.threads_enter()
 		label.set_label("Done")
