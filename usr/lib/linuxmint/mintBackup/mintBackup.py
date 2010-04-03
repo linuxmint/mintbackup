@@ -51,20 +51,20 @@ class MintBackup:
 		# set up backup page 1 (source/dest/options)
 		# Displayname, [tarfile mode, file extension]
 		comps = gtk.ListStore(str,str,str)
-		comps.append(["Do not archive", None, None])
-		comps.append(["Archive with no compression", "w", ".tar"])
-		comps.append(["Archive and compress with bzip2", "w:bz2", ".tar.bz2"])
-		comps.append(["Archive and compress with gzip", "w:gz", "tar.gz"])
+		comps.append([_("Do not archive"), None, None])
+		comps.append([_("Archive with no compression"), "w", ".tar"])
+		comps.append([_("Archive and compress with bzip2"), "w:bz2", ".tar.bz2"])
+		comps.append([_("Archive and compress with gzip"), "w:gz", "tar.gz"])
 		self.wTree.get_widget("combobox_compress").set_model(comps)
 		self.wTree.get_widget("combobox_compress").set_active(0)
 
 		# backup overwrite options
 		overs = gtk.ListStore(str)
-		overs.append(["Never"])
-		overs.append(["Source file larger than destination"])
-		overs.append(["Source file smaller than destination"])
-		overs.append(["Source file newer than destination"])
-		overs.append(["Always"])
+		overs.append([_("Never")])
+		overs.append([_("Source file larger than destination")])
+		overs.append([_("Source file smaller than destination")])
+		overs.append([_("Source file newer than destination")])
+		overs.append([_("Always")])
 		self.wTree.get_widget("combobox_delete_dest").set_model(overs)
 		self.wTree.get_widget("combobox_delete_dest").set_active(0)
 
@@ -101,7 +101,7 @@ class MintBackup:
 		self.wTree.get_widget("button_cancel").connect("clicked", self.cancel_callback)
 
 		self.wTree.get_widget("main_window").connect("destroy", gtk.main_quit)
-		self.wTree.get_widget("main_window").set_title("Backup Tool")
+		self.wTree.get_widget("main_window").set_title(_("Backup Tool"))
 		self.wTree.get_widget("main_window").show_all()
 
 		# open archive button, opens an archive... :P
@@ -110,7 +110,7 @@ class MintBackup:
 	''' Exclude file '''
 	def add_file_exclude(self, widget):
 		model = self.wTree.get_widget("treeview_excludes").get_model()
-		dialog = gtk.FileChooserDialog("Backup Tool", None, gtk.FILE_CHOOSER_ACTION_OPEN, (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+		dialog = gtk.FileChooserDialog(_("Backup Tool"), None, gtk.FILE_CHOOSER_ACTION_OPEN, (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))
 		dialog.set_current_folder(self.backup_source)
 		dialog.set_select_multiple(True)
 		if dialog.run() == gtk.RESPONSE_OK:
@@ -126,7 +126,7 @@ class MintBackup:
 	''' Exclude directory '''
 	def add_folder_exclude(self, widget):
 		model = self.wTree.get_widget("treeview_excludes").get_model()
-		dialog = gtk.FileChooserDialog("Backup Tool", None, gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER, (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+		dialog = gtk.FileChooserDialog(_("Backup Tool"), None, gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER, (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))
 		dialog.set_current_folder(self.backup_source)
 		dialog.set_select_multiple(True)
 		if dialog.run() == gtk.RESPONSE_OK:
@@ -182,19 +182,19 @@ class MintBackup:
 		elif(sel == 2):
 			# show overview
 			model = gtk.ListStore(str, str)
-			model.append(["<b>Source</b>", self.backup_source])
-			model.append(["<b>Destination</b>", self.backup_dest])
+			model.append([_("<b>Source</b>"), self.backup_source])
+			model.append([_("<b>Destination</b>"), self.backup_dest])
 			# find compression format
 			sel = self.wTree.get_widget("combobox_compress").get_active()
 			comp = self.wTree.get_widget("combobox_compress").get_model()
-			model.append(["<b>Compression</b>", comp[sel][0]])
+			model.append([_("<b>Compression</b>"), comp[sel][0]])
 			# find overwrite rules
 			sel = self.wTree.get_widget("combobox_delete_dest").get_active()
 			over = self.wTree.get_widget("combobox_delete_dest").get_model()
-			model.append(["<b>Overwrite desination files</b>", over[sel][0]])
+			model.append([_("<b>Overwrite destination files</b>"), over[sel][0]])
 			excludes = self.wTree.get_widget("treeview_excludes").get_model()
 			for row in excludes:
-				model.append(["<b>Exclude</b>", row[2]])
+				model.append([_("<b>Exclude</b>"), row[2]])
 			self.wTree.get_widget("treeview_overview").set_model(model)
 			book.set_current_page(3)
 		elif(sel == 3):
@@ -215,7 +215,7 @@ class MintBackup:
 			self.restore_source = self.wTree.get_widget("filechooserbutton_restore_source").get_filename()
 			self.restore_dest = self.wTree.get_widget("filechooserbutton_restore_dest").get_filename()
 			if(not self.restore_source or self.restore_source == ""):
-				MessageDialog("Backup Tool", "Please choose a file to restore from", gtk.MESSAGE_WARNING).show()
+				MessageDialog(_("Backup Tool"), _("Please choose a file to restore from"), gtk.MESSAGE_WARNING).show()
 				return
 			# test that file is indeed compressed.
 			out = commands.getoutput("file \"" + self.restore_source + "\"")
@@ -225,7 +225,7 @@ class MintBackup:
 				self.wTree.get_widget("label_overview_dest_value").set_label(self.restore_dest)
 				book.set_current_page(7)
 			else:
-				MessageDialog("Backup Tool", "Please choose a valid archive file", gtk.MESSAGE_WARNING).show()
+				MessageDialog(_("Backup Tool"), _("Please choose a valid archive file"), gtk.MESSAGE_WARNING).show()
 		elif(sel == 7):
 			# start restoring :D
 			self.wTree.get_widget("button_forward").set_sensitive(False)
@@ -260,8 +260,8 @@ class MintBackup:
 		label = self.wTree.get_widget("label_current_file_value")
 		os.chdir(self.backup_source)
 		# We should catch errors.. i.e. subprocess's stderr
-		label.set_label("Calculating...")
-		pbar.set_text("Calculating...")
+		label.set_label(_("Calculating..."))
+		pbar.set_text(_("Calculating..."))
 		cmd = "find . 2>/dev/null"
 	#	for row in self.wTree.get_widget("treeview_excludes"):
 	#		cmd = cmd + " | grep -v \"" + row[2] + "\""
@@ -309,7 +309,7 @@ class MintBackup:
 						gtk.gdk.threads_enter()
 						pbar.set_fraction(fraction)
 						label.set_label(f)
-						pbar.set_text("File " + str(current_file) + " of " + sztotal + " files")
+						pbar.set_text(str(current_file) + " / " + sztotal)
 						gtk.gdk.threads_leave()
 	
 						tar.add(f, arcname=None,recursive=False,exclude=None)
@@ -372,7 +372,7 @@ class MintBackup:
 		if(self.error is not None):
 			gtk.gdk.threads_enter()
 			img = self.iconTheme.load_icon("dialog-error", 48, 0)
-			self.wTree.get_widget("label_finished_status").set_markup("An error occured during backup:\n" + self.error)
+			self.wTree.get_widget("label_finished_status").set_markup(_("An error occured during backup:\n") + self.error)
 			self.wTree.get_widget("image_finished").set_from_pixbuf(img)
 			self.wTree.get_widget("notebook1").next_page()
 			gtk.gdk.threads_leave()
@@ -380,7 +380,7 @@ class MintBackup:
 			if(not self.operating):
 				gtk.gdk.threads_enter()
 				img = self.iconTheme.load_icon("dialog-warning", 48, 0)
-				self.wTree.get_widget("label_finished_status").set_label("Backup was aborted")
+				self.wTree.get_widget("label_finished_status").set_label(_("Backup was aborted"))
 				self.wTree.get_widget("image_finished").set_from_pixbuf(img)
 				self.wTree.get_widget("notebook1").next_page()
 				gtk.gdk.threads_leave()
@@ -388,7 +388,7 @@ class MintBackup:
 				gtk.gdk.threads_enter()
 				label.set_label("Done")
 				img = self.iconTheme.load_icon("dialog-information", 48, 0)
-				self.wTree.get_widget("label_finished_status").set_label("Backup completed without error")
+				self.wTree.get_widget("label_finished_status").set_label(_("Backup completed without error"))
 				self.wTree.get_widget("image_finished").set_from_pixbuf(img)
 				self.wTree.get_widget("button_forward").set_sensitive(True)
 				gtk.gdk.threads_leave()
@@ -412,9 +412,9 @@ class MintBackup:
 	def restore(self):
 		gtk.gdk.threads_enter()
 		pbar = self.wTree.get_widget("progressbar_restore")
-		pbar.set_text("Calculating...")
+		pbar.set_text(_("Calculating..."))
 		label = self.wTree.get_widget("label_restore_status_value")
-		label.set_label("Calculating...")
+		label.set_label(_("Calculating..."))
 		gtk.gdk.threads_leave()
 
 		self.error = None
@@ -441,7 +441,7 @@ class MintBackup:
 
 		if(self.error is not None):
 			gtk.gdk.threads_enter()
-			self.wTree.get_widget("label_restore_finished_value").set_label("An error occured during restoration:\n" + self.error)
+			self.wTree.get_widget("label_restore_finished_value").set_label(_("An error occured during restoration:\n") + self.error)
 			img = self.iconTheme.load_icon("dialog-error", 48, 0)
 			self.wTree.get_widget("image_restore_finished").set_from_pixbuf(img)
 			self.wTree.get_widget("notebook1").next_page()
@@ -449,7 +449,7 @@ class MintBackup:
 		else:
 			if(not self.operating):
 				img = self.iconTheme.load_icon("dialog-warning", 48, 0)
-				self.wTree.get_widget("label_restore_finished_value").set_label("Restoration was aborted")
+				self.wTree.get_widget("label_restore_finished_value").set_label(_("Restoration was aborted"))
 				self.wTree.get_widget("image_restore_finished").set_from_pixbuf(img)
 				self.wTree.get_widget("notebook1").next_page()
 				gtk.gdk.threads_leave()
@@ -457,7 +457,7 @@ class MintBackup:
 				gtk.gdk.threads_enter()
 				label.set_label("Done")
 				pbar.set_text("Done")
-				self.wTree.get_widget("label_restore_finished_value").set_label("The following archive was successfully restored:\n" + self.restore_source)
+				self.wTree.get_widget("label_restore_finished_value").set_label(_("The following archive was successfully restored:\n") + self.restore_source)
 				img = self.iconTheme.load_icon("dialog-information", 48, 0)
 				self.wTree.get_widget("image_restore_finished").set_from_pixbuf(img)
 				self.wTree.get_widget("button_forward").set_sensitive(True)
