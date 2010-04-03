@@ -42,7 +42,7 @@ class MintBackup:
 
 	''' New MintBackup '''
 	def __init__(self):
-		self.glade = 'main_window.glade'
+		self.glade = '/usr/lib/linuxmint/mintBackup/mintBackup.glade'
 		self.wTree = gtk.glade.XML(self.glade, 'main_window')
 
 		# inidicates whether an operation is taking place.
