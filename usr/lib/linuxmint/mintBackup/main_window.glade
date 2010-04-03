@@ -161,8 +161,8 @@ directories for the backup</property>
                     <child>
                       <widget class="GtkFileChooserButton" id="filechooserbutton_backup_source">
                         <property name="visible">True</property>
-                        <property name="action">select-folder</property>
                         <property name="create_folders">False</property>
+                        <property name="action">select-folder</property>
                       </widget>
                       <packing>
                         <property name="left_attach">1</property>
@@ -642,6 +642,8 @@ Currently backing up. This may take some time.</property>
                         <child>
                           <widget class="GtkLabel" id="label_current_file_value">
                             <property name="visible">True</property>
+                            <property name="wrap">True</property>
+                            <property name="wrap_mode">char</property>
                             <property name="ellipsize">start</property>
                           </widget>
                           <packing>
@@ -719,7 +721,7 @@ Currently backing up. This may take some time.</property>
                   <packing>
                     <property name="left_attach">1</property>
                     <property name="right_attach">2</property>
-                    <property name="x_options"></property>
+                    <property name="x_options">GTK_FILL</property>
                     <property name="y_options"></property>
                   </packing>
                 </child>
