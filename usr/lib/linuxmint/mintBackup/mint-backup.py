@@ -240,9 +240,8 @@ class MintBackup:
 					label.set_label(f)
 					pbar.set_text("File " + str(current_file) + " of " + sztotal + " files")
 					gtk.gdk.threads_leave()
-					
-					path = os.path.join(self.backup_source, f)
-					tar.add(path)
+
+					tar.add(f)
 				tar.close()
 			else:
 				# Copy to other directory, possibly on another device
