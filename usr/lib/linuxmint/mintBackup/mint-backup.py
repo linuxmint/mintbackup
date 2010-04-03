@@ -32,7 +32,6 @@ class MessageDialog:
 	def show(self):
 		
 		dialog = gtk.MessageDialog(None, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, self.style, gtk.BUTTONS_OK, self.message)
-		dialog.set_icon_from_file("/usr/lib/linuxmint/mintBackup/icon_desktop.png")
 		dialog.set_title(_("Backup Tool"))
 		dialog.set_position(gtk.WIN_POS_CENTER)
 	        dialog.run()
