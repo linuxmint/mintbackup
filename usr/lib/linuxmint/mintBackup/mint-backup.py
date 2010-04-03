@@ -58,6 +58,16 @@ class MintBackup:
 		self.wTree.get_widget("combobox_compress").set_model(comps)
 		self.wTree.get_widget("combobox_compress").set_active(0)
 
+		# backup overwrite options
+		overs = gtk.ListStore(str)
+		overs.append(["Never"])
+		overs.append(["Source file larger than destination"])
+		overs.append(["Source file smaller than destination"])
+		overs.append(["Source file newer than destination"])
+		overs.append(["Always"])
+		self.wTree.get_widget("combobox_delete_dest").set_model(overs)
+		self.wTree.get_widget("combobox_delete_dest").set_active(0)
+
 		# set up exclusions page
 		self.iconTheme = gtk.icon_theme_get_default()
 		self.dirIcon = self.iconTheme.load_icon("folder", 16, 0)
@@ -178,6 +188,10 @@ class MintBackup:
 			sel = self.wTree.get_widget("combobox_compress").get_active()
 			comp = self.wTree.get_widget("combobox_compress").get_model()
 			model.append(["<b>Compression</b>", comp[sel][0]])
+			# find overwrite rules
+			sel = self.wTree.get_widget("combobox_delete_dest").get_active()
+			over = self.wTree.get_widget("combobox_delete_dest").get_model()
+			model.append(["<b>Overwrite desination files</b>", over[sel][0]])
 			excludes = self.wTree.get_widget("treeview_excludes").get_model()
 			for row in excludes:
 				model.append(["<b>Exclude</b>", row[2]])
@@ -251,6 +265,7 @@ class MintBackup:
 		tout = subprocess.Popen("find .", shell=True, bufsize=256, stdout=subprocess.PIPE)
 		total = 0
 		for c in tout.stdout:
+			pbar.pulse()
 			c = c.rstrip("\r\n")
 			path = os.path.relpath(c)
 			rpath = os.path.join(self.backup_source, path)
@@ -294,16 +309,16 @@ class MintBackup:
 				for f in out.stdout:
 					if(not self.operating):
 						break
-
 					f = f.rstrip("\r\n")
 					path = os.path.relpath(f)
 					rpath = os.path.join(self.backup_source, path)
 					# Don't deal with excluded files..
 					if(not self.is_excluded(rpath)):
-						if(os.path.isdir(path)):
-							os.system("mkdir " + self.backup_dest + "/" + path)
+						target = os.path.join(self.backup_dest, path)
+						if(os.path.isdir(rpath) and not os.path.exists(target)):
+							os.system("mkdir " + target)
 						else:
-							os.system("cp " + f + " " + self.backup_dest + "/" + path)
+							os.system("cp " + rpath + " " + target)
 
 						current_file = current_file + 1
 						fraction = float(current_file / total)
