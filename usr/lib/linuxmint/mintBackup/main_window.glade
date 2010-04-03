@@ -48,6 +48,24 @@
                       </packing>
                     </child>
                     <child>
+                      <widget class="GtkRadioButton" id="radiobutton_restore">
+                        <property name="label" translatable="yes">Restore an existing backup</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">False</property>
+                        <property name="active">True</property>
+                        <property name="draw_indicator">True</property>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">2</property>
+                        <property name="bottom_attach">3</property>
+                        <property name="x_options">GTK_FILL</property>
+                        <property name="y_options"></property>
+                      </packing>
+                    </child>
+                    <child>
                       <widget class="GtkLabel" id="label_wizard">
                         <property name="visible">True</property>
                         <property name="xalign">0.05000000074505806</property>
@@ -68,24 +86,6 @@ restore a previously created backup</property>
                         <property name="icon_name">user-home</property>
                         <property name="icon-size">6</property>
                       </widget>
-                    </child>
-                    <child>
-                      <widget class="GtkRadioButton" id="radiobutton_restore">
-                        <property name="label" translatable="yes">Restore an existing backup</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="active">True</property>
-                        <property name="draw_indicator">True</property>
-                      </widget>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
-                        <property name="x_options">GTK_FILL</property>
-                        <property name="y_options"></property>
-                      </packing>
                     </child>
                     <child>
                       <placeholder/>

@@ -276,6 +276,9 @@ class MintBackup:
 
 		current_file = 0
 
+		# deletion policy
+		del_policy = self.wTree.get_widget("combobox_delete_dest").get_active()
+
 		# find out compression format, if any
 		sel = self.wTree.get_widget("combobox_compress").get_active()
 		comp = self.wTree.get_widget("combobox_compress").get_model()[sel]
@@ -318,7 +321,34 @@ class MintBackup:
 						if(os.path.isdir(rpath) and not os.path.exists(target)):
 							os.system("mkdir " + target)
 						else:
-							os.system("cp " + rpath + " " + target)
+							if(os.path.exists(target)):
+								if(del_policy == 1):
+									# source size > dest size
+									file1 = os.path.getsize(rpath)
+									file2 = os.path.getsize(target)
+									if(file1 > file2):
+										os.system("rm \"" + target + "\"")
+										os.system("cp \"" + rpath + "\" \"" + target + "\"")
+								elif(del_policy == 2):
+									# source size < dest size
+									file1 = os.path.getsize(rpath)
+									file2 = os.path.getsize(target)
+									if(file1 < file2):
+										os.system("rm \"" + target + "\"")
+										os.system("cp \"" + rpath + "\" \"" + target + "\"")
+								elif(del_policy == 3):
+									# source newer (less seconds from epoch)
+									file1 = os.path.getmtime(rpath)
+									file2 = os.path.getmtime(target)
+									if(file1 < file2):
+										os.system("rm \"" + target + "\"")
+										os.system("cp \"" + rpath + "\" \"" + target + "\"")
+								elif(del_policy == 4):
+									# always delete
+									os.system("rm \"" + target + "\"")
+									os.system("cp \"" + rpath + "\" \"" + target + "\"")
+							else:
+								os.system("cp \"" + rpath + "\" \"" + target + "\"")
 
 						current_file = current_file + 1
 						fraction = float(current_file / total)
