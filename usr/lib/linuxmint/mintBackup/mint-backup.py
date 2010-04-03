@@ -12,6 +12,7 @@ try:
 	import gettext
 	import subprocess
 	import threading
+	import tarfile
 except Exception, detail:
 	print "You do not have the required dependancies"
 
@@ -270,24 +271,27 @@ class MintBackup:
 		pbar.set_text("Calculating...")
 		label = self.wTree.get_widget("label_restore_status_value")
 		label.set_label("Calculating...")
-		sztotal = commands.getoutput("tar tf \"" + self.restore_source + "\" | wc -l")
-		total = float(sztotal)
-		current_file = 0
 
-		cmd = "tar xvf \"" + self.restore_source + "\" -C \"" + self.restore_dest + "\""
-		out = subprocess.Popen(cmd, shell=True, bufsize=256, stdout=subprocess.PIPE)
-		for z in out.stdout:
-			z = z.rstrip("\r\n")
-			current_file = current_file + 1
-			fraction = float(current_file / total)
-
-			gtk.gdk.threads_enter()
-			label.set_label(z)
-			pbar.set_fraction(fraction)
-			pbar.set_text("File " + str(current_file) + " of " + sztotal + " files")
-			gtk.gdk.threads_leave()
-
-		# TODO: Add returncode checking
+		try:			
+			tar = tarfile.open(self.restore_source, "r")
+			members = tar.getmembers()
+			sztotal = str(len(members))
+			total = float(sztotal)
+			current_file = 0
+			for record in members:
+				current_file = current_file + 1
+				fraction = float(current_file / total)
+				gtk.gdk.threads_enter()
+				label.set_label(record.name)
+				pbar.set_fraction(fraction)
+				pbar.set_text("File " + str(current_file) + " of " + sztotal + " files")
+				gtk.gdk.threads_leave()
+				tar.extract(record, self.restore_dest)
+			tar.close()
+		except Exception, detail:
+			# warn the user.
+			print detail
+			
 		gtk.gdk.threads_enter()
 		label.set_label("Done")
 		pbar.set_text("Done")
