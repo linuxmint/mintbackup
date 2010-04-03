@@ -426,6 +426,8 @@ class MintBackup:
 			total = float(sztotal)
 			current_file = 0
 			for record in members:
+				if(not self.operating):
+					break
 				current_file = current_file + 1
 				fraction = float(current_file / total)
 				gtk.gdk.threads_enter()
@@ -445,16 +447,23 @@ class MintBackup:
 			self.wTree.get_widget("image_restore_finished").set_from_pixbuf(img)
 			self.wTree.get_widget("notebook1").next_page()
 			gtk.gdk.threads_leave()
-		else:			
-			gtk.gdk.threads_enter()
-			label.set_label("Done")
-			pbar.set_text("Done")
-			self.wTree.get_widget("label_restore_finished_value").set_label("The following archive was successfully restored:\n" + self.restore_source)
-			img = self.iconTheme.load_icon("dialog-information", 48, 0)
-			self.wTree.get_widget("image_restore_finished").set_from_pixbuf(img)
-			self.wTree.get_widget("button_forward").set_sensitive(True)
-			gtk.gdk.threads_leave()
-
+		else:
+			if(not self.operating):
+				img = self.iconTheme.load_icon("dialog-warning", 48, 0)
+				self.wTree.get_widget("label_restore_finished_value").set_label("Restoration was aborted")
+				self.wTree.get_widget("image_restore_finished").set_from_pixbuf(img)
+				self.wTree.get_widget("notebook1").next_page()
+				gtk.gdk.threads_leave()
+			else:
+				gtk.gdk.threads_enter()
+				label.set_label("Done")
+				pbar.set_text("Done")
+				self.wTree.get_widget("label_restore_finished_value").set_label("The following archive was successfully restored:\n" + self.restore_source)
+				img = self.iconTheme.load_icon("dialog-information", 48, 0)
+				self.wTree.get_widget("image_restore_finished").set_from_pixbuf(img)
+				self.wTree.get_widget("button_forward").set_sensitive(True)
+				gtk.gdk.threads_leave()
+		self.operating = False
 if __name__ == "__main__":
 	gtk.gdk.threads_init()
 	MintBackup()
