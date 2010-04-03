@@ -217,11 +217,22 @@ class MintBackup:
 		label.set_label("Calculating...")
 		pbar.set_text("Calculating...")
 		cmd = "find . 2>/dev/null"
-		for row in self.wTree.get_widget("treeview_excludes"):
-			cmd = cmd + " | grep -v \"" + row[2] + "\""
-		cmd = cmd + " | wc -l"
-		sztotal = commands.getoutput(cmd)
-		total = float(sztotal)
+	#	for row in self.wTree.get_widget("treeview_excludes"):
+	#		cmd = cmd + " | grep -v \"" + row[2] + "\""
+	#	cmd = cmd + " | wc -l"
+	#	sztotal = commands.getoutput(cmd)
+
+		# get a count of all the files
+		tout = subprocess.Popen("find .", shell=True, bufsize=256, stdout=subprocess.PIPE)
+		total = 0
+		for c in tout.stdout:
+			c = c.rstrip("\r\n")
+			path = os.path.relpath(c)
+			rpath = os.path.join(self.backup_source, path)
+			if(not self.is_excluded(rpath)):
+				total = total +1
+		sztotal = str(total)
+		total = float(total)
 
 		current_file = 0
 		try:
@@ -232,16 +243,20 @@ class MintBackup:
 				filename = os.path.join(self.backup_dest, "backup.tar.gz")
 				tar = tarfile.open(filename, "w:gz")
 				for f in out.stdout:
-					current_file = current_file + 1
-					fraction = float(current_file / total)
 					f = f.rstrip("\r\n")
-					gtk.gdk.threads_enter()
-					pbar.set_fraction(fraction)
-					label.set_label(f)
-					pbar.set_text("File " + str(current_file) + " of " + sztotal + " files")
-					gtk.gdk.threads_leave()
+					path = os.path.relpath(f)
+					rpath = os.path.join(self.backup_source, path)
+					if(not self.is_excluded(rpath)):
+						current_file = current_file + 1
+						fraction = float(current_file / total)
 
-					tar.add(f, arcname=None,recursive=False,exclude=None)
+						gtk.gdk.threads_enter()
+						pbar.set_fraction(fraction)
+						label.set_label(f)
+						pbar.set_text("File " + str(current_file) + " of " + sztotal + " files")
+						gtk.gdk.threads_leave()
+	
+						tar.add(f, arcname=None,recursive=False,exclude=None)
 				tar.close()
 			else:
 				# Copy to other directory, possibly on another device
@@ -250,12 +265,12 @@ class MintBackup:
 					f = f.rstrip("\r\n")
 					path = os.path.relpath(f)
 					rpath = os.path.join(self.backup_source, path)
-					print rpath + " - " + path
 					# Don't deal with excluded files..
 					if(not self.is_excluded(rpath)):
 						if(os.path.isdir(path)):
 							os.system("mkdir " + self.backup_dest + "/" + path)
-						os.system("cp " + f + " " + self.backup_dest + "/" + path)
+						else:
+							os.system("cp " + f + " " + self.backup_dest + "/" + path)
 
 						current_file = current_file + 1
 						fraction = float(current_file / total)
@@ -278,7 +293,7 @@ class MintBackup:
 	''' Returns true if the file/directory is on the exclude list '''
 	def is_excluded(self, filename):
 		for row in self.wTree.get_widget("treeview_excludes").get_model():
-			if(filename in row[2]):
+			if(filename.startswith(row[2])):
 				return True
 		return False
 
