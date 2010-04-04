@@ -24,47 +24,10 @@
               <widget class="GtkVBox" id="vbox2">
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
+                <property name="spacing">3</property>
                 <child>
-                  <widget class="GtkTable" id="table2">
+                  <widget class="GtkHBox" id="hbox10">
                     <property name="visible">True</property>
-                    <property name="n_rows">3</property>
-                    <property name="n_columns">2</property>
-                    <child>
-                      <widget class="GtkRadioButton" id="radiobutton_backup">
-                        <property name="label" translatable="yes">Create a new backup</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="draw_indicator">True</property>
-                        <property name="group">radiobutton_restore</property>
-                      </widget>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">1</property>
-                        <property name="bottom_attach">2</property>
-                        <property name="x_options">GTK_FILL</property>
-                        <property name="y_options"></property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkRadioButton" id="radiobutton_restore">
-                        <property name="label" translatable="yes">Restore an existing backup</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="active">True</property>
-                        <property name="draw_indicator">True</property>
-                      </widget>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
-                        <property name="x_options">GTK_FILL</property>
-                        <property name="y_options"></property>
-                      </packing>
-                    </child>
                     <child>
                       <widget class="GtkLabel" id="label_wizard">
                         <property name="visible">True</property>
@@ -76,10 +39,9 @@ restore a previously created backup</property>
                         <property name="use_markup">True</property>
                       </widget>
                       <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="x_options">GTK_FILL</property>
-                        <property name="y_options"></property>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
@@ -90,21 +52,48 @@ restore a previously created backup</property>
                         <property name="icon-size">6</property>
                       </widget>
                       <packing>
-                        <property name="x_options"></property>
-                        <property name="y_options"></property>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="padding">6</property>
+                        <property name="pack_type">end</property>
+                        <property name="position">1</property>
                       </packing>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
                     </child>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
                     <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkRadioButton" id="radiobutton_backup">
+                    <property name="label" translatable="yes">Create a new backup</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="draw_indicator">True</property>
+                    <property name="group">radiobutton_restore</property>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkRadioButton" id="radiobutton_restore">
+                    <property name="label" translatable="yes">Restore an existing backup</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="active">True</property>
+                    <property name="draw_indicator">True</property>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
               </widget>
@@ -120,39 +109,49 @@ restore a previously created backup</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkTable" id="table3">
+              <widget class="GtkVBox" id="vbox3">
                 <property name="visible">True</property>
-                <property name="n_rows">2</property>
-                <property name="n_columns">2</property>
-                <property name="column_spacing">6</property>
-                <property name="row_spacing">3</property>
+                <property name="orientation">vertical</property>
+                <property name="spacing">6</property>
                 <child>
-                  <widget class="GtkImage" id="image_backup_dirs">
+                  <widget class="GtkHBox" id="hbox4">
                     <property name="visible">True</property>
-                    <property name="pixel_size">48</property>
-                    <property name="icon_name">folder</property>
-                    <property name="icon-size">6</property>
-                  </widget>
-                  <packing>
-                    <property name="x_options"></property>
-                    <property name="y_options"></property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkLabel" id="label_backup_dirs">
-                    <property name="visible">True</property>
-                    <property name="xalign">0.05000000074505806</property>
-                    <property name="xpad">6</property>
-                    <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
+                    <child>
+                      <widget class="GtkLabel" id="label_backup_dirs">
+                        <property name="visible">True</property>
+                        <property name="xalign">0.05000000074505806</property>
+                        <property name="xpad">6</property>
+                        <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
 You now need to choose the source and destination
 directories for the backup</property>
-                    <property name="use_markup">True</property>
+                        <property name="use_markup">True</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkImage" id="image_backup_dirs">
+                        <property name="visible">True</property>
+                        <property name="pixel_size">48</property>
+                        <property name="icon_name">folder</property>
+                        <property name="icon-size">6</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="padding">6</property>
+                        <property name="pack_type">end</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
                   </widget>
                   <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"></property>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -162,55 +161,6 @@ directories for the backup</property>
                     <property name="n_columns">2</property>
                     <property name="column_spacing">3</property>
                     <property name="row_spacing">3</property>
-                    <child>
-                      <widget class="GtkLabel" id="label_backup_source">
-                        <property name="visible">True</property>
-                        <property name="xalign">0.05000000074505806</property>
-                        <property name="label" translatable="yes">Source:</property>
-                      </widget>
-                      <packing>
-                        <property name="x_options">GTK_FILL</property>
-                        <property name="y_options"></property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkFileChooserButton" id="filechooserbutton_backup_source">
-                        <property name="visible">True</property>
-                        <property name="action">select-folder</property>
-                        <property name="create_folders">False</property>
-                      </widget>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="y_options"></property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="label_backup_dest">
-                        <property name="visible">True</property>
-                        <property name="yalign">0.05000000074505806</property>
-                        <property name="label" translatable="yes">Destination: </property>
-                      </widget>
-                      <packing>
-                        <property name="top_attach">1</property>
-                        <property name="bottom_attach">2</property>
-                        <property name="x_options"></property>
-                        <property name="y_options"></property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkFileChooserButton" id="filechooserbutton_backup_dest">
-                        <property name="visible">True</property>
-                        <property name="action">select-folder</property>
-                      </widget>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">1</property>
-                        <property name="bottom_attach">2</property>
-                        <property name="y_options"></property>
-                      </packing>
-                    </child>
                     <child>
                       <widget class="GtkExpander" id="expander1">
                         <property name="visible">True</property>
@@ -291,6 +241,61 @@ gzip</property>
                         <property name="top_attach">2</property>
                         <property name="bottom_attach">3</property>
                         <property name="y_options"></property>
+                        <property name="x_padding">6</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkFileChooserButton" id="filechooserbutton_backup_dest">
+                        <property name="visible">True</property>
+                        <property name="action">select-folder</property>
+                        <property name="create_folders">False</property>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">1</property>
+                        <property name="bottom_attach">2</property>
+                        <property name="y_options"></property>
+                        <property name="x_padding">6</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkFileChooserButton" id="filechooserbutton_backup_source">
+                        <property name="visible">True</property>
+                        <property name="action">select-folder</property>
+                        <property name="create_folders">False</property>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="y_options"></property>
+                        <property name="x_padding">6</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="label_backup_dest">
+                        <property name="visible">True</property>
+                        <property name="yalign">0.05000000074505806</property>
+                        <property name="xpad">6</property>
+                        <property name="label" translatable="yes">Destination: </property>
+                      </widget>
+                      <packing>
+                        <property name="top_attach">1</property>
+                        <property name="bottom_attach">2</property>
+                        <property name="x_options"></property>
+                        <property name="y_options"></property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="label_backup_source">
+                        <property name="visible">True</property>
+                        <property name="xalign">0.05000000074505806</property>
+                        <property name="xpad">6</property>
+                        <property name="label" translatable="yes">Source:</property>
+                      </widget>
+                      <packing>
+                        <property name="x_options">GTK_FILL</property>
+                        <property name="y_options"></property>
                       </packing>
                     </child>
                     <child>
@@ -298,15 +303,8 @@ gzip</property>
                     </child>
                   </widget>
                   <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                    <property name="x_options"></property>
+                    <property name="position">1</property>
                   </packing>
-                </child>
-                <child>
-                  <placeholder/>
                 </child>
               </widget>
               <packing>
@@ -325,76 +323,23 @@ gzip</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkTable" id="table4">
+              <widget class="GtkVBox" id="vbox5">
                 <property name="visible">True</property>
-                <property name="n_rows">2</property>
-                <property name="n_columns">3</property>
-                <property name="column_spacing">6</property>
-                <property name="row_spacing">3</property>
+                <property name="orientation">vertical</property>
+                <property name="spacing">6</property>
                 <child>
-                  <widget class="GtkLabel" id="label_exclude_dirs">
+                  <widget class="GtkHBox" id="hbox5">
                     <property name="visible">True</property>
-                    <property name="xalign">0.05000000074505806</property>
-                    <property name="xpad">6</property>
-                    <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
+                    <child>
+                      <widget class="GtkLabel" id="label_exclude_dirs">
+                        <property name="visible">True</property>
+                        <property name="xalign">0.05000000074505806</property>
+                        <property name="xpad">6</property>
+                        <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
 If you wish to exclude any files or directories from being
 backed up by this wizard, please add them to the list below. 
 All files and directories listed here will NOT be backed up.</property>
-                    <property name="use_markup">True</property>
-                  </widget>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"></property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkImage" id="image1">
-                    <property name="visible">True</property>
-                    <property name="pixel_size">48</property>
-                    <property name="icon_name">folder-new</property>
-                  </widget>
-                  <packing>
-                    <property name="x_options"></property>
-                    <property name="y_options"></property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkVButtonBox" id="vbuttonbox1">
-                    <property name="visible">True</property>
-                    <property name="orientation">vertical</property>
-                    <property name="layout_style">start</property>
-                    <child>
-                      <widget class="GtkButton" id="button_add_file">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <child>
-                          <widget class="GtkHBox" id="hbox6">
-                            <property name="visible">True</property>
-                            <child>
-                              <widget class="GtkImage" id="image2">
-                                <property name="visible">True</property>
-                                <property name="stock">gtk-file</property>
-                              </widget>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkLabel" id="label_add_file">
-                                <property name="visible">True</property>
-                                <property name="label" translatable="yes">Exclude files</property>
-                              </widget>
-                              <packing>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                          </widget>
-                        </child>
+                        <property name="use_markup">True</property>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
@@ -403,119 +348,183 @@ All files and directories listed here will NOT be backed up.</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkButton" id="button_add_folder">
+                      <widget class="GtkImage" id="image1">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <child>
-                          <widget class="GtkHBox" id="hbox7">
-                            <property name="visible">True</property>
-                            <child>
-                              <widget class="GtkImage" id="image3">
-                                <property name="visible">True</property>
-                                <property name="stock">gtk-directory</property>
-                              </widget>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkLabel" id="label_add_folder">
-                                <property name="visible">True</property>
-                                <property name="label" translatable="yes">Exclude directories</property>
-                              </widget>
-                              <packing>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                          </widget>
-                        </child>
+                        <property name="pixel_size">48</property>
+                        <property name="icon_name">folder-new</property>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
+                        <property name="padding">6</property>
+                        <property name="pack_type">end</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkHBox" id="hbox9">
+                    <property name="visible">True</property>
                     <child>
-                      <widget class="GtkButton" id="button_remove_exclude">
+                      <widget class="GtkScrolledWindow" id="scrolledwindow_excludes">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
+                        <property name="hscrollbar_policy">automatic</property>
+                        <property name="vscrollbar_policy">automatic</property>
                         <child>
-                          <widget class="GtkHBox" id="hbox8">
+                          <widget class="GtkViewport" id="viewport2">
                             <property name="visible">True</property>
+                            <property name="resize_mode">queue</property>
                             <child>
-                              <widget class="GtkImage" id="image4">
+                              <widget class="GtkTreeView" id="treeview_excludes">
                                 <property name="visible">True</property>
-                                <property name="stock">gtk-remove</property>
+                                <property name="can_focus">True</property>
+                                <property name="headers_visible">False</property>
                               </widget>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkLabel" id="label_remove">
-                                <property name="visible">True</property>
-                                <property name="label" translatable="yes">Remove</property>
-                              </widget>
-                              <packing>
-                                <property name="position">1</property>
-                              </packing>
                             </child>
                           </widget>
                         </child>
                       </widget>
                       <packing>
+                        <property name="padding">6</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkVButtonBox" id="vbuttonbox1">
+                        <property name="visible">True</property>
+                        <property name="orientation">vertical</property>
+                        <property name="layout_style">start</property>
+                        <child>
+                          <widget class="GtkButton" id="button_add_file">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <child>
+                              <widget class="GtkHBox" id="hbox6">
+                                <property name="visible">True</property>
+                                <child>
+                                  <widget class="GtkImage" id="image2">
+                                    <property name="visible">True</property>
+                                    <property name="stock">gtk-file</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="label_add_file">
+                                    <property name="visible">True</property>
+                                    <property name="label" translatable="yes">Exclude files</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                            </child>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkButton" id="button_add_folder">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <child>
+                              <widget class="GtkHBox" id="hbox7">
+                                <property name="visible">True</property>
+                                <child>
+                                  <widget class="GtkImage" id="image3">
+                                    <property name="visible">True</property>
+                                    <property name="stock">gtk-directory</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="label_add_folder">
+                                    <property name="visible">True</property>
+                                    <property name="label" translatable="yes">Exclude directories</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                            </child>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkButton" id="button_remove_exclude">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <child>
+                              <widget class="GtkHBox" id="hbox8">
+                                <property name="visible">True</property>
+                                <child>
+                                  <widget class="GtkImage" id="image4">
+                                    <property name="visible">True</property>
+                                    <property name="stock">gtk-remove</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="label_remove">
+                                    <property name="visible">True</property>
+                                    <property name="label" translatable="yes">Remove</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                            </child>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                      </widget>
+                      <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
-                        <property name="position">2</property>
+                        <property name="padding">6</property>
+                        <property name="pack_type">end</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                   </widget>
                   <packing>
-                    <property name="left_attach">2</property>
-                    <property name="right_attach">3</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
+                    <property name="position">1</property>
                   </packing>
-                </child>
-                <child>
-                  <widget class="GtkScrolledWindow" id="scrolledwindow_excludes">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">automatic</property>
-                    <property name="vscrollbar_policy">automatic</property>
-                    <child>
-                      <widget class="GtkViewport" id="viewport2">
-                        <property name="visible">True</property>
-                        <property name="resize_mode">queue</property>
-                        <child>
-                          <widget class="GtkTreeView" id="treeview_excludes">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="headers_visible">False</property>
-                          </widget>
-                        </child>
-                      </widget>
-                    </child>
-                  </widget>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
                 </child>
               </widget>
               <packing>
@@ -534,39 +543,48 @@ All files and directories listed here will NOT be backed up.</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkTable" id="table5">
+              <widget class="GtkVBox" id="vbox12">
                 <property name="visible">True</property>
-                <property name="n_rows">2</property>
-                <property name="n_columns">2</property>
-                <property name="column_spacing">6</property>
-                <property name="row_spacing">3</property>
+                <property name="orientation">vertical</property>
                 <child>
-                  <widget class="GtkImage" id="image5">
+                  <widget class="GtkHBox" id="hbox17">
                     <property name="visible">True</property>
-                    <property name="pixel_size">48</property>
-                    <property name="icon_name">dialog-question</property>
-                  </widget>
-                  <packing>
-                    <property name="x_options"></property>
-                    <property name="y_options"></property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkLabel" id="label_backup_overview">
-                    <property name="visible">True</property>
-                    <property name="xalign">0.05000000074505806</property>
-                    <property name="xpad">6</property>
-                    <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
+                    <child>
+                      <widget class="GtkLabel" id="label_backup_overview">
+                        <property name="visible">True</property>
+                        <property name="xalign">0.05000000074505806</property>
+                        <property name="xpad">6</property>
+                        <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
 Please review your options below.
 When you are happy with your choice select
 the Forward button to continue.</property>
-                    <property name="use_markup">True</property>
+                        <property name="use_markup">True</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkImage" id="image5">
+                        <property name="visible">True</property>
+                        <property name="pixel_size">48</property>
+                        <property name="icon_name">dialog-question</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="padding">6</property>
+                        <property name="pack_type">end</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
                   </widget>
                   <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"></property>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -584,21 +602,15 @@ the Forward button to continue.</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="headers_visible">False</property>
-                            <property name="headers_clickable">False</property>
                           </widget>
                         </child>
                       </widget>
                     </child>
                   </widget>
                   <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
+                    <property name="padding">3</property>
+                    <property name="position">1</property>
                   </packing>
-                </child>
-                <child>
-                  <placeholder/>
                 </child>
               </widget>
               <packing>
@@ -617,43 +629,53 @@ the Forward button to continue.</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkTable" id="table6">
+              <widget class="GtkVBox" id="vbox1">
                 <property name="visible">True</property>
-                <property name="n_rows">2</property>
-                <property name="n_columns">2</property>
-                <property name="column_spacing">6</property>
-                <property name="row_spacing">3</property>
+                <property name="orientation">vertical</property>
                 <child>
-                  <widget class="GtkImage" id="image6">
+                  <widget class="GtkHBox" id="hbox11">
                     <property name="visible">True</property>
-                    <property name="pixel_size">36</property>
-                    <property name="icon_name">system-run</property>
-                  </widget>
-                  <packing>
-                    <property name="x_options"></property>
-                    <property name="y_options"></property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkLabel" id="label_backing_up">
-                    <property name="visible">True</property>
-                    <property name="xalign">0.05000000074505806</property>
-                    <property name="xpad">6</property>
-                    <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
+                    <child>
+                      <widget class="GtkLabel" id="label_backing_up">
+                        <property name="visible">True</property>
+                        <property name="xalign">0.05000000074505806</property>
+                        <property name="xpad">6</property>
+                        <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
 Currently backing up. This may take some time.</property>
-                    <property name="use_markup">True</property>
+                        <property name="use_markup">True</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkImage" id="image6">
+                        <property name="visible">True</property>
+                        <property name="pixel_size">48</property>
+                        <property name="icon_name">system-run</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="padding">6</property>
+                        <property name="pack_type">end</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
                   </widget>
                   <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"></property>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkVBox" id="vbox1">
+                  <widget class="GtkVBox" id="vbox6">
                     <property name="visible">True</property>
                     <property name="orientation">vertical</property>
+                    <property name="spacing">6</property>
                     <child>
                       <widget class="GtkHBox" id="hbox1">
                         <property name="visible">True</property>
@@ -661,6 +683,7 @@ Currently backing up. This may take some time.</property>
                           <widget class="GtkLabel" id="label_current_file">
                             <property name="visible">True</property>
                             <property name="xalign">0.05000000074505806</property>
+                            <property name="xpad">6</property>
                             <property name="label" translatable="yes">Current file:</property>
                           </widget>
                           <packing>
@@ -682,6 +705,7 @@ Currently backing up. This may take some time.</property>
                         </child>
                       </widget>
                       <packing>
+                        <property name="expand">False</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
@@ -693,19 +717,19 @@ Currently backing up. This may take some time.</property>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="pack_type">end</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
                   </widget>
                   <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="padding">3</property>
+                    <property name="pack_type">end</property>
+                    <property name="position">1</property>
                   </packing>
-                </child>
-                <child>
-                  <placeholder/>
                 </child>
               </widget>
               <packing>
@@ -724,58 +748,61 @@ Currently backing up. This may take some time.</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkTable" id="table7">
+              <widget class="GtkVBox" id="vbox7">
                 <property name="visible">True</property>
-                <property name="n_rows">2</property>
-                <property name="n_columns">2</property>
-                <property name="column_spacing">6</property>
-                <property name="row_spacing">3</property>
+                <property name="orientation">vertical</property>
                 <child>
-                  <widget class="GtkImage" id="image_finished">
+                  <widget class="GtkHBox" id="hbox12">
                     <property name="visible">True</property>
-                    <property name="pixel_size">36</property>
-                    <property name="icon_name">dialog-information</property>
-                  </widget>
-                  <packing>
-                    <property name="x_options"></property>
-                    <property name="y_options"></property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkLabel" id="label_finished">
-                    <property name="visible">True</property>
-                    <property name="xalign">0.05000000074505806</property>
-                    <property name="xpad">6</property>
-                    <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
+                    <child>
+                      <widget class="GtkLabel" id="label_finished">
+                        <property name="visible">True</property>
+                        <property name="xalign">0.05000000074505806</property>
+                        <property name="xpad">6</property>
+                        <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
 
 </property>
-                    <property name="use_markup">True</property>
+                        <property name="use_markup">True</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkImage" id="image_finished">
+                        <property name="visible">True</property>
+                        <property name="pixel_size">48</property>
+                        <property name="icon_name">dialog-information</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="padding">6</property>
+                        <property name="pack_type">end</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
                   </widget>
                   <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"></property>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
                   <widget class="GtkLabel" id="label_finished_status">
                     <property name="visible">True</property>
-                    <property name="yalign">0.05000000074505806</property>
-                    <property name="xpad">10</property>
+                    <property name="xalign">0.05000000074505806</property>
+                    <property name="xpad">6</property>
                     <property name="label" translatable="yes">label</property>
                   </widget>
                   <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"></property>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
                   </packing>
-                </child>
-                <child>
-                  <placeholder/>
                 </child>
               </widget>
               <packing>
@@ -794,38 +821,47 @@ Currently backing up. This may take some time.</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkTable" id="table8">
+              <widget class="GtkVBox" id="vbox8">
                 <property name="visible">True</property>
-                <property name="n_rows">2</property>
-                <property name="n_columns">2</property>
-                <property name="column_spacing">6</property>
-                <property name="row_spacing">3</property>
+                <property name="orientation">vertical</property>
                 <child>
-                  <widget class="GtkImage" id="image7">
+                  <widget class="GtkHBox" id="hbox13">
                     <property name="visible">True</property>
-                    <property name="pixel_size">36</property>
-                    <property name="icon_name">system-file-manager</property>
-                  </widget>
-                  <packing>
-                    <property name="x_options"></property>
-                    <property name="y_options"></property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkLabel" id="label_restore_wizard">
-                    <property name="visible">True</property>
-                    <property name="xalign">0.05000000074505806</property>
-                    <property name="xpad">6</property>
-                    <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
+                    <child>
+                      <widget class="GtkLabel" id="label_restore_wizard">
+                        <property name="visible">True</property>
+                        <property name="xalign">0.05000000074505806</property>
+                        <property name="xpad">6</property>
+                        <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
 Please select the backup you wish to restore
 and its destination below</property>
-                    <property name="use_markup">True</property>
+                        <property name="use_markup">True</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkImage" id="image7">
+                        <property name="visible">True</property>
+                        <property name="pixel_size">48</property>
+                        <property name="icon_name">system-file-manager</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="padding">6</property>
+                        <property name="pack_type">end</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
                   </widget>
                   <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"></property>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -844,6 +880,7 @@ and its destination below</property>
                       <packing>
                         <property name="x_options">GTK_FILL</property>
                         <property name="y_options"></property>
+                        <property name="x_padding">6</property>
                       </packing>
                     </child>
                     <child>
@@ -855,6 +892,7 @@ and its destination below</property>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
                         <property name="y_options"></property>
+                        <property name="x_padding">6</property>
                       </packing>
                     </child>
                     <child>
@@ -868,12 +906,14 @@ and its destination below</property>
                         <property name="bottom_attach">2</property>
                         <property name="x_options">GTK_FILL</property>
                         <property name="y_options"></property>
+                        <property name="x_padding">6</property>
                       </packing>
                     </child>
                     <child>
                       <widget class="GtkFileChooserButton" id="filechooserbutton_restore_dest">
                         <property name="visible">True</property>
                         <property name="action">select-folder</property>
+                        <property name="create_folders">False</property>
                       </widget>
                       <packing>
                         <property name="left_attach">1</property>
@@ -881,18 +921,14 @@ and its destination below</property>
                         <property name="top_attach">1</property>
                         <property name="bottom_attach">2</property>
                         <property name="y_options"></property>
+                        <property name="x_padding">6</property>
                       </packing>
                     </child>
                   </widget>
                   <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
+                    <property name="padding">6</property>
+                    <property name="position">1</property>
                   </packing>
-                </child>
-                <child>
-                  <placeholder/>
                 </child>
               </widget>
               <packing>
@@ -911,38 +947,47 @@ and its destination below</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkTable" id="table10">
+              <widget class="GtkVBox" id="vbox9">
                 <property name="visible">True</property>
-                <property name="n_rows">3</property>
-                <property name="n_columns">2</property>
-                <property name="column_spacing">6</property>
-                <property name="row_spacing">3</property>
+                <property name="orientation">vertical</property>
                 <child>
-                  <widget class="GtkImage" id="image8">
+                  <widget class="GtkHBox" id="hbox14">
                     <property name="visible">True</property>
-                    <property name="pixel_size">48</property>
-                    <property name="icon_name">dialog-question</property>
-                  </widget>
-                  <packing>
-                    <property name="x_options"></property>
-                    <property name="y_options"></property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkLabel" id="label_restore_overview">
-                    <property name="visible">True</property>
-                    <property name="xalign">0.05000000074505806</property>
-                    <property name="xpad">6</property>
-                    <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
+                    <child>
+                      <widget class="GtkLabel" id="label_restore_overview">
+                        <property name="visible">True</property>
+                        <property name="xalign">0.05000000074505806</property>
+                        <property name="xpad">6</property>
+                        <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
 When you are happy with the settings below 
 press the Forward button to restore your backup</property>
-                    <property name="use_markup">True</property>
+                        <property name="use_markup">True</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkImage" id="image8">
+                        <property name="visible">True</property>
+                        <property name="pixel_size">48</property>
+                        <property name="icon_name">dialog-question</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="padding">6</property>
+                        <property name="pack_type">end</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
                   </widget>
                   <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"></property>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -962,6 +1007,7 @@ press the Forward button to restore your backup</property>
                       <packing>
                         <property name="x_options">GTK_FILL</property>
                         <property name="y_options"></property>
+                        <property name="x_padding">6</property>
                       </packing>
                     </child>
                     <child>
@@ -976,6 +1022,7 @@ press the Forward button to restore your backup</property>
                         <property name="bottom_attach">2</property>
                         <property name="x_options">GTK_FILL</property>
                         <property name="y_options"></property>
+                        <property name="x_padding">6</property>
                       </packing>
                     </child>
                     <child>
@@ -990,6 +1037,7 @@ press the Forward button to restore your backup</property>
                         <property name="right_attach">2</property>
                         <property name="x_options">GTK_FILL</property>
                         <property name="y_options"></property>
+                        <property name="x_padding">6</property>
                       </packing>
                     </child>
                     <child>
@@ -998,6 +1046,9 @@ press the Forward button to restore your backup</property>
                         <property name="xalign">0.05000000074505806</property>
                         <property name="xpad">6</property>
                         <property name="label" translatable="yes">dest</property>
+                        <property name="wrap">True</property>
+                        <property name="wrap_mode">char</property>
+                        <property name="width_chars">33</property>
                       </widget>
                       <packing>
                         <property name="left_attach">1</property>
@@ -1006,6 +1057,7 @@ press the Forward button to restore your backup</property>
                         <property name="bottom_attach">2</property>
                         <property name="x_options">GTK_FILL</property>
                         <property name="y_options"></property>
+                        <property name="x_padding">6</property>
                       </packing>
                     </child>
                     <child>
@@ -1042,6 +1094,7 @@ press the Forward button to restore your backup</property>
                         <property name="right_attach">3</property>
                         <property name="x_options"></property>
                         <property name="y_options"></property>
+                        <property name="x_padding">6</property>
                       </packing>
                     </child>
                     <child>
@@ -1049,20 +1102,8 @@ press the Forward button to restore your backup</property>
                     </child>
                   </widget>
                   <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
+                    <property name="position">1</property>
                   </packing>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
                 </child>
               </widget>
               <packing>
@@ -1081,25 +1122,51 @@ press the Forward button to restore your backup</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkTable" id="table12">
+              <widget class="GtkVBox" id="vbox4">
                 <property name="visible">True</property>
-                <property name="n_rows">2</property>
-                <property name="n_columns">2</property>
-                <property name="column_spacing">6</property>
-                <property name="row_spacing">3</property>
+                <property name="orientation">vertical</property>
                 <child>
-                  <widget class="GtkImage" id="image10">
+                  <widget class="GtkHBox" id="hbox15">
                     <property name="visible">True</property>
-                    <property name="pixel_size">48</property>
-                    <property name="icon_name">system-run</property>
+                    <child>
+                      <widget class="GtkLabel" id="label_restore_progress">
+                        <property name="visible">True</property>
+                        <property name="xalign">0.05000000074505806</property>
+                        <property name="xpad">6</property>
+                        <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
+Now restoring your backup, this may take
+some time so please be patient</property>
+                        <property name="use_markup">True</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkImage" id="image10">
+                        <property name="visible">True</property>
+                        <property name="pixel_size">48</property>
+                        <property name="icon_name">system-run</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="padding">6</property>
+                        <property name="pack_type">end</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
                   </widget>
                   <packing>
-                    <property name="x_options"></property>
-                    <property name="y_options"></property>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkVBox" id="vbox4">
+                  <widget class="GtkVBox" id="vbox10">
                     <property name="visible">True</property>
                     <property name="orientation">vertical</property>
                     <child>
@@ -1109,6 +1176,7 @@ press the Forward button to restore your backup</property>
                           <widget class="GtkLabel" id="label_restore_status">
                             <property name="visible">True</property>
                             <property name="xalign">0.05000000074505806</property>
+                            <property name="xpad">6</property>
                             <property name="label" translatable="yes">Current file:</property>
                           </widget>
                           <packing>
@@ -1121,6 +1189,7 @@ press the Forward button to restore your backup</property>
                           <widget class="GtkLabel" id="label_restore_status_value">
                             <property name="visible">True</property>
                             <property name="xalign">0.05000000074505806</property>
+                            <property name="xpad">6</property>
                             <property name="label" translatable="yes">label</property>
                             <property name="wrap">True</property>
                             <property name="wrap_mode">char</property>
@@ -1132,6 +1201,9 @@ press the Forward button to restore your backup</property>
                         </child>
                       </widget>
                       <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="padding">3</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
@@ -1141,36 +1213,20 @@ press the Forward button to restore your backup</property>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="padding">1</property>
+                        <property name="pack_type">end</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
                   </widget>
                   <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="padding">3</property>
+                    <property name="pack_type">end</property>
+                    <property name="position">1</property>
                   </packing>
-                </child>
-                <child>
-                  <widget class="GtkLabel" id="label_restore_progress">
-                    <property name="visible">True</property>
-                    <property name="xalign">0.05000000074505806</property>
-                    <property name="xpad">6</property>
-                    <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
-Now restoring your backup, this may take
-some time so please be patient</property>
-                    <property name="use_markup">True</property>
-                  </widget>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"></property>
-                  </packing>
-                </child>
-                <child>
-                  <placeholder/>
                 </child>
               </widget>
               <packing>
@@ -1189,54 +1245,59 @@ some time so please be patient</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkTable" id="table14">
+              <widget class="GtkVBox" id="vbox11">
                 <property name="visible">True</property>
-                <property name="n_rows">2</property>
-                <property name="n_columns">2</property>
-                <property name="column_spacing">6</property>
-                <property name="row_spacing">3</property>
+                <property name="orientation">vertical</property>
                 <child>
-                  <widget class="GtkImage" id="image_restore_finished">
+                  <widget class="GtkHBox" id="hbox16">
                     <property name="visible">True</property>
-                    <property name="pixel_size">48</property>
-                    <property name="icon_name">dialog-information</property>
+                    <child>
+                      <widget class="GtkLabel" id="label_restore_finished">
+                        <property name="visible">True</property>
+                        <property name="xalign">0.05000000074505806</property>
+                        <property name="xpad">6</property>
+                        <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;</property>
+                        <property name="use_markup">True</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkImage" id="image_restore_finished">
+                        <property name="visible">True</property>
+                        <property name="pixel_size">48</property>
+                        <property name="icon_name">dialog-information</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="padding">6</property>
+                        <property name="pack_type">end</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
                   </widget>
                   <packing>
-                    <property name="x_options"></property>
-                    <property name="y_options"></property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkLabel" id="label_restore_finished">
-                    <property name="visible">True</property>
-                    <property name="xalign">0.05000000074505806</property>
-                    <property name="xpad">6</property>
-                    <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;</property>
-                    <property name="use_markup">True</property>
-                  </widget>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"></property>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
                   <widget class="GtkLabel" id="label_restore_finished_value">
                     <property name="visible">True</property>
                     <property name="xalign">0.05000000074505806</property>
+                    <property name="xpad">6</property>
                     <property name="label" translatable="yes">label</property>
                   </widget>
                   <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                    <property name="y_options"></property>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
                   </packing>
-                </child>
-                <child>
-                  <placeholder/>
                 </child>
               </widget>
               <packing>
