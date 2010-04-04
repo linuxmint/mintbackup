@@ -1,13 +1,13 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# mintBackup Translations
+# Copyright: Why? :)
+# This file is distributed under the same license as the mintBackup package (GPL)
+# Ikey Doherty <contactjfreak@googlemail.com>, 2010.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
+"Project-Id-Version: mintBackup 2.0\n"
+"Report-Msgid-Bugs-To: Ikey Doherty <contactjfreak@googlemail.com> \n"
 "POT-Creation-Date: 2010-04-04 01:05+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
