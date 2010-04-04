@@ -237,7 +237,6 @@ class MintBackup:
 	
 	''' Cancel clicked '''
 	def cancel_callback(self, widget):
-		# TODO: Status-checking, confirmation
 		if(self.operating):
 			# in the middle of a job, let the appropriate thread
 			# handle the cancel
@@ -263,7 +262,6 @@ class MintBackup:
 			self.backup_source = self.wTree.get_widget("filechooserbutton_backup_source").get_filename()
 			self.backup_dest = self.wTree.get_widget("filechooserbutton_backup_dest").get_filename()
 			book.set_current_page(2)
-		# TODO: Support all pages..
 		elif(sel == 2):
 			# show overview
 			model = gtk.ListStore(str, str)
@@ -379,8 +377,6 @@ class MintBackup:
 		try:
 			out = subprocess.Popen("find . 2>/dev/null", shell=True, bufsize=256, stdout=subprocess.PIPE)
 			if(comp[1] is not None):
-				# Use tar/gzip, may change to tar/bz2 in the future
-				# TODO: Use more intuitive file name (i.e. timestamp)
 				filetime = strftime("%Y-%m-%d-%H%M-backup", gmtime())
 				filename = os.path.join(self.backup_dest, filetime + comp[2])
 				tar = tarfile.open(filename, comp[1])
@@ -455,8 +451,6 @@ class MintBackup:
 						gtk.gdk.threads_leave()
 		except Exception, detail:
 			self.error = str(detail)
-			
-		#TODO: Check for errors..
 		if(self.error is not None):
 			gtk.gdk.threads_enter()
 			img = self.iconTheme.load_icon("dialog-error", 48, 0)
