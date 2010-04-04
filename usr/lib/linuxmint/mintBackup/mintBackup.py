@@ -261,6 +261,9 @@ class MintBackup:
 			# choose source/dest
 			self.backup_source = self.wTree.get_widget("filechooserbutton_backup_source").get_filename()
 			self.backup_dest = self.wTree.get_widget("filechooserbutton_backup_dest").get_filename()
+			if(self.backup_source == self.backup_dest):
+				MessageDialog(_("Backup Tool"), _("Your source and destination directories cannot be the same"), gtk.MESSAGE_WARNING).show()
+				return
 			book.set_current_page(2)
 		elif(sel == 2):
 			# show overview

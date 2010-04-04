@@ -1,14 +1,14 @@
-# mintBackup translations
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# mintBackup
+# Copyright: Why? :)
 # This file is distributed under the same license as the mintBackup package (GPL).
 # Ikey Doherty <contactjfreak@googlemail.com>, 2010.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: mintBackup 2.0\n"
-"Report-Msgid-Bugs-To: Ikey Doherty <contactjfreak@googlemail.com>\n"
-"POT-Creation-Date: 2010-04-04 18:59+0100\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-04-04 22:39+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,8 +20,9 @@ msgstr ""
 #: usr/lib/linuxmint/mintBackup/mintBackup.py:143
 #: usr/lib/linuxmint/mintBackup/mintBackup.py:198
 #: usr/lib/linuxmint/mintBackup/mintBackup.py:214
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:301
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:311
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:265
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:304
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:314
 msgid "Backup Tool"
 msgstr ""
 
@@ -191,61 +192,65 @@ msgstr ""
 msgid "is not located within your source directory. Not added."
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:268
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:265
+msgid "Your source and destination directories cannot be the same"
+msgstr ""
+
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:271
 msgid "<b>Source</b>"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:269
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:272
 msgid "<b>Destination</b>"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:273
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:276
 msgid "<b>Compression</b>"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:277
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:280
 msgid "<b>Overwrite destination files</b>"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:280
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:283
 msgid "<b>Exclude</b>"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:301
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:304
 msgid "Please choose a file to restore from"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:311
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:314
 msgid "Please choose a valid archive file"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:348
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:349
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:497
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:499
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:351
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:352
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:500
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:502
 msgid "Calculating..."
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:457
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:460
 msgid "An error occured during backup:\n"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:465
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:468
 msgid "Backup was aborted"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:473
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:476
 msgid "Backup completed without error"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:526
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:529
 msgid "An error occured during restoration:\n"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:534
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:537
 msgid "Restoration was aborted"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:542
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:545
 msgid "The following archive was successfully restored:\n"
 msgstr ""

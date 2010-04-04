@@ -216,6 +216,10 @@ msgstr "Ungültiger Pfad"
 msgid "is not located within your source directory. Not added."
 msgstr "befindet sich nicht im Quellverzeichnis. Nicht hinzugefügt."
 
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:265
+msgid "Your source and destination directories cannot be the same"
+msgstr "Ihre Quell-und Ziel-Verzeichnisse können nicht die gleiche"
+
 #: usr/lib/linuxmint/mintBackup/mintBackup.py:231
 msgid "<b>Source</b>"
 msgstr "<b>Quelle</b>"
