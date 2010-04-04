@@ -55,7 +55,7 @@ class MintBackup:
 		comps.append([_("Do not archive"), None, None])
 		comps.append([_("Archive with no compression"), "w", ".tar"])
 		comps.append([_("Archive and compress with bzip2"), "w:bz2", ".tar.bz2"])
-		comps.append([_("Archive and compress with gzip"), "w:gz", "tar.gz"])
+		comps.append([_("Archive and compress with gzip"), "w:gz", ".tar.gz"])
 		self.wTree.get_widget("combobox_compress").set_model(comps)
 		self.wTree.get_widget("combobox_compress").set_active(0)
 
