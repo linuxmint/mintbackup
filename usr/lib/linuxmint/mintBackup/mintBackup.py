@@ -107,6 +107,52 @@ class MintBackup:
 		# open archive button, opens an archive... :P
 		self.wTree.get_widget("button_open_archive").connect("clicked", self.open_archive_callback)
 
+		# i18n - Page 0 (choose backup or restore)
+		self.wTree.get_widget("label_wizard").set_markup(_("<big><b>Backup Tool</b></big>\nThis wizard will allow you to make a backup, or to\nrestore a previously created backup"))
+		self.wTree.get_widget("radiobutton_backup").set_label(_("Create a new backup"))
+		self.wTree.get_widget("radiobutton_restore").set_label(_("Restore an existing backup"))
+
+		# i18n - Page 1 (choose backup directories)
+		self.wTree.get_widget("label_backup_dirs").set_markup(_("<big><b>Backup Tool</b></big>\nYou now need to choose the source and destination\ndirectories for the backup"))
+		self.wTree.get_widget("label_backup_source").set_label(_("Source:"))
+		self.wTree.get_widget("label_backup_dest").set_label(_("Destination:"))
+		self.wTree.get_widget("label_expander").set_label(_("Advanced options"))
+		self.wTree.get_widget("label_compress").set_label(_("Compression:"))
+		self.wTree.get_widget("label_overwrite_dest").set_label(_("Overwrite:"))
+
+		# i18n - Page 2 (choose files/directories to exclude)
+		self.wTree.get_widget("label_exclude_dirs").set_markup(_("<big><b>Backup Tool</b></big>\nIf you wish to exclude any files or directories from being\nbacked up by this wizard, please add them to the list below.\nAll files and directories listed here will NOT be backed up."))
+		self.wTree.get_widget("label_add_file").set_label(_("Exclude files"))
+		self.wTree.get_widget("label_add_folder").set_label(_("Exclude directories"))
+		self.wTree.get_widget("label_remove").set_label(_("Remove"))
+
+		# i18n - Page 3 (backup overview)
+		self.wTree.get_widget("label_backup_overview").set_markup(_("<big><b>Backup Tool</b></big>\nPlease review your options below.\nWhen you are happy with your choice click\nthe Forward button to continue."))
+
+		# i18n - Page 4 (backing up status)
+		self.wTree.get_widget("label_backing_up").set_markup(_("<big><b>Backup Tool</b></big>\nCurrently backing up. This may take some time."))
+		self.wTree.get_widget("label_current_file").set_label(_("Current file:"))
+
+		# i18n - Page 5 (backup complete)
+		self.wTree.get_widget("label_finished").set_label(_("Backup Tool"))
+
+		# i18n - Page 6 (Restore locations)
+		self.wTree.get_widget("label_restore_wizard").set_markup(_("<big><b>Backup Tool</b></big>\nPlease select the backup you wish to restore\nand its destination below"))
+		self.wTree.get_widget("label_restore_source").set_label(_("Archive:"))
+		self.wTree.get_widget("label_restore_dest").set_label(_("Destination:"))
+
+		# i18n - Page 7 (Restore overview)
+		self.wTree.get_widget("label_restore_overview").set_markup(_("<big><b>Backup Tool</b></big>\nWhen you are happy with the settings below\npress the Forward button to restore your backup"))
+		self.wTree.get_widget("label_overview_source").set_markup(_("<b>Archive</b>"))
+		self.wTree.get_widget("label_open_archive").set_label(_("Open"))
+
+		# i18n - Page 8 (restore status)
+		self.wTree.get_widget("label_restore_progress").set_markup(_("<big><b>Backup Tool</b></big>\nNow restoring your backup, this may take\nsome time so please be patient"))
+		self.wTree.get_widget("label_restore_status").set_label(_("Current file:"))
+
+		# i18n - Page 9 (restore complete)
+		self.wTree.get_widget("label_restore_finished").set_markup(_("<big><b>Backup Tool</b></big>"))
+
 	''' Exclude file '''
 	def add_file_exclude(self, widget):
 		model = self.wTree.get_widget("treeview_excludes").get_model()
