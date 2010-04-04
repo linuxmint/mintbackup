@@ -6,6 +6,7 @@ except Exception, detail:
 
 try:
 	import os
+	import sys
 	import commands
 	import gtk
 	import gtk.glade
@@ -46,6 +47,18 @@ class MintBackup:
 		self.glade = '/usr/lib/linuxmint/mintBackup/mintBackup.glade'
 		self.wTree = gtk.glade.XML(self.glade, 'main_window')
 
+		# handle command line filenames
+		if(len(sys.argv) > 1):
+			if(len(sys.argv) == 2):
+				filebackup = sys.argv[1]
+				self.wTree.get_widget("filechooserbutton_restore_source").set_filename(filebackup)
+				self.wTree.get_widget("notebook1").set_current_page(6)
+			else:
+				print "usage: " + sys.argv[0] + " filename.backup"
+				sys.exit(1)
+		else:
+			self.wTree.get_widget("notebook1").set_current_page(0)
+
 		# inidicates whether an operation is taking place.
 		self.operating = False
 
@@ -53,9 +66,10 @@ class MintBackup:
 		# Displayname, [tarfile mode, file extension]
 		comps = gtk.ListStore(str,str,str)
 		comps.append([_("Do not archive"), None, None])
-		comps.append([_("Archive with no compression"), "w", ".tar"])
-		comps.append([_("Archive and compress with bzip2"), "w:bz2", ".tar.bz2"])
-		comps.append([_("Archive and compress with gzip"), "w:gz", ".tar.gz"])
+		# file extensions mintBackup specific
+		comps.append([_("Archive with no compression"), "w", ".backup"])
+		comps.append([_("Archive and compress with bzip2"), "w:bz2", ".backup"])
+		comps.append([_("Archive and compress with gzip"), "w:gz", ".backup"])
 		self.wTree.get_widget("combobox_compress").set_model(comps)
 		self.wTree.get_widget("combobox_compress").set_active(0)
 
@@ -291,6 +305,8 @@ class MintBackup:
 	def back_callback(self, widget):
 		book = self.wTree.get_widget("notebook1")
 		sel = book.get_current_page()
+		if(sel == 7 and len(sys.argv) == 2):
+			self.wTree.get_widget("button_back").set_sensitive(False)
 		if(sel == 6):
 			book.set_current_page(0)
 			self.wTree.get_widget("button_back").set_sensitive(False)
