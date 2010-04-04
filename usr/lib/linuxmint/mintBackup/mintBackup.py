@@ -173,7 +173,7 @@ class MintBackup:
 		self.wTree.get_widget("label_current_file").set_label(_("Current file:"))
 
 		# i18n - Page 5 (backup complete)
-		self.wTree.get_widget("label_finished").set_label(_("Backup Tool"))
+		self.wTree.get_widget("label_finished").set_markup(_("<big><b>Backup Tool</b></big>"))
 
 		# i18n - Page 6 (Restore locations)
 		self.wTree.get_widget("label_restore_wizard").set_markup(_("<big><b>Backup Tool</b></big>\nPlease select the backup you wish to restore\nand its destination below"))
