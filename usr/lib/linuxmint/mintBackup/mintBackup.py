@@ -14,6 +14,7 @@ try:
 	import threading
 	import tarfile
 	from shutil import copy2
+	from time import strftime, gmtime
 except Exception, detail:
 	print "You do not have the required dependancies"
 
@@ -340,7 +341,8 @@ class MintBackup:
 			if(comp[1] is not None):
 				# Use tar/gzip, may change to tar/bz2 in the future
 				# TODO: Use more intuitive file name (i.e. timestamp)
-				filename = os.path.join(self.backup_dest, "backup" + comp[2])
+				filetime = strftime("%Y-%m-%d-%H%M-backup", gmtime())
+				filename = os.path.join(self.backup_dest, filetime + comp[2])
 				tar = tarfile.open(filename, comp[1])
 				for f in out.stdout:
 					if(not self.operating):
