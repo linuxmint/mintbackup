@@ -69,6 +69,7 @@
                       <widget class="GtkLabel" id="label_wizard">
                         <property name="visible">True</property>
                         <property name="xalign">0.05000000074505806</property>
+                        <property name="xpad">6</property>
                         <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
 This wizard will allow you to make a backup, or to
 restore a previously created backup</property>
@@ -77,6 +78,8 @@ restore a previously created backup</property>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
+                        <property name="x_options">GTK_FILL</property>
+                        <property name="y_options"></property>
                       </packing>
                     </child>
                     <child>
@@ -86,6 +89,10 @@ restore a previously created backup</property>
                         <property name="icon_name">user-home</property>
                         <property name="icon-size">6</property>
                       </widget>
+                      <packing>
+                        <property name="x_options"></property>
+                        <property name="y_options"></property>
+                      </packing>
                     </child>
                     <child>
                       <placeholder/>
@@ -118,6 +125,7 @@ restore a previously created backup</property>
                 <property name="n_rows">2</property>
                 <property name="n_columns">2</property>
                 <property name="column_spacing">6</property>
+                <property name="row_spacing">3</property>
                 <child>
                   <widget class="GtkImage" id="image_backup_dirs">
                     <property name="visible">True</property>
@@ -125,11 +133,16 @@ restore a previously created backup</property>
                     <property name="icon_name">folder</property>
                     <property name="icon-size">6</property>
                   </widget>
+                  <packing>
+                    <property name="x_options"></property>
+                    <property name="y_options"></property>
+                  </packing>
                 </child>
                 <child>
                   <widget class="GtkLabel" id="label_backup_dirs">
                     <property name="visible">True</property>
                     <property name="xalign">0.05000000074505806</property>
+                    <property name="xpad">6</property>
                     <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
 You now need to choose the source and destination
 directories for the backup</property>
@@ -138,6 +151,8 @@ directories for the backup</property>
                   <packing>
                     <property name="left_attach">1</property>
                     <property name="right_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"></property>
                   </packing>
                 </child>
                 <child>
@@ -161,8 +176,8 @@ directories for the backup</property>
                     <child>
                       <widget class="GtkFileChooserButton" id="filechooserbutton_backup_source">
                         <property name="visible">True</property>
-                        <property name="create_folders">False</property>
                         <property name="action">select-folder</property>
+                        <property name="create_folders">False</property>
                       </widget>
                       <packing>
                         <property name="left_attach">1</property>
@@ -240,6 +255,8 @@ gzip</property>
                               <packing>
                                 <property name="top_attach">1</property>
                                 <property name="bottom_attach">2</property>
+                                <property name="x_options">GTK_FILL</property>
+                                <property name="y_options"></property>
                               </packing>
                             </child>
                             <child>
@@ -273,6 +290,7 @@ gzip</property>
                         <property name="right_attach">2</property>
                         <property name="top_attach">2</property>
                         <property name="bottom_attach">3</property>
+                        <property name="y_options"></property>
                       </packing>
                     </child>
                     <child>
@@ -284,6 +302,7 @@ gzip</property>
                     <property name="right_attach">2</property>
                     <property name="top_attach">1</property>
                     <property name="bottom_attach">2</property>
+                    <property name="x_options"></property>
                   </packing>
                 </child>
                 <child>
@@ -311,10 +330,12 @@ gzip</property>
                 <property name="n_rows">2</property>
                 <property name="n_columns">3</property>
                 <property name="column_spacing">6</property>
+                <property name="row_spacing">3</property>
                 <child>
                   <widget class="GtkLabel" id="label_exclude_dirs">
                     <property name="visible">True</property>
                     <property name="xalign">0.05000000074505806</property>
+                    <property name="xpad">6</property>
                     <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
 If you wish to exclude any files or directories from being
 backed up by this wizard, please add them to the list below. 
@@ -324,15 +345,20 @@ All files and directories listed here will NOT be backed up.</property>
                   <packing>
                     <property name="left_attach">1</property>
                     <property name="right_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"></property>
                   </packing>
                 </child>
                 <child>
                   <widget class="GtkImage" id="image1">
                     <property name="visible">True</property>
-                    <property name="xpad">5</property>
                     <property name="pixel_size">48</property>
                     <property name="icon_name">folder-new</property>
                   </widget>
+                  <packing>
+                    <property name="x_options"></property>
+                    <property name="y_options"></property>
+                  </packing>
                 </child>
                 <child>
                   <widget class="GtkVButtonBox" id="vbuttonbox1">
@@ -513,7 +539,7 @@ All files and directories listed here will NOT be backed up.</property>
                 <property name="n_rows">2</property>
                 <property name="n_columns">2</property>
                 <property name="column_spacing">6</property>
-                <property name="row_spacing">6</property>
+                <property name="row_spacing">3</property>
                 <child>
                   <widget class="GtkImage" id="image5">
                     <property name="visible">True</property>
@@ -529,6 +555,7 @@ All files and directories listed here will NOT be backed up.</property>
                   <widget class="GtkLabel" id="label_backup_overview">
                     <property name="visible">True</property>
                     <property name="xalign">0.05000000074505806</property>
+                    <property name="xpad">6</property>
                     <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
 Please review your options below.
 When you are happy with your choice select
@@ -538,6 +565,7 @@ the Forward button to continue.</property>
                   <packing>
                     <property name="left_attach">1</property>
                     <property name="right_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
                     <property name="y_options"></property>
                   </packing>
                 </child>
@@ -594,7 +622,7 @@ the Forward button to continue.</property>
                 <property name="n_rows">2</property>
                 <property name="n_columns">2</property>
                 <property name="column_spacing">6</property>
-                <property name="row_spacing">6</property>
+                <property name="row_spacing">3</property>
                 <child>
                   <widget class="GtkImage" id="image6">
                     <property name="visible">True</property>
@@ -610,6 +638,7 @@ the Forward button to continue.</property>
                   <widget class="GtkLabel" id="label_backing_up">
                     <property name="visible">True</property>
                     <property name="xalign">0.05000000074505806</property>
+                    <property name="xpad">6</property>
                     <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
 Currently backing up. This may take some time.</property>
                     <property name="use_markup">True</property>
@@ -617,6 +646,8 @@ Currently backing up. This may take some time.</property>
                   <packing>
                     <property name="left_attach">1</property>
                     <property name="right_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"></property>
                   </packing>
                 </child>
                 <child>
@@ -697,6 +728,8 @@ Currently backing up. This may take some time.</property>
                 <property name="visible">True</property>
                 <property name="n_rows">2</property>
                 <property name="n_columns">2</property>
+                <property name="column_spacing">6</property>
+                <property name="row_spacing">3</property>
                 <child>
                   <widget class="GtkImage" id="image_finished">
                     <property name="visible">True</property>
@@ -712,6 +745,7 @@ Currently backing up. This may take some time.</property>
                   <widget class="GtkLabel" id="label_finished">
                     <property name="visible">True</property>
                     <property name="xalign">0.05000000074505806</property>
+                    <property name="xpad">6</property>
                     <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
 
 </property>
@@ -765,7 +799,7 @@ Currently backing up. This may take some time.</property>
                 <property name="n_rows">2</property>
                 <property name="n_columns">2</property>
                 <property name="column_spacing">6</property>
-                <property name="row_spacing">6</property>
+                <property name="row_spacing">3</property>
                 <child>
                   <widget class="GtkImage" id="image7">
                     <property name="visible">True</property>
@@ -781,7 +815,7 @@ Currently backing up. This may take some time.</property>
                   <widget class="GtkLabel" id="label_restore_wizard">
                     <property name="visible">True</property>
                     <property name="xalign">0.05000000074505806</property>
-                    <property name="ypad">4</property>
+                    <property name="xpad">6</property>
                     <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
 Please select the backup you wish to restore
 and its destination below</property>
@@ -790,6 +824,7 @@ and its destination below</property>
                   <packing>
                     <property name="left_attach">1</property>
                     <property name="right_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
                     <property name="y_options"></property>
                   </packing>
                 </child>
@@ -881,7 +916,7 @@ and its destination below</property>
                 <property name="n_rows">3</property>
                 <property name="n_columns">2</property>
                 <property name="column_spacing">6</property>
-                <property name="row_spacing">6</property>
+                <property name="row_spacing">3</property>
                 <child>
                   <widget class="GtkImage" id="image8">
                     <property name="visible">True</property>
@@ -897,6 +932,7 @@ and its destination below</property>
                   <widget class="GtkLabel" id="label_restore_overview">
                     <property name="visible">True</property>
                     <property name="xalign">0.05000000074505806</property>
+                    <property name="xpad">6</property>
                     <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
 When you are happy with the settings below 
 press the Forward button to restore your backup</property>
@@ -905,6 +941,7 @@ press the Forward button to restore your backup</property>
                   <packing>
                     <property name="left_attach">1</property>
                     <property name="right_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
                     <property name="y_options"></property>
                   </packing>
                 </child>
@@ -1048,6 +1085,8 @@ press the Forward button to restore your backup</property>
                 <property name="visible">True</property>
                 <property name="n_rows">2</property>
                 <property name="n_columns">2</property>
+                <property name="column_spacing">6</property>
+                <property name="row_spacing">3</property>
                 <child>
                   <widget class="GtkImage" id="image10">
                     <property name="visible">True</property>
@@ -1117,6 +1156,7 @@ press the Forward button to restore your backup</property>
                   <widget class="GtkLabel" id="label_restore_progress">
                     <property name="visible">True</property>
                     <property name="xalign">0.05000000074505806</property>
+                    <property name="xpad">6</property>
                     <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;
 Now restoring your backup, this may take
 some time so please be patient</property>
@@ -1125,6 +1165,8 @@ some time so please be patient</property>
                   <packing>
                     <property name="left_attach">1</property>
                     <property name="right_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
+                    <property name="y_options"></property>
                   </packing>
                 </child>
                 <child>
@@ -1152,7 +1194,7 @@ some time so please be patient</property>
                 <property name="n_rows">2</property>
                 <property name="n_columns">2</property>
                 <property name="column_spacing">6</property>
-                <property name="row_spacing">6</property>
+                <property name="row_spacing">3</property>
                 <child>
                   <widget class="GtkImage" id="image_restore_finished">
                     <property name="visible">True</property>
@@ -1168,12 +1210,14 @@ some time so please be patient</property>
                   <widget class="GtkLabel" id="label_restore_finished">
                     <property name="visible">True</property>
                     <property name="xalign">0.05000000074505806</property>
+                    <property name="xpad">6</property>
                     <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Backup Tool&lt;/b&gt;&lt;/big&gt;</property>
                     <property name="use_markup">True</property>
                   </widget>
                   <packing>
                     <property name="left_attach">1</property>
                     <property name="right_attach">2</property>
+                    <property name="x_options">GTK_FILL</property>
                     <property name="y_options"></property>
                   </packing>
                 </child>
