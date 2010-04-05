@@ -35,7 +35,6 @@ try:
 	import gtk
 	import gtk.glade
 	import gettext
-	import subprocess
 	import threading
 	import tarfile
 	from time import strftime, gmtime
@@ -545,6 +544,7 @@ class MintBackup:
 			sztotal = str(len(members))
 			total = float(sztotal)
 			current_file = 0
+			MAX_BUF = 512
 			for record in members:
 				if(not self.operating):
 					break
@@ -553,9 +553,32 @@ class MintBackup:
 				gtk.gdk.threads_enter()
 				label.set_label(record.name)
 				pbar.set_fraction(fraction)
-				pbar.set_text("File " + str(current_file) + " of " + sztotal + " files")
+				pbar.set_text(str(current_file) + " / " + sztotal)
 				gtk.gdk.threads_leave()
-				tar.extract(record, self.restore_dest)
+				#tar.extract(record, self.restore_dest)
+				if(record.isdir()):
+					target = os.path.join(self.restore_dest, record.name)
+					if(not os.path.exists(target)):
+						os.mkdir(target)
+				if(record.isreg()):
+					target = os.path.join(self.restore_dest, record.name)
+					# todo: check existence of target and consult
+					# overwrite rule
+					gz = tar.extractfile(record)
+					out = open(target, "wb")
+					errflag = None
+					while True:
+						if(not self.operating):
+							errflag = True
+							break
+						read = gz.read(MAX_BUF)
+						if(not read):
+							break
+						out.write(read)
+					gz.close()
+					out.close()
+					if(errflag):
+						os.remove(target)
 			tar.close()
 		except Exception, detail:
 			self.error = str(detail)
