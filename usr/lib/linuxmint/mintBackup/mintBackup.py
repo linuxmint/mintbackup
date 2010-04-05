@@ -38,7 +38,6 @@ try:
 	import subprocess
 	import threading
 	import tarfile
-	from shutil import copy2
 	from time import strftime, gmtime
 except Exception, detail:
 	print "You do not have the required dependancies"
@@ -173,7 +172,7 @@ class MintBackup:
 		self.wTree.get_widget("label_current_file").set_label(_("Current file:"))
 
 		# i18n - Page 5 (backup complete)
-		self.wTree.get_widget("label_finished").set_label(_("Backup Tool"))
+		self.wTree.get_widget("label_finished").set_markup(_("<big><b>Backup Tool</b></big>"))
 
 		# i18n - Page 6 (Restore locations)
 		self.wTree.get_widget("label_restore_wizard").set_markup(_("<big><b>Backup Tool</b></big>\nPlease select the backup you wish to restore\nand its destination below"))
@@ -261,6 +260,9 @@ class MintBackup:
 			# choose source/dest
 			self.backup_source = self.wTree.get_widget("filechooserbutton_backup_source").get_filename()
 			self.backup_dest = self.wTree.get_widget("filechooserbutton_backup_dest").get_filename()
+			if(self.backup_source == self.backup_dest):
+				MessageDialog(_("Backup Tool"), _("Your source and destination directories cannot be the same"), gtk.MESSAGE_WARNING).show()
+				return
 			book.set_current_page(2)
 		elif(sel == 2):
 			# show overview
@@ -419,27 +421,27 @@ class MintBackup:
 									file2 = os.path.getsize(target)
 									if(file1 > file2):
 										os.remove(target)
-										copy2(rpath, target)
+										self.copy_file(rpath, target)
 								elif(del_policy == 2):
 									# source size < dest size
 									file1 = os.path.getsize(rpath)
 									file2 = os.path.getsize(target)
 									if(file1 < file2):
 										os.remove(target)
-										copy2(rpath, target)
+										self.copy_file(rpath, target)
 								elif(del_policy == 3):
 									# source newer (less seconds from epoch)
 									file1 = os.path.getmtime(rpath)
 									file2 = os.path.getmtime(target)
 									if(file1 < file2):
 										os.remove(target)
-										copy2(rpath, target)
+										self.copy_file(rpath, target)
 								elif(del_policy == 4):
 									# always delete
 									os.remove(target)
-									copy2(rpath, target)
+									self.copy_file(rpath, target)
 							else:
-								copy2(rpath, target)
+								self.copy_file(rpath, target)
 
 						current_file = current_file + 1
 						fraction = float(current_file / total)
@@ -483,6 +485,31 @@ class MintBackup:
 				return True
 		return False
 
+	''' Utility method - copy file, also provides a quick way of aborting a copy, which
+	    using modules doesn't allow me to do.. '''
+	def copy_file(self, source, dest):
+		# represents max buffer size
+		BUF_MAX = 1024 # so we don't get stuck on I/O ops
+		errfile = None
+		# We don't handle the errors :)
+		# They will be handed by the backup thread appropriately
+		src = open(source, 'rb')
+		dst = open(dest, 'wb')
+		while True:
+			if(not self.operating):
+				# Abort!
+				errfile = dest
+				break
+			read = src.read(BUF_MAX)
+			if(read):
+				dst.write(read)
+			else:
+				break
+		if(errfile):
+			# Remove aborted file (avoid corruption)
+			os.remove(errfile)
+		src.close()
+		dst.close()
 
 	''' Open the relevant archive manager '''
 	def open_archive_callback(self, widget):
