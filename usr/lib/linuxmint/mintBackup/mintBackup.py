@@ -37,6 +37,8 @@ try:
 	import gettext
 	import threading
 	import tarfile
+	import stat
+	import shutil
 	from time import strftime, gmtime
 except Exception, detail:
 	print "You do not have the required dependancies"
@@ -504,6 +506,9 @@ class MintBackup:
 		errfile = None
 		# We don't handle the errors :)
 		# They will be handed by the backup thread appropriately
+		finfo = os.stat(source)
+		owner = finfo[stat.ST_UID]
+		group = finfo[stat.ST_GID]
 		src = open(source, 'rb')
 		dst = open(dest, 'wb')
 		while True:
@@ -516,11 +521,19 @@ class MintBackup:
 				dst.write(read)
 			else:
 				break
+		src.close()
 		if(errfile):
 			# Remove aborted file (avoid corruption)
+			dst.close()
 			os.remove(errfile)
-		src.close()
-		dst.close()
+		else:
+			# set permissions
+			fd = dst.fileno()
+			os.fchown(fd, owner, group)
+			dst.flush()
+			os.fsync(fd)
+			dst.close()
+			shutil.copystat(source, dest)
 
 	''' Open the relevant archive manager '''
 	def open_archive_callback(self, widget):
