@@ -38,7 +38,6 @@ try:
 	import subprocess
 	import threading
 	import tarfile
-	from shutil import copy2
 	from time import strftime, gmtime
 except Exception, detail:
 	print "You do not have the required dependancies"
@@ -422,27 +421,27 @@ class MintBackup:
 									file2 = os.path.getsize(target)
 									if(file1 > file2):
 										os.remove(target)
-										copy2(rpath, target)
+										self.copy_file(rpath, target)
 								elif(del_policy == 2):
 									# source size < dest size
 									file1 = os.path.getsize(rpath)
 									file2 = os.path.getsize(target)
 									if(file1 < file2):
 										os.remove(target)
-										copy2(rpath, target)
+										self.copy_file(rpath, target)
 								elif(del_policy == 3):
 									# source newer (less seconds from epoch)
 									file1 = os.path.getmtime(rpath)
 									file2 = os.path.getmtime(target)
 									if(file1 < file2):
 										os.remove(target)
-										copy2(rpath, target)
+										self.copy_file(rpath, target)
 								elif(del_policy == 4):
 									# always delete
 									os.remove(target)
-									copy2(rpath, target)
+									self.copy_file(rpath, target)
 							else:
-								copy2(rpath, target)
+								self.copy_file(rpath, target)
 
 						current_file = current_file + 1
 						fraction = float(current_file / total)
@@ -486,6 +485,31 @@ class MintBackup:
 				return True
 		return False
 
+	''' Utility method - copy file, also provides a quick way of aborting a copy, which
+	    using modules doesn't allow me to do.. '''
+	def copy_file(self, source, dest):
+		# represents max buffer size
+		BUF_MAX = 1024 # so we don't get stuck on I/O ops
+		errfile = None
+		# We don't handle the errors :)
+		# They will be handed by the backup thread appropriately
+		src = open(source, 'rb')
+		dst = open(dest, 'wb')
+		while True:
+			if(not self.operating):
+				# Abort!
+				errfile = dest
+				break
+			read = src.read(BUF_MAX)
+			if(read):
+				dst.write(read)
+			else:
+				break
+		if(errfile):
+			# Remove aborted file (avoid corruption)
+			os.remove(errfile)
+		src.close()
+		dst.close()
 
 	''' Open the relevant archive manager '''
 	def open_archive_callback(self, widget):
