@@ -589,9 +589,18 @@ class MintBackup:
 							break
 						out.write(read)
 					gz.close()
-					out.close()
 					if(errflag):
+						out.close()
 						os.remove(target)
+					else:
+						# set permissions
+						fd = out.fileno()
+						os.fchown(fd, record.uid, record.gid)
+						os.fchmod(fd, record.mode)
+						out.flush()
+						os.fsync(fd)
+						out.close()
+						os.utime(target, (record.mtime, record.mtime))
 			tar.close()
 		except Exception, detail:
 			self.error = str(detail)
