@@ -346,25 +346,16 @@ class MintBackup:
 		pbar = self.wTree.get_widget("progressbar1")
 		label = self.wTree.get_widget("label_current_file_value")
 		os.chdir(self.backup_source)
-		# We should catch errors.. i.e. subprocess's stderr
 		label.set_label(_("Calculating..."))
 		pbar.set_text(_("Calculating..."))
-		cmd = "find . 2>/dev/null"
-	#	for row in self.wTree.get_widget("treeview_excludes"):
-	#		cmd = cmd + " | grep -v \"" + row[2] + "\""
-	#	cmd = cmd + " | wc -l"
-	#	sztotal = commands.getoutput(cmd)
 
 		# get a count of all the files
-		tout = subprocess.Popen("find .", shell=True, bufsize=256, stdout=subprocess.PIPE)
 		total = 0
-		for c in tout.stdout:
+		for top,dirs,files in os.walk(self.backup_source):
+			total += len(files)
+			total += len(dirs)
 			pbar.pulse()
-			c = c.rstrip("\r\n")
-			path = os.path.relpath(c)
-			rpath = os.path.join(self.backup_source, path)
-			if(not self.is_excluded(rpath)):
-				total = total +1
+			
 		sztotal = str(total)
 		total = float(total)
 
@@ -377,43 +368,64 @@ class MintBackup:
 		sel = self.wTree.get_widget("combobox_compress").get_active()
 		comp = self.wTree.get_widget("combobox_compress").get_model()[sel]
 		try:
-			out = subprocess.Popen("find . 2>/dev/null", shell=True, bufsize=256, stdout=subprocess.PIPE)
 			if(comp[1] is not None):
 				filetime = strftime("%Y-%m-%d-%H%M-backup", gmtime())
 				filename = os.path.join(self.backup_dest, filetime + comp[2])
 				tar = tarfile.open(filename, comp[1])
-				for f in out.stdout:
+				for top,dirs,files in os.walk(self.backup_source):
 					if(not self.operating):
 						break
-					f = f.rstrip("\r\n")
-					path = os.path.relpath(f)
-					rpath = os.path.join(self.backup_source, path)
-					if(not self.is_excluded(rpath)):
-						current_file = current_file + 1
-						fraction = float(current_file / total)
-
-						gtk.gdk.threads_enter()
-						pbar.set_fraction(fraction)
-						label.set_label(f)
-						pbar.set_text(str(current_file) + " / " + sztotal)
-						gtk.gdk.threads_leave()
-	
-						tar.add(f, arcname=None,recursive=False,exclude=None)
+					for d in dirs:
+						rpath = os.path.join(top, d)
+						path = os.path.relpath(rpath)
+						if(not self.is_excluded(rpath)):
+							current_file = current_file + 1
+							fraction = float(current_file / total)
+							gtk.gdk.threads_enter()
+							pbar.set_fraction(fraction)
+							label.set_label(path)
+							pbar.set_text(str(current_file) + " / " + sztotal)
+							gtk.gdk.threads_leave()
+							tar.add(rpath, arcname=path, recursive=False, exclude=None)
+					for f in files:
+						rpath = os.path.join(top, f)
+						path = os.path.relpath(rpath)
+						if(not self.is_excluded(rpath)):
+							current_file = current_file + 1
+							fraction = float(current_file / total)
+							gtk.gdk.threads_enter()
+							pbar.set_fraction(fraction)
+							label.set_label(path)
+							pbar.set_text(str(current_file) + " / " +sztotal)
+							gtk.gdk.threads_leave()
+							tar.add(rpath, arcname=path, recursive=False, exclude=None)
 				tar.close()
 			else:
 				# Copy to other directory, possibly on another device
-				for f in out.stdout:
+				for top,dirs,files in os.walk(self.backup_source):
 					if(not self.operating):
 						break
-					f = f.rstrip("\r\n")
-					path = os.path.relpath(f)
-					rpath = os.path.join(self.backup_source, path)
-					# Don't deal with excluded files..
-					if(not self.is_excluded(rpath)):
+					for d in dirs:
+						# make directories
+						rpath = os.path.join(top, d)
+						path = os.path.relpath(rpath)
 						target = os.path.join(self.backup_dest, path)
-						if(os.path.isdir(rpath) and not os.path.exists(target)):
+						if(not os.path.exists(target)):
 							os.mkdir(target)
-						else:
+							
+						current_file = current_file + 1
+						fraction = float(current_file / total)
+						gtk.gdk.threads_enter()
+						pbar.set_fraction(fraction)
+						label.set_label(path)
+						pbar.set_text(str(current_file) + " / " + sztotal)
+						gtk.gdk.threads_leave()
+					
+					for f in files:
+						rpath = os.path.join(top, f)
+						path = os.path.relpath(rpath)
+						if(not self.is_excluded(rpath)):
+							target = os.path.join(self.backup_dest, path)
 							if(os.path.exists(target)):
 								if(del_policy == 1):
 									# source size > dest size
@@ -423,7 +435,7 @@ class MintBackup:
 										os.remove(target)
 										self.copy_file(rpath, target)
 								elif(del_policy == 2):
-									# source size < dest size
+										# source size < dest size
 									file1 = os.path.getsize(rpath)
 									file2 = os.path.getsize(target)
 									if(file1 < file2):
@@ -442,15 +454,15 @@ class MintBackup:
 									self.copy_file(rpath, target)
 							else:
 								self.copy_file(rpath, target)
-
+								
 						current_file = current_file + 1
 						fraction = float(current_file / total)
-
 						gtk.gdk.threads_enter()
 						pbar.set_fraction(fraction)
-						label.set_label(f)
-						pbar.set_text("File " + str(current_file) + " of " + sztotal + " files")
+						label.set_label(path)
+						pbar.set_text(str(current_file) + " / " + sztotal)
 						gtk.gdk.threads_leave()
+						
 		except Exception, detail:
 			self.error = str(detail)
 		if(self.error is not None):
