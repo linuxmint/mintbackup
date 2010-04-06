@@ -248,7 +248,6 @@ gzip</property>
                       <widget class="GtkFileChooserButton" id="filechooserbutton_backup_dest">
                         <property name="visible">True</property>
                         <property name="action">select-folder</property>
-                        <property name="create_folders">False</property>
                       </widget>
                       <packing>
                         <property name="left_attach">1</property>
@@ -262,8 +261,8 @@ gzip</property>
                     <child>
                       <widget class="GtkFileChooserButton" id="filechooserbutton_backup_source">
                         <property name="visible">True</property>
-                        <property name="action">select-folder</property>
                         <property name="create_folders">False</property>
+                        <property name="action">select-folder</property>
                       </widget>
                       <packing>
                         <property name="left_attach">1</property>
