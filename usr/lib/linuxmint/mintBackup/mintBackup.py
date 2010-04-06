@@ -40,7 +40,7 @@ try:
 	import stat
 	import shutil
 	import hashlib
-	from time import strftime, gmtime, sleep
+	from time import strftime, localtime, sleep
 except Exception, detail:
 	print "You do not have the required dependancies"
 
@@ -395,7 +395,7 @@ class MintBackup:
 		comp = self.wTree.get_widget("combobox_compress").get_model()[sel]
 		try:
 			if(comp[1] is not None):
-				filetime = strftime("%Y-%m-%d-%H%M-backup", gmtime())
+				filetime = strftime("%Y-%m-%d-%H%M-backup", localtime())
 				filename = os.path.join(self.backup_dest, filetime + comp[2])
 				tar = tarfile.open(filename, comp[1])
 				for top,dirs,files in os.walk(self.backup_source):
