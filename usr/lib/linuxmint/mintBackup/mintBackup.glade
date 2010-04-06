@@ -261,8 +261,8 @@ gzip</property>
                     <child>
                       <widget class="GtkFileChooserButton" id="filechooserbutton_backup_source">
                         <property name="visible">True</property>
-                        <property name="action">select-folder</property>
                         <property name="create_folders">False</property>
+                        <property name="action">select-folder</property>
                       </widget>
                       <packing>
                         <property name="left_attach">1</property>
@@ -1180,6 +1180,18 @@ some time so please be patient</property>
                     <property name="visible">True</property>
                     <property name="orientation">vertical</property>
                     <child>
+                      <widget class="GtkLabel" id="label_restore_file_count">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="xpad">6</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
                       <widget class="GtkHBox" id="hbox3">
                         <property name="visible">True</property>
                         <child>
@@ -1214,7 +1226,7 @@ some time so please be patient</property>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
                         <property name="padding">3</property>
-                        <property name="position">0</property>
+                        <property name="position">2</property>
                       </packing>
                     </child>
                     <child>
@@ -1226,7 +1238,7 @@ some time so please be patient</property>
                         <property name="fill">False</property>
                         <property name="padding">1</property>
                         <property name="pack_type">end</property>
-                        <property name="position">1</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                   </widget>

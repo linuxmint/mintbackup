@@ -633,6 +633,14 @@ class MintBackup:
 		# for non gnome environments
 		os.system("file-roller \"" + self.restore_source + "\" &")
 
+	''' Update the restore progress bar '''
+	def update_restore_progress(self, current, total):
+		current = float(current)
+		total = float(total)
+		fraction = float(current / total)
+		self.wTree.get_widget("progressbar_restore").set_fraction(fraction)
+		self.wTree.get_widget("progressbar_restore").set_text(str(int(fraction *100)) + "%")
+
 	''' Restore from archive '''
 	def restore(self):
 		gtk.gdk.threads_enter()
@@ -654,24 +662,25 @@ class MintBackup:
 				if(not self.operating):
 					break
 				current_file = current_file + 1
-				fraction = float(current_file / total)
 				gtk.gdk.threads_enter()
 				label.set_label(record.name)
-				pbar.set_fraction(fraction)
-				pbar.set_text(str(current_file) + " / " + sztotal)
 				gtk.gdk.threads_leave()
-				#tar.extract(record, self.restore_dest)
 				if(record.isdir()):
 					target = os.path.join(self.restore_dest, record.name)
+					self.wTree.get_widget("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
 					if(not os.path.exists(target)):
 						os.mkdir(target)
+
 				if(record.isreg()):
 					target = os.path.join(self.restore_dest, record.name)
 					# todo: check existence of target and consult
 					# overwrite rule
+					self.wTree.get_widget("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
 					gz = tar.extractfile(record)
 					out = open(target, "wb")
 					errflag = None
+					total = record.size
+					current = 0
 					while True:
 						if(not self.operating):
 							errflag = True
@@ -680,6 +689,8 @@ class MintBackup:
 						if(not read):
 							break
 						out.write(read)
+						current += len(read)
+						self.update_restore_progress(current, total)
 					gz.close()
 					if(errflag):
 						out.close()
