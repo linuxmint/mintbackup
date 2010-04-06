@@ -353,10 +353,14 @@ class MintBackup:
 		# get a count of all the files
 		total = 0
 		for top,dirs,files in os.walk(self.backup_source):
-			total += len(files)
-			total += len(dirs)
 			pbar.pulse()
-			
+			for d in dirs:
+				if(not self.is_excluded(os.path.join(top, d))):
+					total += 1
+			for f in files:
+				if(not self.is_excluded(os.path.join(top, f))):
+					total += 1
+								
 		sztotal = str(total)
 		total = float(total)
 
@@ -387,6 +391,7 @@ class MintBackup:
 							label.set_label(path)
 							pbar.set_text(str(current_file) + " / " + sztotal)
 							gtk.gdk.threads_leave()
+							# TODO: Read manually and add to tar
 							tar.add(rpath, arcname=path, recursive=False, exclude=None)
 					for f in files:
 						rpath = os.path.join(top, f)
@@ -502,7 +507,7 @@ class MintBackup:
 	    using modules doesn't allow me to do.. '''
 	def copy_file(self, source, dest):
 		# represents max buffer size
-		BUF_MAX = 1024 # so we don't get stuck on I/O ops
+		BUF_MAX = 512 # so we don't get stuck on I/O ops
 		errfile = None
 		# We don't handle the errors :)
 		# They will be handed by the backup thread appropriately
