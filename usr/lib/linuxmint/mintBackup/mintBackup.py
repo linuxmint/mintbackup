@@ -485,7 +485,7 @@ class MintBackup:
 									os.remove(target)
 									self.t_copy_file(rpath, target)
 							else:
-								self.copy_file(rpath, target)
+								self.t_copy_file(rpath, target)
 								
 						current_file = current_file + 1
 						fraction = float(current_file / total)
@@ -536,11 +536,6 @@ class MintBackup:
 			# represents max buffer size
 			BUF_MAX = 512 # so we don't get stuck on I/O ops
 			errfile = None
-			# We don't handle the errors :)
-			# They will be handed by the backup thread appropriately
-			finfo = os.stat(source)
-			owner = finfo[stat.ST_UID]
-			group = finfo[stat.ST_GID]
 			src = open(source, 'rb')
 			dst = open(dest, 'wb')
 			while True:
@@ -561,6 +556,9 @@ class MintBackup:
 			else:
 				if(self.preserve_perms):
 					# set permissions
+					finfo = os.stat(source)
+					owner = finfo[stat.ST_UID]
+					group = finfo[stat.ST_GID]
 					fd = dst.fileno()
 					os.fchown(fd, owner, group)
 					dst.flush()
