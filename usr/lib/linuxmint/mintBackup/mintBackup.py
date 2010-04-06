@@ -39,7 +39,7 @@ try:
 	import tarfile
 	import stat
 	import shutil
-	from time import strftime, gmtime
+	from time import strftime, gmtime, sleep
 except Exception, detail:
 	print "You do not have the required dependancies"
 
@@ -86,6 +86,13 @@ class MintBackup:
 		# inidicates whether an operation is taking place.
 		self.operating = False
 
+		# maximum jobs
+		# TODO: Make this adjustable via the GUI
+		self.MAX_JOBS = 10
+		# blocking semaphore (thread safety)
+		self.blocker = threading.Semaphore(value=self.MAX_JOBS)
+		# count of present threads (limiter)
+		self.tcount = 0
 		# set up backup page 1 (source/dest/options)
 		# Displayname, [tarfile mode, file extension]
 		comps = gtk.ListStore(str,str,str)
@@ -355,9 +362,13 @@ class MintBackup:
 		for top,dirs,files in os.walk(self.backup_source):
 			pbar.pulse()
 			for d in dirs:
+				if(not self.operating):
+					break
 				if(not self.is_excluded(os.path.join(top, d))):
 					total += 1
 			for f in files:
+				if(not self.operating):
+					break
 				if(not self.is_excluded(os.path.join(top, f))):
 					total += 1
 								
@@ -439,27 +450,27 @@ class MintBackup:
 									file2 = os.path.getsize(target)
 									if(file1 > file2):
 										os.remove(target)
-										self.copy_file(rpath, target)
+										self.t_copy_file(rpath, target)
 								elif(del_policy == 2):
 										# source size < dest size
 									file1 = os.path.getsize(rpath)
 									file2 = os.path.getsize(target)
 									if(file1 < file2):
 										os.remove(target)
-										self.copy_file(rpath, target)
+										self.t_copy_file(rpath, target)
 								elif(del_policy == 3):
 									# source newer (less seconds from epoch)
 									file1 = os.path.getmtime(rpath)
 									file2 = os.path.getmtime(target)
 									if(file1 < file2):
 										os.remove(target)
-										self.copy_file(rpath, target)
+										self.t_copy_file(rpath, target)
 								elif(del_policy == 4):
 									# always delete
 									os.remove(target)
-									self.copy_file(rpath, target)
+									self.t_copy_file(rpath, target)
 							else:
-								self.copy_file(rpath, target)
+								self.t_copy_file(rpath, target)
 								
 						current_file = current_file + 1
 						fraction = float(current_file / total)
@@ -539,7 +550,18 @@ class MintBackup:
 			os.fsync(fd)
 			dst.close()
 			shutil.copystat(source, dest)
-
+		self.tcount -= 1
+			
+	''' "Thread managed" copy... '''
+	def t_copy_file(self, source, destination):
+		self.blocker.acquire()
+		while self.tcount >= self.MAX_JOBS:
+			sleep(0.1)
+		thread = threading.Thread(group=None, target=self.copy_file, name="mintBackup-copy", args=(source, destination), kwargs={})
+		thread.start()
+		self.tcount += 1
+		self.blocker.release()
+		
 	''' Open the relevant archive manager '''
 	def open_archive_callback(self, widget):
 		# TODO: Add code to find out which archive manager is available
