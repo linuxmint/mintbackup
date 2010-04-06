@@ -91,6 +91,8 @@ class MintBackup:
 		self.use_threads = False
 		# preserve permissions?
 		self.preserve_perms = False
+		# post-check files?
+		self.postcheck = True
 		# maximum jobs
 		# TODO: Make this adjustable via the GUI
 		self.MAX_JOBS = 10
@@ -570,6 +572,11 @@ class MintBackup:
 					dst.flush()
 					os.fsync(fd)
 					dst.close()
+				if(self.postcheck):
+					file1 = self.get_checksum(source)
+					file2 = self.get_checksum(dest)
+					if(file1 not in file2):
+						self.error = "Checksum Mismatch: [" + file1 + "] [" + file1 + "]"
 		except OSError as bad:
 			if(len(bad.args) > 2):
 				self.error = "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + bad.args[2] + "]"
