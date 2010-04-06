@@ -95,7 +95,7 @@ class MintBackup:
 		self.postcheck = True
 		# maximum jobs
 		# TODO: Make this adjustable via the GUI
-		self.MAX_JOBS = 10
+		self.MAX_JOBS = 1
 		# blocking semaphore (thread safety)
 		self.blocker = threading.Semaphore(value=self.MAX_JOBS)
 		# count of present threads (limiter)
@@ -408,9 +408,9 @@ class MintBackup:
 							current_file = current_file + 1
 							fraction = float(current_file / total)
 							gtk.gdk.threads_enter()
-							pbar.set_fraction(fraction)
+							#pbar.set_fraction(fraction)
 							label.set_label(path)
-							pbar.set_text(str(current_file) + " / " + sztotal)
+						#	pbar.set_text(str(current_file) + " / " + sztotal)
 							gtk.gdk.threads_leave()
 							# TODO: Read manually and add to tar
 							tar.add(rpath, arcname=path, recursive=False, exclude=None)
@@ -423,7 +423,7 @@ class MintBackup:
 							gtk.gdk.threads_enter()
 							pbar.set_fraction(fraction)
 							label.set_label(path)
-							pbar.set_text(str(current_file) + " / " +sztotal)
+						#	pbar.set_text(str(current_file) + " / " +sztotal)
 							gtk.gdk.threads_leave()
 							tar.add(rpath, arcname=path, recursive=False, exclude=None)
 				tar.close()
@@ -441,13 +441,10 @@ class MintBackup:
 							os.mkdir(target)
 							
 						current_file = current_file + 1
-						fraction = float(current_file / total)
 						gtk.gdk.threads_enter()
-						pbar.set_fraction(fraction)
 						label.set_label(path)
-						pbar.set_text(str(current_file) + " / " + sztotal)
 						gtk.gdk.threads_leave()
-					
+						self.wTree.get_widget("label_file_count").set_text(str(current_file) + " / " + sztotal)
 					for f in files:
 						rpath = os.path.join(top, f)
 						path = os.path.relpath(rpath)
@@ -490,13 +487,10 @@ class MintBackup:
 								self.t_copy_file(rpath, target)
 								
 						current_file = current_file + 1
-						fraction = float(current_file / total)
 						gtk.gdk.threads_enter()
-						pbar.set_fraction(fraction)
 						label.set_label(path)
-						pbar.set_text(str(current_file) + " / " + sztotal)
 						gtk.gdk.threads_leave()
-						
+						self.wTree.get_widget("label_file_count").set_text(str(current_file) + " / " + sztotal)
 		except Exception, detail:
 			self.error = str(detail)
 		if(self.error is not None):
@@ -531,6 +525,14 @@ class MintBackup:
 				return True
 		return False
 
+	''' Update the backup progress bar '''
+	def update_backup_progress(self, current, total):
+		current = float(current)
+		total = float(total)
+		fraction = float(current / total)
+		self.wTree.get_widget("progressbar1").set_fraction(fraction)
+		self.wTree.get_widget("progressbar1").set_text(str(int(fraction *100)) + "%")
+
 	''' Utility method - copy file, also provides a quick way of aborting a copy, which
 	    using modules doesn't allow me to do.. '''
 	def copy_file(self, source, dest):
@@ -539,6 +541,8 @@ class MintBackup:
 			BUF_MAX = 512 # so we don't get stuck on I/O ops
 			errfile = None
 			src = open(source, 'rb')
+			total = os.path.getsize(source)
+			current = 0
 			dst = open(dest, 'wb')
 			while True:
 				if(not self.operating or self.error is not None):
@@ -548,6 +552,8 @@ class MintBackup:
 				read = src.read(BUF_MAX)
 				if(read):
 					dst.write(read)
+					current += len(read)
+					self.update_backup_progress(current, total)
 				else:
 					break
 			src.close()

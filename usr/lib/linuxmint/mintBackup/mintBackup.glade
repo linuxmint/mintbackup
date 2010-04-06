@@ -261,8 +261,8 @@ gzip</property>
                     <child>
                       <widget class="GtkFileChooserButton" id="filechooserbutton_backup_source">
                         <property name="visible">True</property>
-                        <property name="create_folders">False</property>
                         <property name="action">select-folder</property>
+                        <property name="create_folders">False</property>
                       </widget>
                       <packing>
                         <property name="left_attach">1</property>
@@ -676,6 +676,19 @@ Currently backing up. This may take some time.</property>
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <child>
+                      <widget class="GtkLabel" id="label_file_count">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="xpad">6</property>
+                        <property name="label" translatable="yes">label</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
                       <widget class="GtkHBox" id="hbox1">
                         <property name="visible">True</property>
                         <child>
@@ -705,7 +718,7 @@ Currently backing up. This may take some time.</property>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
-                        <property name="position">0</property>
+                        <property name="position">2</property>
                       </packing>
                     </child>
                     <child>
