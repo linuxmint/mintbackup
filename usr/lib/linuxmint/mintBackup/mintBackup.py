@@ -87,6 +87,10 @@ class MintBackup:
 		# inidicates whether an operation is taking place.
 		self.operating = False
 
+		# use threads?
+		self.use_threads = False
+		# preserve permissions?
+		self.preserve_perms = False
 		# maximum jobs
 		# TODO: Make this adjustable via the GUI
 		self.MAX_JOBS = 10
@@ -481,7 +485,7 @@ class MintBackup:
 									os.remove(target)
 									self.t_copy_file(rpath, target)
 							else:
-								self.t_copy_file(rpath, target)
+								self.copy_file(rpath, target)
 								
 						current_file = current_file + 1
 						fraction = float(current_file / total)
@@ -555,13 +559,19 @@ class MintBackup:
 				dst.close()
 				os.remove(errfile)
 			else:
-				# set permissions
-				fd = dst.fileno()
-				os.fchown(fd, owner, group)
-				dst.flush()
-				os.fsync(fd)
-				dst.close()
-				shutil.copystat(source, dest)
+				if(self.preserve_perms):
+					# set permissions
+					fd = dst.fileno()
+					os.fchown(fd, owner, group)
+					dst.flush()
+					os.fsync(fd)
+					dst.close()
+					shutil.copystat(source, dest)
+				else:
+					fd = dst.fileno()
+					dst.flush()
+					os.fsync(fd)
+					dst.close()
 		except OSError as bad:
 			if(len(bad.args) > 2):
 				self.error = "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + bad.args[2] + "]"
@@ -572,17 +582,20 @@ class MintBackup:
 			
 	''' "Thread managed" copy... '''
 	def t_copy_file(self, source, destination):
-		try:
-			self.blocker.acquire()
-			while self.tcount >= self.MAX_JOBS:
-				sleep(0.1)
-			thread = threading.Thread(group=None, target=self.copy_file, name="mintBackup-copy", args=(source, destination), kwargs={})
-			thread.start()
-			self.tcount += 1
-			self.blocker.release()
-		except Exception, detail:
-			self.error = str(detail)
-			
+		if(self.use_threads):
+			try:
+				self.blocker.acquire()
+				while self.tcount >= self.MAX_JOBS:
+					sleep(0.1)
+				thread = threading.Thread(group=None, target=self.copy_file, name="mintBackup-copy", args=(source, destination), kwargs={})
+				thread.start()
+				self.tcount += 1
+				self.blocker.release()
+			except Exception, detail:
+				self.error = str(detail)
+		else:
+			self.copy_file(source, destination)
+	
 	''' Grab the checksum for the input file and return it '''
 	def get_checksum(self, source):
 		MAX_BUF = 512
