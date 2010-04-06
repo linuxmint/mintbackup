@@ -557,7 +557,7 @@ class MintBackup:
 			if(len(bad.args) > 2):
 				self.error = "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + bad.args[2] + "]"
 			else:
-				self.error = "{" + str(bad.args[0]) + "} " + bad.args[1]
+				self.error = "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + source + "]"
 		finally:
 			self.tcount -= 1
 			
