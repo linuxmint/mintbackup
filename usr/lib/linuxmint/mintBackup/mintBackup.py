@@ -42,10 +42,36 @@ try:
 	import hashlib
 	from time import strftime, localtime, sleep
 except Exception, detail:
-	print "You do not have the required dependancies"
+	print "You do not have the required dependencies"
 
 # i18n
 gettext.install("messages", "/usr/lib/linuxmint/mintBackup/locale")
+
+class TarFileMonitor():
+	''' Bit of a hack but I can figure out what tarfile is doing now.. (progress wise) '''
+	def __init__(self, target, callback):
+		self.counter = 0
+		self.size = 0
+		self.f = open(target, "rb")
+		self.name = self.f.name
+		self.fileno = self.f.fileno
+		self.callback = callback
+		self.size = os.path.getsize(target)
+	def read(self, size=None):
+		bytes = 0
+		if(size is not None):
+			bytes = self.f.read(size)
+			if(bytes):
+				self.counter += len(bytes)
+				self.callback(self.counter, self.size)
+		else:
+			bytes = self.f.read()
+			if(bytes is not None):
+				self.counter += len(bytes)
+				self.callback(self.counter, self.size)
+		return bytes
+	def close(self):
+		self.f.close()
 
 ''' Handy. Makes message dialogs easy :D '''
 class MessageDialog:
@@ -397,7 +423,7 @@ class MintBackup:
 			if(comp[1] is not None):
 				filetime = strftime("%Y-%m-%d-%H%M-backup", localtime())
 				filename = os.path.join(self.backup_dest, filetime + comp[2])
-				tar = tarfile.open(filename, comp[1])
+				tar = tarfile.open(name=filename, mode=comp[1], bufsize=1024)
 				for top,dirs,files in os.walk(self.backup_source):
 					if(not self.operating or self.error is not None):
 						break
@@ -406,26 +432,24 @@ class MintBackup:
 						path = os.path.relpath(rpath)
 						if(not self.is_excluded(rpath)):
 							current_file = current_file + 1
-							fraction = float(current_file / total)
 							gtk.gdk.threads_enter()
-							#pbar.set_fraction(fraction)
 							label.set_label(path)
-						#	pbar.set_text(str(current_file) + " / " + sztotal)
 							gtk.gdk.threads_leave()
-							# TODO: Read manually and add to tar
+							self.wTree.get_widget("label_file_count").set_text(str(current_file) + " / " + sztotal)
 							tar.add(rpath, arcname=path, recursive=False, exclude=None)
 					for f in files:
 						rpath = os.path.join(top, f)
 						path = os.path.relpath(rpath)
 						if(not self.is_excluded(rpath)):
 							current_file = current_file + 1
-							fraction = float(current_file / total)
 							gtk.gdk.threads_enter()
-							pbar.set_fraction(fraction)
 							label.set_label(path)
-						#	pbar.set_text(str(current_file) + " / " +sztotal)
 							gtk.gdk.threads_leave()
-							tar.add(rpath, arcname=path, recursive=False, exclude=None)
+							self.wTree.get_widget("label_file_count").set_text(str(current_file) + " / " + sztotal)
+							underfile = TarFileMonitor(rpath, self.update_backup_progress)
+							finfo = tar.gettarinfo(name=None, arcname=path, fileobj=underfile)
+							tar.addfile(fileobj=underfile, tarinfo=finfo)
+							underfile.close()
 				tar.close()
 			else:
 				# Copy to other directory, possibly on another device
