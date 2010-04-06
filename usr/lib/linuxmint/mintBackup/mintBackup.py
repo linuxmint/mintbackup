@@ -113,19 +113,10 @@ class MintBackup:
 		# inidicates whether an operation is taking place.
 		self.operating = False
 
-		# use threads?
-		self.use_threads = False
 		# preserve permissions?
 		self.preserve_perms = False
 		# post-check files?
 		self.postcheck = True
-		# maximum jobs
-		# TODO: Make this adjustable via the GUI
-		self.MAX_JOBS = 1
-		# blocking semaphore (thread safety)
-		self.blocker = threading.Semaphore(value=self.MAX_JOBS)
-		# count of present threads (limiter)
-		self.tcount = 0
 		# error?
 		self.error = None
 		
@@ -481,34 +472,34 @@ class MintBackup:
 									file2 = os.path.getsize(target)
 									if(file1 > file2):
 										os.remove(target)
-										self.t_copy_file(rpath, target)
+										self.copy_file(rpath, target)
 								elif(del_policy == 2):
 										# source size < dest size
 									file1 = os.path.getsize(rpath)
 									file2 = os.path.getsize(target)
 									if(file1 < file2):
 										os.remove(target)
-										self.t_copy_file(rpath, target)
+										self.copy_file(rpath, target)
 								elif(del_policy == 3):
 									# source newer (less seconds from epoch)
 									file1 = os.path.getmtime(rpath)
 									file2 = os.path.getmtime(target)
 									if(file1 < file2):
 										os.remove(target)
-										self.t_copy_file(rpath, target)
+										self.copy_file(rpath, target)
 								elif(del_policy == 4):
 									# checksums
 									file1 = self.get_checksum(rpath)
 									file2 = self.get_checksum(target)
 									if(file1 not in file2):
 										os.remove(target)
-										self.t_copy_file(rpath, target)
+										self.copy_file(rpath, target)
 								elif(del_policy == 5):
 									# always delete
 									os.remove(target)
-									self.t_copy_file(rpath, target)
+									self.copy_file(rpath, target)
 							else:
-								self.t_copy_file(rpath, target)
+								self.copy_file(rpath, target)
 								
 						current_file = current_file + 1
 						gtk.gdk.threads_enter()
@@ -612,24 +603,7 @@ class MintBackup:
 				self.error = "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + bad.args[2] + "]"
 			else:
 				self.error = "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + source + "]"
-		finally:
-			self.tcount -= 1
 			
-	''' "Thread managed" copy... '''
-	def t_copy_file(self, source, destination):
-		if(self.use_threads):
-			try:
-				self.blocker.acquire()
-				while self.tcount >= self.MAX_JOBS:
-					sleep(0.1)
-				thread = threading.Thread(group=None, target=self.copy_file, name="mintBackup-copy", args=(source, destination), kwargs={})
-				thread.start()
-				self.tcount += 1
-				self.blocker.release()
-			except Exception, detail:
-				self.error = str(detail)
-		else:
-			self.copy_file(source, destination)
 	
 	''' Grab the checksum for the input file and return it '''
 	def get_checksum(self, source):
