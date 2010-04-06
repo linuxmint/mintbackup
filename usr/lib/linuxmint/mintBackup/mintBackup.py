@@ -39,6 +39,7 @@ try:
 	import tarfile
 	import stat
 	import shutil
+	import hashlib
 	from time import strftime, gmtime, sleep
 except Exception, detail:
 	print "You do not have the required dependancies"
@@ -113,6 +114,7 @@ class MintBackup:
 		overs.append([_("Source file larger than destination")])
 		overs.append([_("Source file smaller than destination")])
 		overs.append([_("Source file newer than destination")])
+		overs.append([_("Checksum mismatch")])
 		overs.append([_("Always")])
 		self.wTree.get_widget("combobox_delete_dest").set_model(overs)
 		self.wTree.get_widget("combobox_delete_dest").set_active(0)
@@ -468,6 +470,13 @@ class MintBackup:
 										os.remove(target)
 										self.t_copy_file(rpath, target)
 								elif(del_policy == 4):
+									# checksums
+									file1 = self.get_checksum(rpath)
+									file2 = self.get_checksum(target)
+									if(file1 not in file2):
+										os.remove(target)
+										self.t_copy_file(rpath, target)
+								elif(del_policy == 5):
 									# always delete
 									os.remove(target)
 									self.t_copy_file(rpath, target)
@@ -574,6 +583,28 @@ class MintBackup:
 		except Exception, detail:
 			self.error = str(detail)
 			
+	''' Grab the checksum for the input file and return it '''
+	def get_checksum(self, source):
+		MAX_BUF = 512
+		try:
+			check = hashlib.sha1()
+			input = open(source, "rb")
+			while True:
+				if(not self.operating or self.error is not None):
+					return None
+				read = input.read(MAX_BUF)
+				if(not read):
+					break
+				check.update(read)
+			input.close()
+			return check.hexdigest()
+		except OSError as bad:
+			if(len(bad.args) > 2):
+				self.error = "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + bad.args[2] + "]"
+			else:
+				self.error = "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + source + "]"
+		return None
+		
 	''' Open the relevant archive manager '''
 	def open_archive_callback(self, widget):
 		# TODO: Add code to find out which archive manager is available
