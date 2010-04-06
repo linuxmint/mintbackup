@@ -115,8 +115,12 @@ class MintBackup:
 
 		# preserve permissions?
 		self.preserve_perms = False
+		# preserve times?
+		self.preserve_times = False
 		# post-check files?
 		self.postcheck = True
+		# follow symlinks?
+		self.follow_links = False
 		# error?
 		self.error = None
 		
@@ -142,6 +146,12 @@ class MintBackup:
 		self.wTree.get_widget("combobox_delete_dest").set_model(overs)
 		self.wTree.get_widget("combobox_delete_dest").set_active(0)
 
+		# advanced options
+		self.wTree.get_widget("checkbutton_integrity").set_active(True)
+		self.wTree.get_widget("checkbutton_integrity").connect("clicked", self.handle_checkbox)
+		self.wTree.get_widget("checkbutton_perms").connect("clicked", self.handle_checkbox)
+		self.wTree.get_widget("checkbutton_times").connect("clicked", self.handle_checkbox)
+		self.wTree.get_widget("checkbutton_links").connect("clicked", self.handle_checkbox)
 		# set up exclusions page
 		self.iconTheme = gtk.icon_theme_get_default()
 		self.dirIcon = self.iconTheme.load_icon("folder", 16, 0)
@@ -193,6 +203,10 @@ class MintBackup:
 		self.wTree.get_widget("label_expander").set_label(_("Advanced options"))
 		self.wTree.get_widget("label_compress").set_label(_("Output:"))
 		self.wTree.get_widget("label_overwrite_dest").set_label(_("Overwrite:"))
+		self.wTree.get_widget("checkbutton_integrity").set_label(_("Confirm integrity"))
+		self.wTree.get_widget("checkbutton_links").set_label(_("Follow symlinks"))
+		self.wTree.get_widget("checkbutton_perms").set_label(_("Preserve permissions"))
+		self.wTree.get_widget("checkbutton_times").set_label(_("Preserve timestamps"))
 
 		# i18n - Page 2 (choose files/directories to exclude)
 		self.wTree.get_widget("label_exclude_dirs").set_markup(_("<big><b>Backup Tool</b></big>\nIf you wish to exclude any files or directories from being\nbacked up by this wizard, please add them to the list below.\nAll files and directories listed here will NOT be backed up."))
@@ -227,6 +241,17 @@ class MintBackup:
 		# i18n - Page 9 (restore complete)
 		self.wTree.get_widget("label_restore_finished").set_markup(_("<big><b>Backup Tool</b></big>"))
 
+	''' handler for checkboxes '''
+	def handle_checkbox(self, widget):
+		if(widget == self.wTree.get_widget("checkbutton_integrity")):
+			self.postcheck = widget.get_active()
+		elif(widget == self.wTree.get_widget("checkbutton_perms")):
+			self.preserve_perms = widget.get_active()
+		elif(widget == self.wTree.get_widget("checkbutton_times")):
+			self.preserve_times = widget.get_active()
+		elif(widget == self.wTree.get_widget("checkbutton_links")):
+			self.follow_links = widget.get_active()
+	
 	''' Exclude file '''
 	def add_file_exclude(self, widget):
 		model = self.wTree.get_widget("treeview_excludes").get_model()
@@ -386,7 +411,7 @@ class MintBackup:
 
 		# get a count of all the files
 		total = 0
-		for top,dirs,files in os.walk(self.backup_source):
+		for top,dirs,files in os.walk(top=self.backup_source,onerror=None, followlinks=self.follow_links):
 			pbar.pulse()
 			for d in dirs:
 				if(not self.operating):
@@ -414,8 +439,8 @@ class MintBackup:
 			if(comp[1] is not None):
 				filetime = strftime("%Y-%m-%d-%H%M-backup", localtime())
 				filename = os.path.join(self.backup_dest, filetime + comp[2])
-				tar = tarfile.open(name=filename, mode=comp[1], bufsize=1024)
-				for top,dirs,files in os.walk(self.backup_source):
+				tar = tarfile.open(name=filename, dereference=self.follow_links, mode=comp[1], bufsize=1024)
+				for top,dirs,files in os.walk(top=self.backup_source, onerror=None, followlinks=self.follow_links):
 					if(not self.operating or self.error is not None):
 						break
 					for d in dirs:
@@ -444,7 +469,7 @@ class MintBackup:
 				tar.close()
 			else:
 				# Copy to other directory, possibly on another device
-				for top,dirs,files in os.walk(self.backup_source):
+				for top,dirs,files in os.walk(top=self.backup_source,onerror=None,followlinks=self.follow_links):
 					if(not self.operating or self.error is not None):
 						break
 					for d in dirs:
@@ -464,7 +489,12 @@ class MintBackup:
 						rpath = os.path.join(top, f)
 						path = os.path.relpath(rpath)
 						if(not self.is_excluded(rpath)):
-							target = os.path.join(self.backup_dest, path)
+							target = os.path.join(self.backup_dest, path)								
+							current_file = current_file + 1
+							gtk.gdk.threads_enter()
+							label.set_label(path)
+							gtk.gdk.threads_leave()
+							self.wTree.get_widget("label_file_count").set_text(str(current_file) + " / " + sztotal)
 							if(os.path.exists(target)):
 								if(del_policy == 1):
 									# source size > dest size
@@ -500,12 +530,6 @@ class MintBackup:
 									self.copy_file(rpath, target)
 							else:
 								self.copy_file(rpath, target)
-								
-						current_file = current_file + 1
-						gtk.gdk.threads_enter()
-						label.set_label(path)
-						gtk.gdk.threads_leave()
-						self.wTree.get_widget("label_file_count").set_text(str(current_file) + " / " + sztotal)
 		except Exception, detail:
 			self.error = str(detail)
 		if(self.error is not None):
@@ -577,22 +601,27 @@ class MintBackup:
 				dst.close()
 				os.remove(errfile)
 			else:
+				fd = dst.fileno()
+				if(self.preserve_times):
+					finfo = os.stat(source)
+					atime = finfo[stat.ST_ATIME]
+					mtime = finfo[stat.ST_MTIME]
+					os.utime(dest, (atime, mtime))
 				if(self.preserve_perms):
 					# set permissions
 					finfo = os.stat(source)
 					owner = finfo[stat.ST_UID]
 					group = finfo[stat.ST_GID]
-					fd = dst.fileno()
 					os.fchown(fd, owner, group)
 					dst.flush()
 					os.fsync(fd)
 					dst.close()
 					shutil.copystat(source, dest)
 				else:
-					fd = dst.fileno()
 					dst.flush()
 					os.fsync(fd)
 					dst.close()
+
 				if(self.postcheck):
 					file1 = self.get_checksum(source)
 					file2 = self.get_checksum(dest)
