@@ -100,11 +100,11 @@ class MintBackup:
 		# set up backup page 1 (source/dest/options)
 		# Displayname, [tarfile mode, file extension]
 		comps = gtk.ListStore(str,str,str)
-		comps.append([_("Do not archive"), None, None])
+		comps.append([_("Preserve structure"), None, None])
 		# file extensions mintBackup specific
-		comps.append([_("Archive with no compression"), "w", ".backup"])
-		comps.append([_("Archive and compress with bzip2"), "w:bz2", ".backup"])
-		comps.append([_("Archive and compress with gzip"), "w:gz", ".backup"])
+		comps.append([_(".tar file"), "w", ".tar"])
+		comps.append([_(".tar.bz2 file"), "w:bz2", ".tar.bz2"])
+		comps.append([_(".tar.gz file"), "w:gz", ".tar.gz"])
 		self.wTree.get_widget("combobox_compress").set_model(comps)
 		self.wTree.get_widget("combobox_compress").set_active(0)
 
@@ -168,7 +168,7 @@ class MintBackup:
 		self.wTree.get_widget("label_backup_source").set_label(_("Source:"))
 		self.wTree.get_widget("label_backup_dest").set_label(_("Destination:"))
 		self.wTree.get_widget("label_expander").set_label(_("Advanced options"))
-		self.wTree.get_widget("label_compress").set_label(_("Compression:"))
+		self.wTree.get_widget("label_compress").set_label(_("Output:"))
 		self.wTree.get_widget("label_overwrite_dest").set_label(_("Overwrite:"))
 
 		# i18n - Page 2 (choose files/directories to exclude)
