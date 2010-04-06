@@ -93,6 +93,9 @@ class MintBackup:
 		self.blocker = threading.Semaphore(value=self.MAX_JOBS)
 		# count of present threads (limiter)
 		self.tcount = 0
+		# error?
+		self.error = None
+		
 		# set up backup page 1 (source/dest/options)
 		# Displayname, [tarfile mode, file extension]
 		comps = gtk.ListStore(str,str,str)
@@ -350,7 +353,6 @@ class MintBackup:
 
 	''' Does the actual copying '''
 	def backup(self):
-		self.error = None
 		pbar = self.wTree.get_widget("progressbar1")
 		label = self.wTree.get_widget("label_current_file_value")
 		os.chdir(self.backup_source)
@@ -389,7 +391,7 @@ class MintBackup:
 				filename = os.path.join(self.backup_dest, filetime + comp[2])
 				tar = tarfile.open(filename, comp[1])
 				for top,dirs,files in os.walk(self.backup_source):
-					if(not self.operating):
+					if(not self.operating or self.error is not None):
 						break
 					for d in dirs:
 						rpath = os.path.join(top, d)
@@ -420,7 +422,7 @@ class MintBackup:
 			else:
 				# Copy to other directory, possibly on another device
 				for top,dirs,files in os.walk(self.backup_source):
-					if(not self.operating):
+					if(not self.operating or self.error is not None):
 						break
 					for d in dirs:
 						# make directories
@@ -517,51 +519,61 @@ class MintBackup:
 	''' Utility method - copy file, also provides a quick way of aborting a copy, which
 	    using modules doesn't allow me to do.. '''
 	def copy_file(self, source, dest):
-		# represents max buffer size
-		BUF_MAX = 512 # so we don't get stuck on I/O ops
-		errfile = None
-		# We don't handle the errors :)
-		# They will be handed by the backup thread appropriately
-		finfo = os.stat(source)
-		owner = finfo[stat.ST_UID]
-		group = finfo[stat.ST_GID]
-		src = open(source, 'rb')
-		dst = open(dest, 'wb')
-		while True:
-			if(not self.operating):
-				# Abort!
-				errfile = dest
-				break
-			read = src.read(BUF_MAX)
-			if(read):
-				dst.write(read)
+		try:
+			# represents max buffer size
+			BUF_MAX = 512 # so we don't get stuck on I/O ops
+			errfile = None
+			# We don't handle the errors :)
+			# They will be handed by the backup thread appropriately
+			finfo = os.stat(source)
+			owner = finfo[stat.ST_UID]
+			group = finfo[stat.ST_GID]
+			src = open(source, 'rb')
+			dst = open(dest, 'wb')
+			while True:
+				if(not self.operating or self.error is not None):
+					# Abort!
+					errfile = dest
+					break
+				read = src.read(BUF_MAX)
+				if(read):
+					dst.write(read)
+				else:
+					break
+			src.close()
+			if(errfile):
+				# Remove aborted file (avoid corruption)
+				dst.close()
+				os.remove(errfile)
 			else:
-				break
-		src.close()
-		if(errfile):
-			# Remove aborted file (avoid corruption)
-			dst.close()
-			os.remove(errfile)
-		else:
-			# set permissions
-			fd = dst.fileno()
-			os.fchown(fd, owner, group)
-			dst.flush()
-			os.fsync(fd)
-			dst.close()
-			shutil.copystat(source, dest)
-		self.tcount -= 1
+				# set permissions
+				fd = dst.fileno()
+				os.fchown(fd, owner, group)
+				dst.flush()
+				os.fsync(fd)
+				dst.close()
+				shutil.copystat(source, dest)
+		except OSError as bad:
+			if(len(bad.args) > 2):
+				self.error = "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + bad.args[2] + "]"
+			else:
+				self.error = "{" + str(bad.args[0]) + "} " + bad.args[1]
+		finally:
+			self.tcount -= 1
 			
 	''' "Thread managed" copy... '''
 	def t_copy_file(self, source, destination):
-		self.blocker.acquire()
-		while self.tcount >= self.MAX_JOBS:
-			sleep(0.1)
-		thread = threading.Thread(group=None, target=self.copy_file, name="mintBackup-copy", args=(source, destination), kwargs={})
-		thread.start()
-		self.tcount += 1
-		self.blocker.release()
-		
+		try:
+			self.blocker.acquire()
+			while self.tcount >= self.MAX_JOBS:
+				sleep(0.1)
+			thread = threading.Thread(group=None, target=self.copy_file, name="mintBackup-copy", args=(source, destination), kwargs={})
+			thread.start()
+			self.tcount += 1
+			self.blocker.release()
+		except Exception, detail:
+			self.error = str(detail)
+			
 	''' Open the relevant archive manager '''
 	def open_archive_callback(self, widget):
 		# TODO: Add code to find out which archive manager is available
