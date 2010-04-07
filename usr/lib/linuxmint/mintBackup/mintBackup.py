@@ -3,7 +3,7 @@
 # mintBackup - A GUI backup and restoration utility
 # Author: Ikey Doherty <contactjfreak@googlemail.com>
 # Several parts of this program originate from the original
-# mintDesktop code by Clement Lefebvre <root@linuxmint.com>
+# mintBackup code by Clement Lefebvre <root@linuxmint.com>
 # Those parts are the "MessageDialog" class, the add_folder_exclude,
 # remove_exclude and add_file_exclude methods (although somewhat modified)
 
@@ -577,7 +577,7 @@ class MintBackup:
 	def copy_file(self, source, dest):
 		try:
 			# represents max buffer size
-			BUF_MAX = 512 # so we don't get stuck on I/O ops
+			BUF_MAX = 1024 # so we don't get stuck on I/O ops
 			errfile = None
 			src = open(source, 'rb')
 			total = os.path.getsize(source)
