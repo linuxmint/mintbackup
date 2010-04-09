@@ -73,6 +73,30 @@ class TarFileMonitor():
 	def close(self):
 		self.f.close()
 
+''' Funkai little class for abuse-safety. all atrr's are set from file '''
+class mINIFile():
+	def load_from_string(self, line):
+		if(line.find(":")):
+			l = line.split(":")
+			if(len(l) >= 2):
+				tmp = " ".join(l[1:]).rstrip("\r\n")
+				setattr(self, l[0], tmp)
+		elif(line.find("=")):
+			l = line.split("=")
+			if(len(l) >= 2):
+				tmp = " ".join(l[1:]).rstrip("\r\n")
+				setattr(self, l[0], tmp)
+				
+	def load_from_list(self, list):
+		for line in list:
+			self.load_from_string(line)
+	def load_from_file(self, filename):
+		try:
+			fi = open(filename, "r")
+			self.load_from_list(fi.readlines())
+			fi.close()
+		except:
+			pass
 ''' Handy. Makes message dialogs easy :D '''
 class MessageDialog:
 
@@ -123,6 +147,9 @@ class MintBackup:
 		self.follow_links = False
 		# error?
 		self.error = None
+		# tarfile
+		self.tar = None
+		self.backup_source = ""
 		
 		# set up backup page 1 (source/dest/options)
 		# Displayname, [tarfile mode, file extension]
@@ -184,12 +211,13 @@ class MintBackup:
 		self.wTree.get_widget("button_forward").connect("clicked", self.forward_callback)
 		self.wTree.get_widget("button_cancel").connect("clicked", self.cancel_callback)
 
-		self.wTree.get_widget("main_window").connect("destroy", gtk.main_quit)
+		self.wTree.get_widget("main_window").connect("destroy", self.cancel_callback)
 		self.wTree.get_widget("main_window").set_title(_("Backup Tool"))
 		self.wTree.get_widget("main_window").show_all()
 
 		# open archive button, opens an archive... :P
 		self.wTree.get_widget("button_open_archive").connect("clicked", self.open_archive_callback)
+		self.wTree.get_widget("filechooserbutton_restore_source").connect("file-set", self.check_reset_file)
 
 		# i18n - Page 0 (choose backup or restore)
 		self.wTree.get_widget("label_wizard").set_markup(_("<big><b>Backup Tool</b></big>\nThis wizard will allow you to make a backup, or to\nrestore a previously created backup"))
@@ -200,6 +228,7 @@ class MintBackup:
 		self.wTree.get_widget("label_backup_dirs").set_markup(_("<big><b>Backup Tool</b></big>\nYou now need to choose the source and destination\ndirectories for the backup"))
 		self.wTree.get_widget("label_backup_source").set_label(_("Source:"))
 		self.wTree.get_widget("label_backup_dest").set_label(_("Destination:"))
+		self.wTree.get_widget("label_backup_desc").set_label(_("Description:"))
 		self.wTree.get_widget("label_expander").set_label(_("Advanced options"))
 		self.wTree.get_widget("label_compress").set_label(_("Output:"))
 		self.wTree.get_widget("label_overwrite_dest").set_label(_("Overwrite:"))
@@ -231,7 +260,8 @@ class MintBackup:
 
 		# i18n - Page 7 (Restore overview)
 		self.wTree.get_widget("label_restore_overview").set_markup(_("<big><b>Backup Tool</b></big>\nWhen you are happy with the settings below\npress the Forward button to restore your backup"))
-		self.wTree.get_widget("label_overview_source").set_markup(_("<b>Archive</b>"))
+		self.wTree.get_widget("label_overview_source").set_markup(_("<b>Archive:</b>"))
+		self.wTree.get_widget("label_overview_description").set_markup(_("<b>Description:</b>"))
 		self.wTree.get_widget("label_open_archive").set_label(_("Open"))
 
 		# i18n - Page 8 (restore status)
@@ -241,6 +271,15 @@ class MintBackup:
 		# i18n - Page 9 (restore complete)
 		self.wTree.get_widget("label_restore_finished").set_markup(_("<big><b>Backup Tool</b></big>"))
 
+	''' handle the file-set signal '''
+	def check_reset_file(self, w):
+		fileset = w.get_filename()
+		if(fileset not in self.backup_source):
+			if(self.tar is not None):
+				self.tar.close()
+				self.tar = None
+		self.backup_source = fileset
+		
 	''' handler for checkboxes '''
 	def handle_checkbox(self, widget):
 		if(widget == self.wTree.get_widget("checkbutton_integrity")):
@@ -297,6 +336,9 @@ class MintBackup:
 	
 	''' Cancel clicked '''
 	def cancel_callback(self, widget):
+		if(self.tar is not None):
+			self.tar.close()
+			self.tar = None
 		if(self.operating):
 			# in the middle of a job, let the appropriate thread
 			# handle the cancel
@@ -326,10 +368,12 @@ class MintBackup:
 				return
 			book.set_current_page(2)
 		elif(sel == 2):
+			self.description = self.wTree.get_widget("entry_desc").get_text()
 			# show overview
 			model = gtk.ListStore(str, str)
 			model.append([_("<b>Source</b>"), self.backup_source])
 			model.append([_("<b>Destination</b>"), self.backup_dest])
+			model.append([_("<b>Description</b>"), self.description])
 			# find compression format
 			sel = self.wTree.get_widget("combobox_compress").get_active()
 			comp = self.wTree.get_widget("combobox_compress").get_model()
@@ -369,7 +413,8 @@ class MintBackup:
 				# valid archive, continue.
 				self.wTree.get_widget("label_overview_source_value").set_label(self.restore_source)
 				self.wTree.get_widget("label_overview_dest_value").set_label(self.restore_dest)
-				book.set_current_page(7)
+				thread = threading.Thread(group=None, target=self.prepare_restore, name="mintBackup-prepare", args=(), kwargs={})
+				thread.start()
 			else:
 				MessageDialog(_("Backup Tool"), _("Please choose a valid archive file"), gtk.MESSAGE_WARNING).show()
 		elif(sel == 7):
@@ -395,12 +440,34 @@ class MintBackup:
 		if(sel == 6):
 			book.set_current_page(0)
 			self.wTree.get_widget("button_back").set_sensitive(False)
+			if(self.tar is not None):
+				self.tar.close()
+				self.tar = None
 		else:
 			sel = sel -1
 			if(sel == 0):
 				self.wTree.get_widget("button_back").set_sensitive(False)
 			book.set_current_page(sel)
 
+	''' Creates a .mintbackup file (for later restoration) '''
+	def create_backup_file(self):
+		self.description = "mintBackup"
+		desc = self.wTree.get_widget("entry_desc").get_text()
+		if(desc != ""):
+			self.description = desc
+		try:
+			of = os.path.join(self.backup_dest, ".mintbackup")
+			out = open(of, "w")
+			lines = [  "source: %s\n" % (self.backup_dest),
+						"destination: %s\n" % (self.backup_source),
+						"file_count: %s\n" % (self.file_count),
+						"description: %s\n" % (self.description) ]
+			out.writelines(lines)
+			out.close()
+		except:
+			return False
+		return True
+		
 	''' Does the actual copying '''
 	def backup(self):
 		pbar = self.wTree.get_widget("progressbar1")
@@ -425,10 +492,12 @@ class MintBackup:
 					total += 1
 								
 		sztotal = str(total)
+		self.file_count = sztotal
 		total = float(total)
 
 		current_file = 0
-
+		self.create_backup_file()
+		
 		# deletion policy
 		del_policy = self.wTree.get_widget("combobox_delete_dest").get_active()
 
@@ -440,6 +509,8 @@ class MintBackup:
 				filetime = strftime("%Y-%m-%d-%H%M-backup", localtime())
 				filename = os.path.join(self.backup_dest, filetime + comp[2])
 				tar = tarfile.open(name=filename, dereference=self.follow_links, mode=comp[1], bufsize=1024)
+				mintfile = os.path.join(self.backup_dest, ".mintbackup")
+				tar.add(mintfile, arcname=".mintbackup", recursive=False, exclude=None)
 				for top,dirs,files in os.walk(top=self.backup_source, onerror=None, followlinks=self.follow_links):
 					if(not self.operating or self.error is not None):
 						break
@@ -467,6 +538,7 @@ class MintBackup:
 							tar.addfile(fileobj=underfile, tarinfo=finfo)
 							underfile.close()
 				tar.close()
+				os.remove(mintfile)
 			else:
 				# Copy to other directory, possibly on another device
 				for top,dirs,files in os.walk(top=self.backup_source,onerror=None,followlinks=self.follow_links):
@@ -670,6 +742,35 @@ class MintBackup:
 		self.wTree.get_widget("progressbar_restore").set_fraction(fraction)
 		self.wTree.get_widget("progressbar_restore").set_text(str(int(fraction *100)) + "%")
 
+	''' prepare the restore, reads the .mintbackup file if present '''
+	def prepare_restore(self):
+		# TODO: check what type of restore is happening
+		if(self.tar is not None):
+			self.wTree.get_widget("notebook1").set_current_page(7)
+			return
+		self.wTree.get_widget("main_window").set_sensitive(False)
+		self.wTree.get_widget("main_window").window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+		self.conf = mINIFile()
+		try:
+			self.tar = tarfile.open(self.restore_source, "r")
+			mintfile = self.tar.getmember(".mintbackup")
+			if(mintfile is None):
+				self.error = "File is not a valid mintBackup archive. Aborting"
+				self.wTree.get_widget("button_forward").set_sensitive(False)
+				self.tar.close()
+				MessageDialog("Backup Tool", self.error, gtk.MESSAGE_ERROR).show()
+			else:
+				mfile = self.tar.extractfile(mintfile)
+				self.conf.load_from_list(mfile.readlines())
+				mfile.close()
+				self.wTree.get_widget("label_overview_description_value").set_label(self.conf.description)
+				self.wTree.get_widget("button_back").set_sensitive(True)
+				self.wTree.get_widget("notebook1").set_current_page(7)
+
+		except Exception, detail:
+			print detail
+		self.wTree.get_widget("main_window").set_sensitive(True)
+		self.wTree.get_widget("main_window").window.set_cursor(None)
 	''' Restore from archive '''
 	def restore(self):
 		gtk.gdk.threads_enter()
@@ -679,17 +780,19 @@ class MintBackup:
 		label.set_label(_("Calculating..."))
 		gtk.gdk.threads_leave()
 
+		# restore from archive
 		self.error = None
 		try:			
-			tar = tarfile.open(self.restore_source, "r")
-			members = tar.getmembers()
-			sztotal = str(len(members))
+			sztotal = self.conf.file_count
 			total = float(sztotal)
 			current_file = 0
 			MAX_BUF = 512
-			for record in members:
-				if(not self.operating):
+			for record in self.tar.getmembers():
+				if(not self.operating or self.error is not None):
 					break
+				if(record.name == ".mintbackup"):
+					# skip mintbackup file
+					continue
 				current_file = current_file + 1
 				gtk.gdk.threads_enter()
 				label.set_label(record.name)
@@ -705,7 +808,7 @@ class MintBackup:
 					# todo: check existence of target and consult
 					# overwrite rule
 					self.wTree.get_widget("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
-					gz = tar.extractfile(record)
+					gz = self.tar.extractfile(record)
 					out = open(target, "wb")
 					errflag = None
 					total = record.size
@@ -733,7 +836,7 @@ class MintBackup:
 						os.fsync(fd)
 						out.close()
 						os.utime(target, (record.mtime, record.mtime))
-			tar.close()
+			self.tar.close()
 		except Exception, detail:
 			self.error = str(detail)
 
