@@ -725,10 +725,10 @@ class MintBackup:
 	def get_checksum(self, source):
 		MAX_BUF = 512
 		current = 0
-		total = source.size
 		try:
 			check = hashlib.sha1()
 			input = open(source, "rb")
+			total = os.path.getsize(source)
 			while True:
 				if(not self.operating or self.error is not None):
 					return None
