@@ -218,7 +218,9 @@ class MintBackup:
 		# open archive button, opens an archive... :P
 		self.wTree.get_widget("button_open_archive").connect("clicked", self.open_archive_callback)
 		self.wTree.get_widget("filechooserbutton_restore_source").connect("file-set", self.check_reset_file)
-
+		self.wTree.get_widget("combobox_restore_del").set_model(overs)
+		self.wTree.get_widget("combobox_restore_del").set_active(0)
+		
 		# i18n - Page 0 (choose backup or restore)
 		self.wTree.get_widget("label_wizard").set_markup(_("<big><b>Backup Tool</b></big>\nThis wizard will allow you to make a backup, or to\nrestore a previously created backup"))
 		self.wTree.get_widget("radiobutton_backup").set_label(_("Create a new backup"))
@@ -257,6 +259,8 @@ class MintBackup:
 		self.wTree.get_widget("label_restore_wizard").set_markup(_("<big><b>Backup Tool</b></big>\nPlease select the backup you wish to restore\nand its destination below"))
 		self.wTree.get_widget("label_restore_source").set_label(_("Archive:"))
 		self.wTree.get_widget("label_restore_dest").set_label(_("Destination:"))
+		self.wTree.get_widget("label_restore_advanced").set_label(_("Advanced options"))
+		self.wTree.get_widget("label_restore_overwrite").set_label(_("Overwrite:"))
 
 		# i18n - Page 7 (Restore overview)
 		self.wTree.get_widget("label_restore_overview").set_markup(_("<big><b>Backup Tool</b></big>\nWhen you are happy with the settings below\npress the Forward button to restore your backup"))
@@ -706,7 +710,7 @@ class MintBackup:
 				self.error = "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + source + "]"
 			
 	
-	''' Grab the checksum for the input file and return it '''
+	''' Grab the checksum for the input filename and return it '''
 	def get_checksum(self, source):
 		MAX_BUF = 512
 		try:
@@ -727,6 +731,28 @@ class MintBackup:
 			else:
 				self.error = "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + source + "]"
 		return None
+
+	''' Grabs checksum for fileobj type object '''
+	def get_checksum_for_file(self, source):
+		MAX_BUF = 512
+		current = 0
+		total = source.size
+		try:
+			check = hashlib.sha1()
+			while True:
+				if(not self.operating or self.error is not None):
+					return None
+				read = source.read(MAX_BUF)
+				if(not read):
+					break
+				check.update(read)
+				current += len(read)
+				self.update_restore_progress(current, total, message="Calculating checksum")
+			source.close()
+			return check.hexdigest()
+		except Exception, detail:
+			self.error = str(detail)
+		return None
 		
 	''' Open the relevant archive manager '''
 	def open_archive_callback(self, widget):
@@ -735,12 +761,15 @@ class MintBackup:
 		os.system("file-roller \"" + self.restore_source + "\" &")
 
 	''' Update the restore progress bar '''
-	def update_restore_progress(self, current, total):
+	def update_restore_progress(self, current, total, message=None):
 		current = float(current)
 		total = float(total)
 		fraction = float(current / total)
 		self.wTree.get_widget("progressbar_restore").set_fraction(fraction)
-		self.wTree.get_widget("progressbar_restore").set_text(str(int(fraction *100)) + "%")
+		if(message is not None):
+			self.wTree.get_widget("progressbar_restore").set_text(message)
+		else:
+			self.wTree.get_widget("progressbar_restore").set_text(str(int(fraction *100)) + "%")
 
 	''' prepare the restore, reads the .mintbackup file if present '''
 	def prepare_restore(self):
@@ -771,8 +800,40 @@ class MintBackup:
 			print detail
 		self.wTree.get_widget("main_window").set_sensitive(True)
 		self.wTree.get_widget("main_window").window.set_cursor(None)
+		
+	''' extract file from archive '''
+	def extract_file(self, source, dest, record):
+		MAX_BUF = 512
+		current = 0
+		total = record.size
+		errflag = False
+		while True:
+			if(not self.operating):
+				errflag = True
+				break
+			read = source.read(MAX_BUF)
+			if(not read):
+				break
+			dest.write(read)
+			current += len(read)
+			self.update_restore_progress(current, total)
+		source.close()
+		if(errflag):
+			dest.close()
+			os.remove(target)
+		else:
+			# set permissions
+			fd = dest.fileno()
+			os.fchown(fd, record.uid, record.gid)
+			os.fchmod(fd, record.mode)
+			dest.flush()
+			os.fsync(fd)
+			dest.close()
+			os.utime(dest.name, (record.mtime, record.mtime))
+
 	''' Restore from archive '''
 	def restore(self):
+		del_policy = self.wTree.get_widget("combobox_restore_del").get_active()
 		gtk.gdk.threads_enter()
 		pbar = self.wTree.get_widget("progressbar_restore")
 		pbar.set_text(_("Calculating..."))
@@ -808,34 +869,64 @@ class MintBackup:
 					# todo: check existence of target and consult
 					# overwrite rule
 					self.wTree.get_widget("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
-					gz = self.tar.extractfile(record)
-					out = open(target, "wb")
-					errflag = None
-					total = record.size
-					current = 0
-					while True:
-						if(not self.operating):
-							errflag = True
-							break
-						read = gz.read(MAX_BUF)
-						if(not read):
-							break
-						out.write(read)
-						current += len(read)
-						self.update_restore_progress(current, total)
-					gz.close()
-					if(errflag):
-						out.close()
-						os.remove(target)
+					if(os.path.exists(target)):
+						if(del_policy == 1):
+							# source size > dest size
+							file1 = record.size
+							file2 = os.path.getsize(target)
+							if(file1 > file2):
+								os.remove(target)
+								gz = self.tar.extractfile(record)
+								out = open(target, "wb")
+								self.extract_file(gz, out, record)
+							else:
+								self.wTree.get_widget("progressbar_restore").set_text(_("Skipping identical file"))
+						elif(del_policy == 2):
+							# source size < dest size
+							file1 = record.size
+							file2 = os.path.getsize(target)
+							if(file1 < file2):
+								os.remove(target)
+								gz = self.tar.extractfile(record)
+								out = open(target, "wb")
+								self.extract_file(gz, out, record)
+							else:
+								self.wTree.get_widget("progressbar_restore").set_text(_("Skipping identical file"))
+						elif(del_policy == 3):
+								# source newer (less seconds from epoch)
+								file1 = record.mtime
+								file2 = os.path.getmtime(target)
+								if(file1 < file2):
+									os.remove(target)
+									gz = self.tar.extractfile(record)
+									out = open(target, "wb")
+									self.extract_file(gz, out, record)
+								else:
+									self.wTree.get_widget("progressbar_restore").set_text(_("Skipping identical file"))
+						elif(del_policy == 4):
+							# checksums
+							gz = self.tar.extractfile(record)
+							file1 = self.get_checksum_for_file(gz)
+							file2 = self.get_checksum(target)
+							if(file1 not in file2):
+								os.remove(target)
+								out = open(target, "wb")
+								gz.close()
+								gz = self.tar.extractfile(record)
+								self.extract_file(gz, out, record)
+							else:
+								self.wTree.get_widget("progressbar_restore").set_text(_("Skipping identical file"))
+						elif(del_policy == 5):
+							# always delete
+							os.remove(target)
+							gz = self.tar.extractfile(record)
+							out = open(target, "wb")
+							self.extract_file(gz, out, record)
 					else:
-						# set permissions
-						fd = out.fileno()
-						os.fchown(fd, record.uid, record.gid)
-						os.fchmod(fd, record.mode)
-						out.flush()
-						os.fsync(fd)
-						out.close()
-						os.utime(target, (record.mtime, record.mtime))
+						gz = self.tar.extractfile(record)
+						out = open(target, "wb")
+						self.extract_file(gz, out, record)
+
 			self.tar.close()
 		except Exception, detail:
 			self.error = str(detail)
