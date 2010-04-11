@@ -579,6 +579,8 @@ class MintBackup:
 									if(file1 > file2):
 										os.remove(target)
 										self.copy_file(rpath, target)
+									else:
+										self.wTree.get_widget("progressbar1").set_text(_("Skipping identical file"))
 								elif(del_policy == 2):
 										# source size < dest size
 									file1 = os.path.getsize(rpath)
@@ -586,6 +588,8 @@ class MintBackup:
 									if(file1 < file2):
 										os.remove(target)
 										self.copy_file(rpath, target)
+									else:
+										self.wTree.get_widget("progressbar1").set_text(_("Skipping identical file"))
 								elif(del_policy == 3):
 									# source newer (less seconds from epoch)
 									file1 = os.path.getmtime(rpath)
@@ -593,6 +597,8 @@ class MintBackup:
 									if(file1 < file2):
 										os.remove(target)
 										self.copy_file(rpath, target)
+									else:
+										self.wTree.get_widget("progressbar1").set_text(_("Skipping identical file"))
 								elif(del_policy == 4):
 									# checksums
 									file1 = self.get_checksum(rpath)
@@ -600,6 +606,8 @@ class MintBackup:
 									if(file1 not in file2):
 										os.remove(target)
 										self.copy_file(rpath, target)
+									else:
+										self.wTree.get_widget("progressbar1").set_text(_("Skipping identical file"))
 								elif(del_policy == 5):
 									# always delete
 									os.remove(target)
