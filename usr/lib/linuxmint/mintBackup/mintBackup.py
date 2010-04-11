@@ -649,12 +649,15 @@ class MintBackup:
 		return False
 
 	''' Update the backup progress bar '''
-	def update_backup_progress(self, current, total):
+	def update_backup_progress(self, current, total, message=None):
 		current = float(current)
 		total = float(total)
 		fraction = float(current / total)
 		self.wTree.get_widget("progressbar1").set_fraction(fraction)
-		self.wTree.get_widget("progressbar1").set_text(str(int(fraction *100)) + "%")
+		if(message is not None):
+			self.wTree.get_widget("progressbar1").set_text(message)
+		else:
+			self.wTree.get_widget("progressbar1").set_text(str(int(fraction *100)) + "%")
 
 	''' Utility method - copy file, also provides a quick way of aborting a copy, which
 	    using modules doesn't allow me to do.. '''
@@ -721,6 +724,8 @@ class MintBackup:
 	''' Grab the checksum for the input filename and return it '''
 	def get_checksum(self, source):
 		MAX_BUF = 512
+		current = 0
+		total = source.size
 		try:
 			check = hashlib.sha1()
 			input = open(source, "rb")
@@ -731,6 +736,8 @@ class MintBackup:
 				if(not read):
 					break
 				check.update(read)
+				current += len(read)
+				self.update_backup_progress(current, total, message="Calculating checksum")
 			input.close()
 			return check.hexdigest()
 		except OSError as bad:
