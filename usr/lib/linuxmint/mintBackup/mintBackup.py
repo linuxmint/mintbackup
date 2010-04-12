@@ -219,6 +219,7 @@ class MintBackup:
 		self.wTree.get_widget("button_back").connect("clicked", self.back_callback)
 		self.wTree.get_widget("button_forward").connect("clicked", self.forward_callback)
 		self.wTree.get_widget("button_cancel").connect("clicked", self.cancel_callback)
+		self.wTree.get_widget("button_about").connect("clicked", self.about_callback)
 
 		self.wTree.get_widget("button_back").hide()
 		self.wTree.get_widget("button_forward").hide()
@@ -323,6 +324,29 @@ class MintBackup:
 		self.wTree.get_widget("label_restore_package").set_markup(_("<big><b>Backup Tool</b></big>\nPlease choose the location of the backup list below"))
 		self.wTree.get_widget("label_list_source").set_markup(_("Package list:"))
 
+	''' show the pretty aboutbox. '''
+	def about_callback(self, w):
+		license = ""
+		try:
+			f = open("/usr/share/common-licenses/GPL", "r")
+			for line in f:
+				license += line
+		except:
+			license = "GPL"
+		box = gtk.AboutDialog()
+		box.connect("response", self.abt_resp)
+		box.set_license(license)
+		box.set_name("Backup Tool")
+		box.set_comments(_("Comprehensive desktop backup utility"))
+		box.set_authors(["Ikey Doherty <contactjfreak@googlemail.com>"])
+		box.set_logo_icon_name("user-home")
+		box.run()
+		box.destroy()
+	def abt_resp(self, w, r):
+		if r == gtk.RESPONSE_CANCEL:
+			w.hide()
+
+		
 	''' handle the file-set signal '''
 	def check_reset_file(self, w):
 		fileset = w.get_filename()
@@ -405,6 +429,7 @@ class MintBackup:
 		self.wTree.get_widget("button_back").show()
 		self.wTree.get_widget("button_back").set_sensitive(True)
 		self.wTree.get_widget("button_forward").show()
+		self.wTree.get_widget("button_about").hide()
 		
 		if(param == 10):
 			thr = threading.Thread(group=None, name="mintBackup-packages", target=self.load_packages, args=(), kwargs={})
@@ -516,6 +541,7 @@ class MintBackup:
 			self.wTree.get_widget("button_back").set_sensitive(False)
 			self.wTree.get_widget("button_back").hide()
 			self.wTree.get_widget("button_forward").hide()
+			self.wTree.get_widget("button_about").show()
 			if(self.tar is not None):
 				self.tar.close()
 				self.tar = None
@@ -524,6 +550,7 @@ class MintBackup:
 			if(sel == 0):
 				self.wTree.get_widget("button_back").hide()
 				self.wTree.get_widget("button_forward").hide()
+				self.wTree.get_widget("button_about").show()
 			book.set_current_page(sel)
 
 	''' Creates a .mintbackup file (for later restoration) '''

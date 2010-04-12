@@ -2166,6 +2166,20 @@ When you are happy with the selection press forward.</property>
             <property name="visible">True</property>
             <property name="layout_style">end</property>
             <child>
+              <widget class="GtkButton" id="button_about">
+                <property name="label">gtk-about</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
               <widget class="GtkButton" id="button_cancel">
                 <property name="label">gtk-close</property>
                 <property name="visible">True</property>
@@ -2177,7 +2191,7 @@ When you are happy with the selection press forward.</property>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
-                <property name="position">0</property>
+                <property name="position">1</property>
               </packing>
             </child>
             <child>
@@ -2193,7 +2207,7 @@ When you are happy with the selection press forward.</property>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
-                <property name="position">1</property>
+                <property name="position">2</property>
               </packing>
             </child>
             <child>
@@ -2207,7 +2221,7 @@ When you are happy with the selection press forward.</property>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
-                <property name="position">2</property>
+                <property name="position">3</property>
               </packing>
             </child>
           </widget>
