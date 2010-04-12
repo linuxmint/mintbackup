@@ -503,8 +503,8 @@ gzip</property>
                     <child>
                       <widget class="GtkFileChooserButton" id="filechooserbutton_backup_source">
                         <property name="visible">True</property>
-                        <property name="create_folders">False</property>
                         <property name="action">select-folder</property>
+                        <property name="create_folders">False</property>
                       </widget>
                       <packing>
                         <property name="left_attach">1</property>
@@ -530,8 +530,8 @@ gzip</property>
                     <child>
                       <widget class="GtkFileChooserButton" id="filechooserbutton_backup_dest">
                         <property name="visible">True</property>
-                        <property name="create_folders">False</property>
                         <property name="action">select-folder</property>
+                        <property name="create_folders">False</property>
                       </widget>
                       <packing>
                         <property name="left_attach">1</property>
@@ -1714,7 +1714,7 @@ some time so please be patient</property>
                   <widget class="GtkHBox" id="hbox23">
                     <property name="visible">True</property>
                     <child>
-                      <widget class="GtkLabel" id="label13">
+                      <widget class="GtkLabel" id="label_packages">
                         <property name="visible">True</property>
                         <property name="xalign">0.05000000074505806</property>
                         <property name="xpad">6</property>
@@ -1847,6 +1847,190 @@ When you are happy with the selection press forward.</property>
               </widget>
               <packing>
                 <property name="position">10</property>
+                <property name="tab_fill">False</property>
+                <property name="type">tab</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkVBox" id="vbox17">
+                <property name="visible">True</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <widget class="GtkHBox" id="hbox26">
+                    <property name="visible">True</property>
+                    <child>
+                      <widget class="GtkLabel" id="label_packages_backup">
+                        <property name="visible">True</property>
+                        <property name="xpad">6</property>
+                        <property name="label" translatable="yes">label</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkImage" id="image17">
+                        <property name="visible">True</property>
+                        <property name="xpad">6</property>
+                        <property name="pixel_size">48</property>
+                        <property name="icon_name">system-run</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="pack_type">end</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <widget class="GtkVBox" id="vbox18">
+                    <property name="visible">True</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <widget class="GtkHBox" id="hbox27">
+                        <property name="visible">True</property>
+                        <child>
+                          <widget class="GtkLabel" id="label_current_package">
+                            <property name="visible">True</property>
+                            <property name="xalign">0.05000000074505806</property>
+                            <property name="label" translatable="yes">label</property>
+                          </widget>
+                          <packing>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkLabel" id="label_current_package_value">
+                            <property name="visible">True</property>
+                            <property name="xalign">0.05000000074505806</property>
+                          </widget>
+                          <packing>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkProgressBar" id="progressbar_packages">
+                        <property name="visible">True</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="padding">3</property>
+                        <property name="pack_type">end</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="padding">3</property>
+                    <property name="pack_type">end</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="position">11</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkLabel" id="label14">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">packages-progress</property>
+              </widget>
+              <packing>
+                <property name="position">11</property>
+                <property name="tab_fill">False</property>
+                <property name="type">tab</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkVBox" id="vbox19">
+                <property name="visible">True</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <widget class="GtkHBox" id="hbox28">
+                    <property name="visible">True</property>
+                    <child>
+                      <widget class="GtkLabel" id="label_packages_done">
+                        <property name="visible">True</property>
+                        <property name="xalign">0.05000000074505806</property>
+                        <property name="xpad">6</property>
+                        <property name="label" translatable="yes">label</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkImage" id="image_packages_done">
+                        <property name="visible">True</property>
+                        <property name="xpad">6</property>
+                        <property name="pixel_size">48</property>
+                        <property name="icon_name">dialog-information</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="pack_type">end</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkLabel" id="label_packages_done_value">
+                    <property name="visible">True</property>
+                    <property name="xalign">0.05000000074505806</property>
+                    <property name="xpad">6</property>
+                    <property name="label" translatable="yes">label</property>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+              </widget>
+              <packing>
+                <property name="position">12</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkLabel" id="label13">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">packages done</property>
+              </widget>
+              <packing>
+                <property name="position">12</property>
                 <property name="tab_fill">False</property>
                 <property name="type">tab</property>
               </packing>

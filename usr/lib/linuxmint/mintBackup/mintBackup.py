@@ -296,6 +296,17 @@ class MintBackup:
 		# i18n - Page 9 (restore complete)
 		self.wTree.get_widget("label_restore_finished").set_markup(_("<big><b>Backup Tool</b></big>"))
 
+		# i18n - Page 10 (packages)
+		self.wTree.get_widget("label_packages").set_markup(_("<big><b>Backup Tool</b></big>\nA list of manually installed packages is displayed below\nWhen you are happy with the selection press forward."))
+		self.wTree.get_widget("label_save_as").set_label(_("Save as..."))
+		
+		# i18n - Page 11 (backing up packages)
+		self.wTree.get_widget("label_packages_backup").set_markup(_("<big><b>Backup Tool</b></big>\nCurrently backing up your package selection\nPlease wait"))
+		self.wTree.get_widget("label_current_package").set_label(_("Current package:"))
+		
+		# i18n - Page 12 (packages done)
+		self.wTree.get_widget("label_packages_done").set_markup(_("<big><b>Backup Tool</b></big>"))
+
 	''' handle the file-set signal '''
 	def check_reset_file(self, w):
 		fileset = w.get_filename()
@@ -458,6 +469,25 @@ class MintBackup:
 			self.wTree.get_widget("button_forward").set_sensitive(False)
 			self.wTree.get_widget("button_back").set_sensitive(False)
 			book.set_current_page(9)
+		elif(sel == 10):
+			# check package dest
+			self.package_dest = self.wTree.get_widget("entry_package_dest").get_text()
+			if(os.path.exists(self.package_dest)):
+				mbox = MessageDialog(_("Backup Tool"), _("Specified file already exists"), gtk.MESSAGE_ERROR)
+				mbox.show()
+				return
+			self.wTree.get_widget("button_back").set_sensitive(False)
+			self.wTree.get_widget("button_forward").set_sensitive(False)
+			book.set_current_page(11)
+			# times like this i realise people dont use threads.. someone's gonna hate me :D
+			self.operating = True
+			thr = threading.Thread(group=None, target=self.backup_packages, name="mintBackup-packages", args=(), kwargs={})
+			thr.start()
+		elif(sel == 11):
+			# show last page (backup packages done)
+			self.wTree.get_widget("button_forward").set_sensitive(False)
+			self.wTree.get_widget("button_back").set_sensitive(False)
+			book.set_current_page(12)
 
 	''' Back button '''
 	def back_callback(self, widget):
@@ -1020,7 +1050,7 @@ class MintBackup:
 		for pkg in cache:
 			if(pkg.installed):
 				if(self.is_manual_installed(pkg.name)):
-					desc = "<big>" + pkg.name + "</big>\n<small>" + pkg.installed.summary + "</small>"
+					desc = "<big>" + pkg.name + "</big>\n<small>" + pkg.installed.summary.replace("&", "&amp;") + "</small>"
 					gtk.gdk.threads_enter()
 					model.append([True, pkg.name, desc])
 					gtk.gdk.threads_leave()
@@ -1059,6 +1089,65 @@ class MintBackup:
 			self.package_dest = dialog.get_filename()
 			self.wTree.get_widget("entry_package_dest").set_text(self.package_dest)
 		dialog.destroy()
+
+	''' "backup" the package selection '''
+	def backup_packages(self):
+		pbar = self.wTree.get_widget("progressbar_packages")
+		lab = self.wTree.get_widget("label_current_package_value")
+		pbar.set_text(_("Calculating..."))
+		lab.set_label(_("Calculating..."))
+		
+		model = self.wTree.get_widget("treeview_packages").get_model()
+		total = 0
+		count = 0
+		for row in model:
+			if(not self.operating or self.error is not None):
+				break
+			if(not row[0]):
+				continue
+			total += 1
+		pbar.set_text("%d / %d" % (count, total))
+		try:
+			out = open(self.package_dest, "w")
+			for row in model:
+				if(not self.operating or self.error is not None):
+					break
+				if(row[0]):
+					count += 1
+					out.write(row[1] + "\n")
+					gtk.gdk.threads_enter()
+					pbar.set_text("%d / %d" % (count, total))
+					pbar.set_fraction(float(count / total))
+					lab.set_label(row[1])
+					gtk.gdk.threads_leave()
+			out.close()
+		except Exception, detail:
+			self.error = str(detail)
+			
+		if(self.error is not None):
+			gtk.gdk.threads_enter()
+			self.wTree.get_widget("label_packages_done_value").set_label(_("An error occured during backup:\n") + self.error)
+			img = self.iconTheme.load_icon("dialog-error", 48, 0)
+			self.wTree.get_widget("image_packages_done").set_from_pixbuf(img)
+			self.wTree.get_widget("notebook1").next_page()
+			gtk.gdk.threads_leave()
+		else:
+			if(not self.operating):
+				img = self.iconTheme.load_icon("dialog-warning", 48, 0)
+				self.wTree.get_widget("label_packages_done_value").set_label(_("Packages backup aborted"))
+				self.wTree.get_widget("image_packages_done").set_from_pixbuf(img)
+				self.wTree.get_widget("notebook1").next_page()
+				gtk.gdk.threads_leave()
+			else:
+				gtk.gdk.threads_enter()
+				lab.set_label("Done")
+				pbar.set_text("Done")
+				self.wTree.get_widget("label_packages_done_value").set_label(_("Your package list was succesfully backed up"))
+				img = self.iconTheme.load_icon("dialog-information", 48, 0)
+				self.wTree.get_widget("image_packages_done").set_from_pixbuf(img)
+				self.wTree.get_widget("button_forward").set_sensitive(True)
+				gtk.gdk.threads_leave()
+		self.operating = False
 		
 if __name__ == "__main__":
 	gtk.gdk.threads_init()
