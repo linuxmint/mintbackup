@@ -503,8 +503,8 @@ gzip</property>
                     <child>
                       <widget class="GtkFileChooserButton" id="filechooserbutton_backup_source">
                         <property name="visible">True</property>
-                        <property name="action">select-folder</property>
                         <property name="create_folders">False</property>
+                        <property name="action">select-folder</property>
                       </widget>
                       <packing>
                         <property name="left_attach">1</property>
@@ -530,8 +530,8 @@ gzip</property>
                     <child>
                       <widget class="GtkFileChooserButton" id="filechooserbutton_backup_dest">
                         <property name="visible">True</property>
-                        <property name="action">select-folder</property>
                         <property name="create_folders">False</property>
+                        <property name="action">select-folder</property>
                       </widget>
                       <packing>
                         <property name="left_attach">1</property>
@@ -2031,6 +2031,127 @@ When you are happy with the selection press forward.</property>
               </widget>
               <packing>
                 <property name="position">12</property>
+                <property name="tab_fill">False</property>
+                <property name="type">tab</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkVBox" id="vbox20">
+                <property name="visible">True</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <widget class="GtkHBox" id="hbox29">
+                    <property name="visible">True</property>
+                    <child>
+                      <widget class="GtkLabel" id="label_restore_package">
+                        <property name="visible">True</property>
+                        <property name="xalign">0.05000000074505806</property>
+                        <property name="xpad">6</property>
+                        <property name="label" translatable="yes">label</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkImage" id="image18">
+                        <property name="visible">True</property>
+                        <property name="xpad">6</property>
+                        <property name="pixel_size">48</property>
+                        <property name="icon_name">system-software-update</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="pack_type">end</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkTable" id="table4">
+                    <property name="visible">True</property>
+                    <property name="n_rows">2</property>
+                    <property name="n_columns">2</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="label_list_source">
+                        <property name="visible">True</property>
+                        <property name="xalign">0.05000000074505806</property>
+                        <property name="label" translatable="yes">label</property>
+                      </widget>
+                      <packing>
+                        <property name="y_options"></property>
+                        <property name="x_padding">6</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkFileChooserButton" id="filechooserbutton_package">
+                        <property name="visible">True</property>
+                        <property name="create_folders">False</property>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="y_options"></property>
+                        <property name="x_padding">6</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="padding">4</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkScrolledWindow" id="scroller_packages">
+                    <property name="can_focus">True</property>
+                    <property name="hscrollbar_policy">automatic</property>
+                    <property name="vscrollbar_policy">automatic</property>
+                    <child>
+                      <widget class="GtkViewport" id="viewport4">
+                        <property name="visible">True</property>
+                        <property name="resize_mode">queue</property>
+                        <child>
+                          <widget class="GtkTreeView" id="treeview_package_list">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="headers_visible">False</property>
+                            <property name="headers_clickable">False</property>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="position">13</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkLabel" id="label15">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">package restore</property>
+              </widget>
+              <packing>
+                <property name="position">13</property>
                 <property name="tab_fill">False</property>
                 <property name="type">tab</property>
               </packing>
