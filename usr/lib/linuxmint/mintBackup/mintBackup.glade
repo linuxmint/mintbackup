@@ -163,7 +163,7 @@ you have created</property>
                               <widget class="GtkImage" id="image13">
                                 <property name="visible">True</property>
                                 <property name="pixel_size">36</property>
-                                <property name="icon_name">system-software-update</property>
+                                <property name="icon_name">package-x-generic</property>
                               </widget>
                               <packing>
                                 <property name="expand">False</property>
@@ -204,7 +204,7 @@ of your package list</property>
                               <widget class="GtkImage" id="image14">
                                 <property name="visible">True</property>
                                 <property name="pixel_size">36</property>
-                                <property name="icon_name">package-x-generic</property>
+                                <property name="icon_name">system-software-update</property>
                               </widget>
                               <packing>
                                 <property name="expand">False</property>
