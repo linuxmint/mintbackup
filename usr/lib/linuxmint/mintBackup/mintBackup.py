@@ -344,6 +344,10 @@ class MintBackup:
 		self.wTree.get_widget("label_deselect_list").set_label(_("Deselect all"))
 		self.wTree.get_widget("label_refresh").set_label(_("Refresh"))
 		
+		# i18n - Page 16 (packages install done)
+		self.wTree.get_widget("label_install_done").set_markup(_("<big><b>Backup Tool</b></big>"))
+		self.wTree.get_widget("label_install_done_value").set_markup(_("Your package selection has been succesfully restored"))
+		
 	''' show the pretty aboutbox. '''
 	def about_callback(self, w):
 		license = ""
@@ -550,7 +554,6 @@ class MintBackup:
 				thr = threading.Thread(group=None, name="mintBackup-packages", target=self.backup_packages, args=(), kwargs={})
 				thr.start()
 		elif(sel == 14):
-			book.set_current_page(15)
 			thr = threading.Thread(group=None, name="mintBackup-packages", target=self.load_package_list, args=(), kwargs={})
 			thr.start()
 		elif(sel == 15):
@@ -1304,7 +1307,13 @@ class MintBackup:
 		gtk.gdk.threads_enter()
 		self.wTree.get_widget("main_window").set_sensitive(True)
 		self.wTree.get_widget("main_window").window.set_cursor(None)
-		self.wTree.get_widget("button_forward").set_sensitive(True)
+		if(len(model) == 0):
+			self.wTree.get_widget("button_forward").hide()
+			self.wTree.get_widget("button_back").hide()
+			self.wTree.get_widget("notebook1").set_current_page(16)
+		else:
+			self.wTree.get_widget("notebook1").set_current_page(15)
+			self.wTree.get_widget("button_forward").set_sensitive(True)
 		gtk.gdk.threads_leave()
 		
 	''' Installs the package selection '''
