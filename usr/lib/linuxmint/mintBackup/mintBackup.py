@@ -221,6 +221,7 @@ class MintBackup:
 		# nav buttons
 		self.wTree.get_widget("button_back").connect("clicked", self.back_callback)
 		self.wTree.get_widget("button_forward").connect("clicked", self.forward_callback)
+		self.wTree.get_widget("button_apply").connect("clicked", self.forward_callback)
 		self.wTree.get_widget("button_cancel").connect("clicked", self.cancel_callback)
 		self.wTree.get_widget("button_about").connect("clicked", self.about_callback)
 
@@ -492,10 +493,12 @@ class MintBackup:
 				model.append([_("<b>Exclude</b>"), row[2]])
 			self.wTree.get_widget("treeview_overview").set_model(model)
 			book.set_current_page(3)
+			self.wTree.get_widget("button_forward").hide()
+			self.wTree.get_widget("button_apply").show()
 		elif(sel == 3):
 			# start copying :D
 			book.set_current_page(4)
-			self.wTree.get_widget("button_forward").set_sensitive(False)
+			self.wTree.get_widget("button_apply").set_sensitive(False)
 			self.wTree.get_widget("button_back").set_sensitive(False)
 			self.operating = True
 			thread = threading.Thread(group=None, target=self.backup, name="mintBackup-copy", args=(), kwargs={})
@@ -520,11 +523,13 @@ class MintBackup:
 				self.wTree.get_widget("label_overview_dest_value").set_label(self.restore_dest)
 				thread = threading.Thread(group=None, target=self.prepare_restore, name="mintBackup-prepare", args=(), kwargs={})
 				thread.start()
+				self.wTree.get_widget("button_forward").hide()
+				self.wTree.get_widget("button_apply").show()
 			else:
 				MessageDialog(_("Backup Tool"), _("Please choose a valid archive file"), gtk.MESSAGE_WARNING).show()
 		elif(sel == 7):
 			# start restoring :D
-			self.wTree.get_widget("button_forward").set_sensitive(False)
+			self.wTree.get_widget("button_apply").set_sensitive(False)
 			self.wTree.get_widget("button_back").set_sensitive(False)
 			book.set_current_page(8)
 			self.operating = True
@@ -539,6 +544,8 @@ class MintBackup:
 			book.set_current_page(11)
 			thr = threading.Thread(group=None, name="mintBackup-packages", target=self.load_packages, args=(), kwargs={})
 			thr.start()
+			self.wTree.get_widget("button_forward").hide()
+			self.wTree.get_widget("button_apply").show()
 		elif(sel == 11):
 			# show progress of packages page 
 			self.wTree.get_widget("button_forward").set_sensitive(False)
@@ -577,6 +584,8 @@ class MintBackup:
 	def back_callback(self, widget):
 		book = self.wTree.get_widget("notebook1")
 		sel = book.get_current_page()
+		self.wTree.get_widget("button_apply").hide()
+		self.wTree.get_widget("button_forward").show()
 		if(sel == 7 and len(sys.argv) == 2):
 			self.wTree.get_widget("button_back").set_sensitive(False)
 		if(sel == 6 or sel == 10 or sel == 14):
@@ -623,6 +632,12 @@ class MintBackup:
 		label.set_label(_("Calculating..."))
 		pbar.set_text(_("Calculating..."))
 
+		gtk.gdk.threads_enter()
+		self.wTree.get_widget("button_apply").hide()
+		self.wTree.get_widget("button_forward").set_sensitive(False)
+		self.wTree.get_widget("button_back").hide()
+		self.wTree.get_widget("button_forward").show()
+		gtk.gdk.threads_leave()
 		# get a count of all the files
 		total = 0
 		for top,dirs,files in os.walk(top=self.backup_source,onerror=None, followlinks=self.follow_links):
@@ -931,6 +946,12 @@ class MintBackup:
 
 	''' prepare the restore, reads the .mintbackup file if present '''
 	def prepare_restore(self):
+		gtk.gdk.threads_enter()
+		self.wTree.get_widget("button_apply").show()
+		self.wTree.get_widget("button_apply").set_sensitive(False)
+		self.wTree.get_widget("button_forward").hide()
+		gtk.gdk.threads_leave()
+		
 		# TODO: check what type of restore is happening
 		if(self.tar is not None):
 			self.wTree.get_widget("notebook1").set_current_page(7)
@@ -991,6 +1012,13 @@ class MintBackup:
 
 	''' Restore from archive '''
 	def restore(self):
+		gtk.gdk.threads_enter()
+		self.wTree.get_widget("button_apply").hide()
+		self.wTree.get_widget("button_forward").set_sensitive(False)
+		self.wTree.get_widget("button_back").hide()
+		self.wTree.get_widget("button_forward").show()
+		gtk.gdk.threads_leave()
+		
 		del_policy = self.wTree.get_widget("combobox_restore_del").get_active()
 		gtk.gdk.threads_enter()
 		pbar = self.wTree.get_widget("progressbar_restore")
@@ -1242,7 +1270,7 @@ class MintBackup:
 				self.wTree.get_widget("notebook1").next_page()
 				gtk.gdk.threads_leave()
 		gtk.gdk.threads_enter()
-		self.wTree.get_widget("button_forward").hide()
+		self.wTree.get_widget("button_apply").hide()
 		self.wTree.get_widget("button_back").hide()
 		gtk.gdk.threads_leave()
 		self.operating = False
@@ -1275,6 +1303,9 @@ class MintBackup:
 	''' load package list into treeview '''
 	def load_package_list(self):
 		gtk.gdk.threads_enter()
+		self.wTree.get_widget("button_forward").hide()
+		self.wTree.get_widget("button_apply").show()
+		self.wTree.get_widget("button_apply").set_sensitive(True)
 		self.wTree.get_widget("main_window").set_sensitive(False)
 		self.wTree.get_widget("main_window").window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
 		model = gtk.ListStore(bool,str,bool,str)
@@ -1314,6 +1345,7 @@ class MintBackup:
 		if(len(model) == 0):
 			self.wTree.get_widget("button_forward").hide()
 			self.wTree.get_widget("button_back").hide()
+			self.wTree.get_widget("button_apply").hide()
 			self.wTree.get_widget("notebook1").set_current_page(16)
 		else:
 			self.wTree.get_widget("notebook1").set_current_page(15)
