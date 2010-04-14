@@ -103,7 +103,7 @@ class mINIFile():
 		except:
 			pass
 ''' Handy. Makes message dialogs easy :D '''
-class MessageDialog:
+class MessageDialog(apt.FetchProgress):
 
 	def __init__(self, title, message, style):
 		self.title = title
@@ -1310,7 +1310,6 @@ class MintBackup:
 	''' Installs the package selection '''
 	def install_packages(self):
 		model = self.wTree.get_widget("treeview_package_list").get_model()
-		cache = apt.Cache()
 		vterm = vte.Terminal()
 		self.dTree = gtk.glade.XML(self.glade, 'terminal')
 		self.dTree.get_widget("scroller").add_with_viewport(vterm)
@@ -1322,13 +1321,17 @@ class MintBackup:
 		self.wTree.get_widget("button_forward").set_sensitive(False)
 		self.wTree.get_widget("togglebutton_term").connect("toggled", self.toggled_win2)
 		progress = apt.progress.gtk2.GInstallProgress(vterm)
+		#progress3 = apt.progress.gtk2.GOpProgress()
 		progress.connect("status-changed", self.status_changed)
+		#progress2.connect("status-changed", self.status_changed)
+		#progress3.connect("status-changed", self.status_changed)
+		cache = apt.Cache()
 		for row in model:
 			if(row[0]):
 				# install :D
 				cache[row[3]].markInstall()
 		try:
-			cache.commit(None, progress)
+			cache.commit(self, progress)
 		except Exception, detail:
 			self.error = str(detail)
 			
@@ -1379,6 +1382,29 @@ class MintBackup:
 			else:
 				row[0] = selection
 
+	def start(self):
+		pass
+
+	def stop(self):
+		pass
+
+	def updateStatus(self, uri, descr, shortDescr, status):
+		msg =  "UpdateStatus: '%s' '%s' '%s' '%i' " % (uri, descr, shortDescr, status)
+		self.status_changed(None, shortDescr, status)
+
+	def update_status_full(self, uri, descr, shortDescr, status, fileSize, 
+                           partialSize):
+		pass
+
+	def pulse(self):
+		return True
+
+	def pulse_items(self, items):
+		return True
+
+	def mediaChange(self, medium, drive):
+		pass
+		
 if __name__ == "__main__":
 	gtk.gdk.threads_init()
 	MintBackup()
