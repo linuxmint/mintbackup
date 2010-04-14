@@ -1133,6 +1133,14 @@ class MintBackup:
 				l = l.rstrip("\r\n")
 				l = l.split(" ")
 				self.blacklist.append(l[2])
+			bl = open("/usr/lib/linuxmint/mintBackup/ignorelist", "r")
+			for l in bl.readlines():
+				if(l.startswith("#")):
+					# ignore comments
+					continue
+				l = l.rstrip("\r\n")
+				self.blacklist.append(l)
+			bl.close()
 		except Exception, detail:
 			print detail
 		cache = apt.Cache()
