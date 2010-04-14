@@ -1127,8 +1127,8 @@ class MintBackup:
 		self.wTree.get_widget("main_window").window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
 		gtk.gdk.threads_leave()
 		try:
-			p = subprocess.Popen("apt search ~M", shell=True, stdout=subprocess.PIPE)
-			self.blacklist = []
+			p = subprocess.Popen("aptitude search ~M", shell=True, stdout=subprocess.PIPE)
+			self.blacklist = list()
 			for l in p.stdout:
 				l = l.rstrip("\r\n")
 				l = l.split(" ")
@@ -1138,7 +1138,7 @@ class MintBackup:
 		cache = apt.Cache()
 		for pkg in cache:
 			if(pkg.installed):
-				if(self.is_manual_installed(pkg.name)):
+				if(self.is_manual_installed(pkg.name) == True):
 					desc = "<big>" + pkg.name + "</big>\n<small>" + pkg.installed.summary.replace("&", "&amp;") + "</small>"
 					gtk.gdk.threads_enter()
 					model.append([True, pkg.name, desc])
@@ -1152,8 +1152,8 @@ class MintBackup:
 	def is_manual_installed(self, pkgname):
 		for b in self.blacklist:
 			if(pkgname in b):
-				return True
-		return False
+				return False
+		return True
 		
 	''' toggled (update model)'''
 	def toggled_cb(self, ren, path, treeview):
