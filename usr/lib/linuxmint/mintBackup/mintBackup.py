@@ -44,6 +44,11 @@ try:
 	import apt
 	import subprocess
 	from user import home
+	import apt.progress.gtk2
+	import tempfile
+	import aptsources.distro
+	import aptsources.sourceslist
+	from softwareproperties.SoftwareProperties import SoftwareProperties
 except Exception, detail:
 	print "You do not have the required dependencies"
 
@@ -158,7 +163,7 @@ class MintBackup:
 		self.wTree.get_widget("button_backup_files").connect("clicked", self.wizard_buttons_cb, 1)
 		self.wTree.get_widget("button_restore_files").connect("clicked", self.wizard_buttons_cb, 6)
 		self.wTree.get_widget("button_backup_packages").connect("clicked", self.wizard_buttons_cb, 10)
-		self.wTree.get_widget("button_restore_packages").connect("clicked", self.wizard_buttons_cb, 13)
+		self.wTree.get_widget("button_restore_packages").connect("clicked", self.wizard_buttons_cb, 14)
 		
 		# set up backup page 1 (source/dest/options)
 		# Displayname, [tarfile mode, file extension]
@@ -233,9 +238,10 @@ class MintBackup:
 		self.wTree.get_widget("combobox_restore_del").set_model(overs)
 		self.wTree.get_widget("combobox_restore_del").set_active(0)
 		
-		# pagr 10 (packages list)
-		self.wTree.get_widget("button_package_dest").connect("clicked", self.show_package_choose)
+		# packages list
 		t = self.wTree.get_widget("treeview_packages")
+		self.wTree.get_widget("button_select").connect("clicked", self.set_selection, t, True, False)
+		self.wTree.get_widget("button_deselect").connect("clicked", self.set_selection, t, False, False)
 		tog = gtk.CellRendererToggle()
 		tog.connect("toggled", self.toggled_cb, t)
 		c1 = gtk.TreeViewColumn("Store?", tog, active=0)
@@ -243,10 +249,12 @@ class MintBackup:
 		t.append_column(c1)
 		c2 = gtk.TreeViewColumn("Name", gtk.CellRendererText(), markup=2)
 		t.append_column(c2)
-
-		# page 13 - choose a package list
-		self.wTree.get_widget("filechooserbutton_package").connect("file-set", self.load_package_list_cb)
+		
+		# choose a package list
 		t = self.wTree.get_widget("treeview_package_list")
+		self.wTree.get_widget("button_select_list").connect("clicked", self.set_selection, t, True, True)
+		self.wTree.get_widget("button_deselect_list").connect("clicked", self.set_selection, t, False, True)
+		
 		tog = gtk.CellRendererToggle()
 		tog.connect("toggled", self.toggled_cb, t)
 		c1 = gtk.TreeViewColumn("Install", tog, active=0, activatable=2)
@@ -254,11 +262,14 @@ class MintBackup:
 		t.append_column(c1)
 		c2 = gtk.TreeViewColumn("Name", gtk.CellRendererText(), markup=1)
 		t.append_column(c2)
+		self.wTree.get_widget("filechooserbutton_package_source").connect("file-set", self.load_package_list_cb)
+		
+		#self.progress = apt.progress.gtk2.GtkAptProgress()
+		#self.wTree.get_widget("vbox_install").pack_start(self.progress, False, False, 3)
+		#self.wTree.get_widget("vbox_install").show_all()
 		
 		# i18n - Page 0 (choose backup or restore)
 		self.wTree.get_widget("label_wizard").set_markup(_("<big><b>Backup Tool</b></big>\nThis wizard will allow you to make a backup, or to\nrestore a previously created backup"))
-		#self.wTree.get_widget("radiobutton_backup").set_label(_("Create a new backup"))
-		#self.wTree.get_widget("radiobutton_restore").set_label(_("Restore an existing backup"))
 
 		# i18n - Page 1 (choose backup directories)
 		self.wTree.get_widget("label_backup_dirs").set_markup(_("<big><b>Backup Tool</b></big>\nYou now need to choose the source and destination\ndirectories for the backup"))
@@ -310,20 +321,34 @@ class MintBackup:
 		self.wTree.get_widget("label_restore_finished").set_markup(_("<big><b>Backup Tool</b></big>"))
 
 		# i18n - Page 10 (packages)
-		self.wTree.get_widget("label_packages").set_markup(_("<big><b>Backup Tool</b></big>\nA list of manually installed packages is displayed below\nWhen you are happy with the selection press forward."))
-		self.wTree.get_widget("label_save_as").set_label(_("Save as..."))
+		self.wTree.get_widget("label_packages").set_markup(_("<big><b>Backup Tool</b></big>\nPlease choose the destination for the backup using\nthe options below"))
+		self.wTree.get_widget("label_package_dest").set_label(_("Destination"))
 		
-		# i18n - Page 11 (backing up packages)
+		# i18n - Page 11 (package list)
+		self.wTree.get_widget("label_package_overview").set_markup(_("<big><b>Backup Tool</b></big>\nA list of manually installed packages is displayed below\nWhen you are happy with the selection press forward."))
+		self.wTree.get_widget("label_select").set_label(_("Select all"))
+		self.wTree.get_widget("label_deselect").set_label(_("Deselect all"))
+		
+		# i18n - Page 12 (backing up packages)
 		self.wTree.get_widget("label_packages_backup").set_markup(_("<big><b>Backup Tool</b></big>\nCurrently backing up your package selection\nPlease wait"))
 		self.wTree.get_widget("label_current_package").set_label(_("Current package:"))
 		
-		# i18n - Page 12 (packages done)
+		# i18n - Page 13 (packages done)
 		self.wTree.get_widget("label_packages_done").set_markup(_("<big><b>Backup Tool</b></big>"))
 
-		# i18n - Page 13 (package restore)
-		self.wTree.get_widget("label_restore_package").set_markup(_("<big><b>Backup Tool</b></big>\nPlease choose the location of the backup list below"))
-		self.wTree.get_widget("label_list_source").set_markup(_("Package list:"))
+		# i18n - Page 14 (package restore)
+		self.wTree.get_widget("label_restore_package").set_markup(_("<big><b>Backup Tool</b></big>\nPlease choose the location of the backup list using\nthe file chooser button below"))
+		self.wTree.get_widget("label_package_source").set_markup(_("Package list:"))
 
+		# i18n - Page 15 (packages list)
+		self.wTree.get_widget("label_restore_choose").set_markup(_("<big><b>Backup Tool</b></big>\nA list of packages from the backup file is displayed below\nWhen you are happy with the selection press forward."))
+		self.wTree.get_widget("label_select_list").set_label(_("Select all"))
+		self.wTree.get_widget("label_deselect_list").set_label(_("Deselect all"))
+		
+		# i18n - Page 15 (package installing)
+		#self.wTree.get_widget("label_package_progress").set_markup(_("<big><b>Backup Tool</b></big>\nYour package selection is now being installed.\nPlease be patient as this may take some time"))
+		#self.wTree.get_widget("label_install").set_label(_("Current package:"))
+		
 	''' show the pretty aboutbox. '''
 	def about_callback(self, w):
 		license = ""
@@ -430,10 +455,11 @@ class MintBackup:
 		self.wTree.get_widget("button_back").set_sensitive(True)
 		self.wTree.get_widget("button_forward").show()
 		self.wTree.get_widget("button_about").hide()
-		
-		if(param == 10):
-			thr = threading.Thread(group=None, name="mintBackup-packages", target=self.load_packages, args=(), kwargs={})
-			thr.start()
+		if(param == 14):
+			self.wTree.get_widget("button_forward").set_sensitive(False)
+		else:
+			self.wTree.get_widget("button_forward").set_sensitive(True)
+			
 	''' Next button '''
 	def forward_callback(self, widget):
 		book = self.wTree.get_widget("notebook1")
@@ -511,24 +537,40 @@ class MintBackup:
 			self.wTree.get_widget("button_back").set_sensitive(False)
 			book.set_current_page(9)
 		elif(sel == 10):
-			# check package dest
-			self.package_dest = self.wTree.get_widget("entry_package_dest").get_text()
-			if(os.path.exists(self.package_dest)):
-				mbox = MessageDialog(_("Backup Tool"), _("Specified file already exists"), gtk.MESSAGE_ERROR)
-				mbox.show()
-				return
-			self.wTree.get_widget("button_back").set_sensitive(False)
-			self.wTree.get_widget("button_forward").set_sensitive(False)
 			book.set_current_page(11)
-			# times like this i realise people dont use threads.. someone's gonna hate me :D
-			self.operating = True
-			thr = threading.Thread(group=None, target=self.backup_packages, name="mintBackup-packages", args=(), kwargs={})
+			thr = threading.Thread(group=None, name="mintBackup-packages", target=self.load_packages, args=(), kwargs={})
 			thr.start()
 		elif(sel == 11):
-			# show last page (backup packages done)
+			# show progress of packages page 
 			self.wTree.get_widget("button_forward").set_sensitive(False)
 			self.wTree.get_widget("button_back").set_sensitive(False)
 			book.set_current_page(12)
+			f = self.wTree.get_widget("filechooserbutton_package_dest").get_filename()
+			if f is None:
+				MessageDialog(_("Backup Tool"), _("Please choose a backup destination directory"), gtk.MESSAGE_ERROR).show()
+				return
+			else:
+				self.package_dest = f
+				self.operating = True
+				thr = threading.Thread(group=None, name="mintBackup-packages", target=self.backup_packages, args=(), kwargs={})
+				thr.start()
+		elif(sel == 14):
+			book.set_current_page(15)
+			thr = threading.Thread(group=None, name="mintBackup-packages", target=self.load_package_list, args=(), kwargs={})
+			thr.start()
+			
+		'''
+		elif(sel == 12):
+			self.wTree.get_widget("button_forward").set_sensitive(False)
+		elif(sel == 13):
+			# show progress (installing packages)
+			self.wTree.get_widget("button_forward").set_sensitive(False)
+			self.wTree.get_widget("button_back").set_sensitive(False)
+			book.set_current_page(14)
+		#	thr = threading.Thread(group=None, name="mintBackup-install", target=self.install_packages, args=(), kwargs={})
+		#	thr.start()
+			self.install_packages()
+		'''
 
 	''' Back button '''
 	def back_callback(self, widget):
@@ -536,7 +578,7 @@ class MintBackup:
 		sel = book.get_current_page()
 		if(sel == 7 and len(sys.argv) == 2):
 			self.wTree.get_widget("button_back").set_sensitive(False)
-		if(sel == 6 or sel == 10 or sel == 13):
+		if(sel == 6 or sel == 10 or sel == 14):
 			book.set_current_page(0)
 			self.wTree.get_widget("button_back").set_sensitive(False)
 			self.wTree.get_widget("button_back").hide()
@@ -1138,7 +1180,6 @@ class MintBackup:
 		lab = self.wTree.get_widget("label_current_package_value")
 		pbar.set_text(_("Calculating..."))
 		lab.set_label(_("Calculating..."))
-		
 		model = self.wTree.get_widget("treeview_packages").get_model()
 		total = 0
 		count = 0
@@ -1150,14 +1191,14 @@ class MintBackup:
 			total += 1
 		pbar.set_text("%d / %d" % (count, total))
 		try:
-			out = open(self.package_dest, "w")
-			out.write("##MINTBACKUP-PACKAGELIST##\n")
+			filetime = strftime("%Y-%m-%d-%H%M-package-list", localtime())
+			out = open(os.path.join(self.package_dest, filetime), "w")
 			for row in model:
 				if(not self.operating or self.error is not None):
 					break
 				if(row[0]):
 					count += 1
-					out.write(row[1] + "\n")
+					out.write("%s\t%s\n" % (row[1], "install"))
 					gtk.gdk.threads_enter()
 					pbar.set_text("%d / %d" % (count, total))
 					pbar.set_fraction(float(count / total))
@@ -1188,7 +1229,7 @@ class MintBackup:
 				self.wTree.get_widget("label_packages_done_value").set_label(_("Your package list was succesfully backed up"))
 				img = self.iconTheme.load_icon("dialog-information", 48, 0)
 				self.wTree.get_widget("image_packages_done").set_from_pixbuf(img)
-				self.wTree.get_widget("button_forward").set_sensitive(True)
+				self.wTree.get_widget("notebook1").next_page()
 				gtk.gdk.threads_leave()
 		self.operating = False
 
@@ -1196,19 +1237,26 @@ class MintBackup:
 	def load_package_list_cb(self, w):
 		self.package_source = w.get_filename()
 		# magic info, i.e. we ignore files what don't have this.
-		HEADER = "##MINTBACKUP-PACKAGELIST##"
 		try:
 			source = open(self.package_source, "r")
-			re = source.read(len(HEADER))
+			re = source.readlines()
+			error = False
+			for line in re:
+				line = line.rstrip("\r\n")
+				if(not line.endswith("\tinstall")):
+					error = True
+					break
 			source.close()
-			if(not HEADER in re):
+			if(error):
 				MessageDialog(_("Backup Tool"), _("Specified file was not a valid backup list"), gtk.MESSAGE_ERROR).show()
-				self.wTree.get_widget("scroller_packages").hide()
+				#self.wTree.get_widget("scroller_packages").hide()
+				self.wTree.get_widget("button_forward").set_sensitive(False)
 				return
 			else:
-				self.wTree.get_widget("scroller_packages").show_all()
-				thr = threading.Thread(group=None, name="mintBackup-packages", target=self.load_package_list, args=(), kwargs={})
-				thr.start()
+				self.wTree.get_widget("button_forward").set_sensitive(True)
+				#self.wTree.get_widget("scroller_packages").show_all()
+				#thr = threading.Thread(group=None, name="mintBackup-packages", target=self.load_package_list, args=(), kwargs={})
+				#thr.start()
 		except Exception, detail:
 			print detail
 			MessageDialog(_("Backup Tool"), _("Error occurred while accessing file"), gtk.MESSAGE_ERROR).show()
@@ -1218,7 +1266,7 @@ class MintBackup:
 		gtk.gdk.threads_enter()
 		self.wTree.get_widget("main_window").set_sensitive(False)
 		self.wTree.get_widget("main_window").window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
-		model = gtk.ListStore(bool,str,bool)
+		model = gtk.ListStore(bool,str,bool,str)
 		self.wTree.get_widget("treeview_package_list").set_model(model)
 		gtk.gdk.threads_leave()
 		try:
@@ -1229,9 +1277,10 @@ class MintBackup:
 					# ignore comments
 					continue
 				line = line.rstrip("\r\n")
-				pkg = cache[line]
+				line = line.split("\t")[0]
 				inst = True
-				if(pkg is not None):
+				if(cache.has_key(line)):
+					pkg = cache[line]
 					if(pkg.installed):
 						inst = False
 						line = "<big>" + line + "</big>\n<small>" + _("Already installed") + "</small>"
@@ -1241,7 +1290,7 @@ class MintBackup:
 					inst = False
 					line = "<big>" + line + "</big>\n<small>" + _("Could not locate package") + "</small>"
 				gtk.gdk.threads_enter()
-				model.append([inst, line, inst])
+				model.append([inst, line, inst, pkg.name])
 				gtk.gdk.threads_leave()
 			source.close()
 		except Exception, detail:
@@ -1250,8 +1299,33 @@ class MintBackup:
 		gtk.gdk.threads_enter()
 		self.wTree.get_widget("main_window").set_sensitive(True)
 		self.wTree.get_widget("main_window").window.set_cursor(None)
+		self.wTree.get_widget("button_forward").set_sensitive(True)
 		gtk.gdk.threads_leave()
 		
+	''' Installs the package selection '''
+	''' NOT YET FULLY IMPLEMENTED '''
+	def install_packages(self):
+		model = self.wTree.get_widget("treeview_package_list").get_model()
+		cache = apt.Cache(self.progress.open)
+		for row in model:
+			if(row[0]):
+				# install :D
+				cache[row[3]].markInstall()
+		try:
+			cache.commit(self.progress.fetch, self.progress.install)
+		except:
+			self.error = "Could not lock the archive"
+
+
+	def set_selection(self, w, treeview, selection, check):
+		model = treeview.get_model()
+		for row in model:
+			if(check):
+				if row[2]:
+					row[0] = selection
+			else:
+				row[0] = selection
+
 if __name__ == "__main__":
 	gtk.gdk.threads_init()
 	MintBackup()
