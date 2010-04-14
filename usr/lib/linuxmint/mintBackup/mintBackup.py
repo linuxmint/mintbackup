@@ -515,22 +515,17 @@ class MintBackup:
 			if(not self.restore_source or self.restore_source == ""):
 				MessageDialog(_("Backup Tool"), _("Please choose a file to restore from"), gtk.MESSAGE_WARNING).show()
 				return
-			# test that file is indeed compressed.
-			out = commands.getoutput("file \"" + self.restore_source + "\"")
-			if("compressed" in out or "archive" in out):
-				# valid archive, continue.
-				self.wTree.get_widget("label_overview_source_value").set_label(self.restore_source)
-				self.wTree.get_widget("label_overview_dest_value").set_label(self.restore_dest)
-				thread = threading.Thread(group=None, target=self.prepare_restore, name="mintBackup-prepare", args=(), kwargs={})
-				thread.start()
-				self.wTree.get_widget("button_forward").hide()
-				self.wTree.get_widget("button_apply").show()
-			else:
-				MessageDialog(_("Backup Tool"), _("Please choose a valid archive file"), gtk.MESSAGE_WARNING).show()
+			self.wTree.get_widget("label_overview_source_value").set_label(self.restore_source)
+			self.wTree.get_widget("label_overview_dest_value").set_label(self.restore_dest)
+			thread = threading.Thread(group=None, target=self.prepare_restore, name="mintBackup-prepare", args=(), kwargs={})
+			thread.start()
+			self.wTree.get_widget("button_forward").hide()
+			self.wTree.get_widget("button_apply").show()
+			self.wTree.get_widget("button_apply").set_sensitive(True)
 		elif(sel == 7):
 			# start restoring :D
-			self.wTree.get_widget("button_apply").set_sensitive(False)
-			self.wTree.get_widget("button_back").set_sensitive(False)
+			self.wTree.get_widget("button_apply").hide()
+			self.wTree.get_widget("button_back").hide()
 			book.set_current_page(8)
 			self.operating = True
 			thread = threading.Thread(group=None, target=self.restore, name="mintBackup-restore", args=(), kwargs={})
@@ -964,7 +959,7 @@ class MintBackup:
 			mintfile = self.tar.getmember(".mintbackup")
 			if(mintfile is None):
 				self.error = "File is not a valid mintBackup archive. Aborting"
-				self.wTree.get_widget("button_forward").set_sensitive(False)
+				self.wTree.get_widget("button_apply").set_sensitive(False)
 				self.tar.close()
 				MessageDialog("Backup Tool", self.error, gtk.MESSAGE_ERROR).show()
 			else:
@@ -973,6 +968,7 @@ class MintBackup:
 				mfile.close()
 				self.wTree.get_widget("label_overview_description_value").set_label(self.conf.description)
 				self.wTree.get_widget("button_back").set_sensitive(True)
+				self.wTree.get_widget("button_apply").set_sensitive(True)
 				self.wTree.get_widget("notebook1").set_current_page(7)
 
 		except Exception, detail:
