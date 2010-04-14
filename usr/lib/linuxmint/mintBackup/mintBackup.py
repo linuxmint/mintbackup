@@ -1203,7 +1203,7 @@ class MintBackup:
 			total += 1
 		pbar.set_text("%d / %d" % (count, total))
 		try:
-			filetime = strftime("%Y-%m-%d-%H%M-package-list", localtime())
+			filetime = strftime("%Y-%m-%d-%H%M-package.list", localtime())
 			out = open(os.path.join(self.package_dest, filetime), "w")
 			for row in model:
 				if(not self.operating or self.error is not None):
