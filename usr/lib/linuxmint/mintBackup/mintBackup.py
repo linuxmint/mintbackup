@@ -45,10 +45,7 @@ try:
 	import subprocess
 	from user import home
 	import apt.progress.gtk2
-	import tempfile
-	import aptsources.distro
-	import aptsources.sourceslist
-	from softwareproperties.SoftwareProperties import SoftwareProperties
+	import vte
 except Exception, detail:
 	print "You do not have the required dependencies"
 
@@ -345,9 +342,12 @@ class MintBackup:
 		self.wTree.get_widget("label_select_list").set_label(_("Select all"))
 		self.wTree.get_widget("label_deselect_list").set_label(_("Deselect all"))
 		
-		# i18n - Page 15 (package installing)
-		#self.wTree.get_widget("label_package_progress").set_markup(_("<big><b>Backup Tool</b></big>\nYour package selection is now being installed.\nPlease be patient as this may take some time"))
-		#self.wTree.get_widget("label_install").set_label(_("Current package:"))
+		# i18n - Page 16 (package installing)
+		self.wTree.get_widget("label_package_install").set_markup(_("<big><b>Backup Tool</b></big>\nYour package selection is now being installed.\nPlease be patient as this may take some time"))
+		self.wTree.get_widget("label_current_package").set_label(_("Current package:"))
+		
+		# i18n - Page 17 (install done)
+		self.wTree.get_widget("label_install_done").set_markup(_("<big><b>Backup Tool</b></big>"))
 		
 	''' show the pretty aboutbox. '''
 	def about_callback(self, w):
@@ -558,20 +558,24 @@ class MintBackup:
 			book.set_current_page(15)
 			thr = threading.Thread(group=None, name="mintBackup-packages", target=self.load_package_list, args=(), kwargs={})
 			thr.start()
-			
-		'''
-		elif(sel == 12):
-			self.wTree.get_widget("button_forward").set_sensitive(False)
-		elif(sel == 13):
-			# show progress (installing packages)
+		elif(sel == 15):
+			inst = False
+			for row in self.wTree.get_widget("treeview_package_list").get_model():
+				if(row[0]):
+					inst = True
+					break
+			if(not inst):
+				MessageDialog(_("Backup Tool"), _("Please select one or more packages to install"), gtk.MESSAGE_ERROR).show()
+				return
+			else:
+				book.set_current_page(16)
+				thr = threading.Thread(group=None, name="mintBackup-packages", target=self.install_packages, args=(), kwargs={})
+				thr.start()
+		elif(sel == 16):
 			self.wTree.get_widget("button_forward").set_sensitive(False)
 			self.wTree.get_widget("button_back").set_sensitive(False)
-			book.set_current_page(14)
-		#	thr = threading.Thread(group=None, name="mintBackup-install", target=self.install_packages, args=(), kwargs={})
-		#	thr.start()
-			self.install_packages()
-		'''
-
+			book.next_page()
+			
 	''' Back button '''
 	def back_callback(self, widget):
 		book = self.wTree.get_widget("notebook1")
@@ -1281,17 +1285,18 @@ class MintBackup:
 				inst = True
 				if(cache.has_key(line)):
 					pkg = cache[line]
-					if(pkg.installed):
-						inst = False
-						line = "<big>" + line + "</big>\n<small>" + _("Already installed") + "</small>"
-					else:
-						line = "<big>" + line + "</big>\n<small>" + _("Not installed") + "</small>"
+					if(not pkg.isInstalled):
+						desc = pkg.candidate.summary.replace("&", "&amp;")
+						line = "<big>" + line + "</big>\n<small>" + desc + "</small>"
+						gtk.gdk.threads_enter()
+						model.append([inst, line, inst, pkg.name])
+						gtk.gdk.threads_leave()
 				else:
 					inst = False
 					line = "<big>" + line + "</big>\n<small>" + _("Could not locate package") + "</small>"
-				gtk.gdk.threads_enter()
-				model.append([inst, line, inst, pkg.name])
-				gtk.gdk.threads_leave()
+					gtk.gdk.threads_enter()
+					model.append([inst, line, inst, pkg.name])
+					gtk.gdk.threads_leave()
 			source.close()
 		except Exception, detail:
 			print detail
@@ -1303,20 +1308,68 @@ class MintBackup:
 		gtk.gdk.threads_leave()
 		
 	''' Installs the package selection '''
-	''' NOT YET FULLY IMPLEMENTED '''
 	def install_packages(self):
 		model = self.wTree.get_widget("treeview_package_list").get_model()
-		cache = apt.Cache(self.progress.open)
+		cache = apt.Cache()
+		vterm = vte.Terminal()
+		self.dTree = gtk.glade.XML(self.glade, 'terminal')
+		self.dTree.get_widget("scroller").add_with_viewport(vterm)
+		self.dTree.get_widget("scroller").show_all()
+		self.wTree.get_widget("togglebutton_term").set_label(_("Terminal"))
+		self.dTree.get_widget("terminal").connect("destroy", self.toggled_win1)
+		self.dTree.get_widget("terminal").set_title(_("Terminal"))
+		self.wTree.get_widget("button_back").set_sensitive(False)
+		self.wTree.get_widget("button_forward").set_sensitive(False)
+		self.wTree.get_widget("togglebutton_term").connect("toggled", self.toggled_win2)
+		progress = apt.progress.gtk2.GInstallProgress(vterm)
+		progress.connect("status-changed", self.status_changed)
 		for row in model:
 			if(row[0]):
 				# install :D
 				cache[row[3]].markInstall()
 		try:
-			cache.commit(self.progress.fetch, self.progress.install)
-		except:
-			self.error = "Could not lock the archive"
+			cache.commit(None, progress)
+		except Exception, detail:
+			self.error = str(detail)
+			
+		if(self.error is not None):
+			gtk.gdk.threads_enter()
+			self.wTree.get_widget("label_install_done_value").set_label(_("An error occured during backup:\n") + self.error)
+			img = self.iconTheme.load_icon("dialog-error", 48, 0)
+			self.wTree.get_widget("image_install_done").set_from_pixbuf(img)
+			self.wTree.get_widget("notebook1").next_page()
+			gtk.gdk.threads_leave()
+		else:
+			gtk.gdk.threads_enter()
+			self.wTree.get_widget("label_install_done_value").set_label(_("Installation was successful"))
+			img = self.iconTheme.load_icon("dialog-information", 48, 0)
+			self.wTree.get_widget("image_install_done").set_from_pixbuf(img)
+			self.wTree.get_widget("button_forward").set_sensitive(True)
+			gtk.gdk.threads_leave()
 
+	''' hide window and set toggle to inactive '''
+	def toggled_win1(self, w):
+		self.wTree.get_widget("togglebutton_term").set_active(False)
+		self.dTree.get_widget("terminal").hide()
+		return False
+		
+	''' term window toggle '''
+	def toggled_win2(self, w):
+		if(w.get_active()):
+			self.dTree.get_widget("terminal").show_all()
+		else:
+			self.dTree.get_widget("terminal").hide()
+		return False
+			
+	''' callback, update progressbar '''
+	def status_changed(self, inst, status, pct):
+		fraction = float(pct/100)
+		gtk.gdk.threads_enter()
+		self.wTree.get_widget("label_package_value").set_label(status)
+		self.wTree.get_widget("progressbar_package").set_fraction(fraction)
+		gtk.gdk.threads_leave()
 
+	''' select/deselect all '''
 	def set_selection(self, w, treeview, selection, check):
 		model = treeview.get_model()
 		for row in model:
