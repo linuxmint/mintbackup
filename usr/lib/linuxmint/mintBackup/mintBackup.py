@@ -1321,10 +1321,7 @@ class MintBackup:
 		self.wTree.get_widget("button_forward").set_sensitive(False)
 		self.wTree.get_widget("togglebutton_term").connect("toggled", self.toggled_win2)
 		progress = apt.progress.gtk2.GInstallProgress(vterm)
-		#progress3 = apt.progress.gtk2.GOpProgress()
 		progress.connect("status-changed", self.status_changed)
-		#progress2.connect("status-changed", self.status_changed)
-		#progress3.connect("status-changed", self.status_changed)
 		cache = apt.Cache()
 		for row in model:
 			if(row[0]):
