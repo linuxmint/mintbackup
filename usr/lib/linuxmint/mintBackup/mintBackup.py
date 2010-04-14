@@ -502,8 +502,8 @@ class MintBackup:
 			thread.start()
 		elif(sel == 4):
 			# show info page.
-			self.wTree.get_widget("button_forward").set_sensitive(False)
-			self.wTree.get_widget("button_back").set_sensitive(False)
+			self.wTree.get_widget("button_forward").hide()
+			self.wTree.get_widget("button_back").hide()
 			book.set_current_page(5)
 		elif(sel == 6):
 			# sanity check the files (file --mimetype)
@@ -532,8 +532,8 @@ class MintBackup:
 			thread.start()
 		elif(sel == 8):
 			# show last page(restore finished status)
-			self.wTree.get_widget("button_forward").set_sensitive(False)
-			self.wTree.get_widget("button_back").set_sensitive(False)
+			self.wTree.get_widget("button_forward").hide()
+			self.wTree.get_widget("button_back").hide()
 			book.set_current_page(9)
 		elif(sel == 10):
 			book.set_current_page(11)
@@ -1241,6 +1241,10 @@ class MintBackup:
 				self.wTree.get_widget("image_packages_done").set_from_pixbuf(img)
 				self.wTree.get_widget("notebook1").next_page()
 				gtk.gdk.threads_leave()
+		gtk.gdk.threads_enter()
+		self.wTree.get_widget("button_forward").hide()
+		self.wTree.get_widget("button_back").hide()
+		gtk.gdk.threads_leave()
 		self.operating = False
 
 	''' check validity of file'''
