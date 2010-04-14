@@ -1133,7 +1133,7 @@ class MintBackup:
 				l = l.rstrip("\r\n")
 				l = l.split(" ")
 				self.blacklist.append(l[2])
-			bl = open("/usr/lib/linuxmint/mintBackup/ignorelist", "r")
+			bl = open("/usr/lib/linuxmint/mintBackup/linuxmint-8-main.list", "r")
 			for l in bl.readlines():
 				if(l.startswith("#")):
 					# ignore comments
