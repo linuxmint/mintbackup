@@ -252,7 +252,7 @@ class MintBackup:
 		t = self.wTree.get_widget("treeview_package_list")
 		self.wTree.get_widget("button_select_list").connect("clicked", self.set_selection, t, True, True)
 		self.wTree.get_widget("button_deselect_list").connect("clicked", self.set_selection, t, False, True)
-		
+		self.wTree.get_widget("button_refresh").connect("clicked", self.refresh)
 		tog = gtk.CellRendererToggle()
 		tog.connect("toggled", self.toggled_cb, t)
 		c1 = gtk.TreeViewColumn("Install", tog, active=0, activatable=2)
@@ -342,6 +342,7 @@ class MintBackup:
 		self.wTree.get_widget("label_restore_choose").set_markup(_("<big><b>Backup Tool</b></big>\nA list of packages from the backup file is displayed below\nWhen you are happy with the selection press forward."))
 		self.wTree.get_widget("label_select_list").set_label(_("Select all"))
 		self.wTree.get_widget("label_deselect_list").set_label(_("Deselect all"))
+		self.wTree.get_widget("label_refresh").set_label(_("Refresh"))
 		
 	''' show the pretty aboutbox. '''
 	def about_callback(self, w):
@@ -1338,10 +1339,8 @@ class MintBackup:
 		self.wTree.get_widget("button_forward").set_sensitive(True)
 		gtk.gdk.threads_leave()
 		
-		# refresh package list
-		thr = threading.Thread(group=None, name="mintBackup-packages", target=self.load_package_list, args=(), kwargs=())
-		thr.start()
 
+		self.refresh(None)
 	''' select/deselect all '''
 	def set_selection(self, w, treeview, selection, check):
 		model = treeview.get_model()
@@ -1351,7 +1350,13 @@ class MintBackup:
 					row[0] = selection
 			else:
 				row[0] = selection
-		
+
+	''' refresh package selection '''
+	def refresh(self, w):
+		# refresh package list
+		thr = threading.Thread(group=None, name="mintBackup-packages", target=self.load_package_list, args=(), kwargs={})
+		thr.start()
+
 if __name__ == "__main__":
 	gtk.gdk.threads_init()
 	MintBackup()
