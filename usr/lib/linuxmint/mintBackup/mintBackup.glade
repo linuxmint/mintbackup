@@ -316,7 +316,7 @@ directories for the backup</property>
                             <child>
                               <widget class="GtkTable" id="table13">
                                 <property name="visible">True</property>
-                                <property name="n_rows">2</property>
+                                <property name="n_rows">3</property>
                                 <property name="n_columns">2</property>
                                 <child>
                                   <widget class="GtkComboBox" id="combobox_compress">
@@ -368,6 +368,34 @@ gzip</property>
                                   </widget>
                                   <packing>
                                     <property name="x_options">GTK_FILL</property>
+                                    <property name="y_options"></property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="label_backup_desc">
+                                    <property name="visible">True</property>
+                                    <property name="xalign">0.05000000074505806</property>
+                                    <property name="xpad">6</property>
+                                    <property name="label" translatable="yes">label</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="top_attach">2</property>
+                                    <property name="bottom_attach">3</property>
+                                    <property name="x_options">GTK_FILL</property>
+                                    <property name="y_options"></property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkEntry" id="entry_desc">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="invisible_char">&#x25CF;</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">1</property>
+                                    <property name="right_attach">2</property>
+                                    <property name="top_attach">2</property>
+                                    <property name="bottom_attach">3</property>
                                     <property name="y_options"></property>
                                   </packing>
                                 </child>
@@ -542,33 +570,10 @@ gzip</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label_backup_desc">
-                        <property name="visible">True</property>
-                        <property name="xalign">0.05000000074505806</property>
-                        <property name="label" translatable="yes">label</property>
-                      </widget>
-                      <packing>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
-                        <property name="x_options">GTK_FILL</property>
-                        <property name="y_options"></property>
-                        <property name="x_padding">6</property>
-                      </packing>
+                      <placeholder/>
                     </child>
                     <child>
-                      <widget class="GtkEntry" id="entry_desc">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="invisible_char">&#x25CF;</property>
-                      </widget>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
-                        <property name="y_options"></property>
-                        <property name="x_padding">6</property>
-                      </packing>
+                      <placeholder/>
                     </child>
                     <child>
                       <placeholder/>

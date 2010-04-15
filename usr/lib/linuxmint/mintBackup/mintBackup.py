@@ -85,12 +85,12 @@ class mINIFile():
 		if(line.find(":")):
 			l = line.split(":")
 			if(len(l) >= 2):
-				tmp = " ".join(l[1:]).rstrip("\r\n")
+				tmp = ":".join(l[1:]).rstrip("\r\n")
 				setattr(self, l[0], tmp)
 		elif(line.find("=")):
 			l = line.split("=")
 			if(len(l) >= 2):
-				tmp = " ".join(l[1:]).rstrip("\r\n")
+				tmp = "=".join(l[1:]).rstrip("\r\n")
 				setattr(self, l[0], tmp)
 				
 	def load_from_list(self, list):
