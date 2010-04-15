@@ -157,6 +157,9 @@ class MintBackup:
 		self.tar = None
 		self.backup_source = ""
 
+		# by default we restore archives, not directories (unless user chooses otherwise)
+		self.restore_archive = True
+		
 		# page 0
 		self.wTree.get_widget("button_backup_files").connect("clicked", self.wizard_buttons_cb, 1)
 		self.wTree.get_widget("button_restore_files").connect("clicked", self.wizard_buttons_cb, 6)
@@ -177,13 +180,12 @@ class MintBackup:
 		# backup overwrite options
 		overs = gtk.ListStore(str)
 		overs.append([_("Never")])
-		overs.append([_("Source file larger than destination")])
-		overs.append([_("Source file smaller than destination")])
-		overs.append([_("Source file newer than destination")])
+		overs.append([_("Size mismatch")])
+		overs.append([_("Modification time mismatch")])
 		overs.append([_("Checksum mismatch")])
 		overs.append([_("Always")])
 		self.wTree.get_widget("combobox_delete_dest").set_model(overs)
-		self.wTree.get_widget("combobox_delete_dest").set_active(0)
+		self.wTree.get_widget("combobox_delete_dest").set_active(3)
 
 		# advanced options
 		self.wTree.get_widget("checkbutton_integrity").set_active(True)
@@ -232,10 +234,12 @@ class MintBackup:
 		self.wTree.get_widget("main_window").show()
 
 		# open archive button, opens an archive... :P
+		self.wTree.get_widget("radiobutton_archive").connect("toggled", self.archive_switch)
+		self.wTree.get_widget("radiobutton_dir").connect("toggled", self.archive_switch)
 		self.wTree.get_widget("button_open_archive").connect("clicked", self.open_archive_callback)
 		self.wTree.get_widget("filechooserbutton_restore_source").connect("file-set", self.check_reset_file)
 		self.wTree.get_widget("combobox_restore_del").set_model(overs)
-		self.wTree.get_widget("combobox_restore_del").set_active(0)
+		self.wTree.get_widget("combobox_restore_del").set_active(3)
 		
 		# packages list
 		t = self.wTree.get_widget("treeview_packages")
@@ -301,7 +305,9 @@ class MintBackup:
 
 		# i18n - Page 6 (Restore locations)
 		self.wTree.get_widget("label_restore_wizard").set_markup(_("<big><b>Backup Tool</b></big>\nPlease select the backup you wish to restore\nand its destination below"))
-		self.wTree.get_widget("label_restore_source").set_label(_("Archive:"))
+		self.wTree.get_widget("radiobutton_archive").set_label(_("Archive"))
+		self.wTree.get_widget("radiobutton_dir").set_label(_("Directory"))
+		self.wTree.get_widget("label_restore_source").set_label(_("Source:"))
 		self.wTree.get_widget("label_restore_dest").set_label(_("Destination:"))
 		self.wTree.get_widget("label_restore_advanced").set_label(_("Advanced options"))
 		self.wTree.get_widget("label_restore_overwrite").set_label(_("Overwrite:"))
@@ -380,7 +386,17 @@ class MintBackup:
 				self.tar.close()
 				self.tar = None
 		self.backup_source = fileset
-		
+
+	''' switch between archive and directory sources '''
+	def archive_switch(self, w):
+		if(self.wTree.get_widget("radiobutton_archive").get_active()):
+			# dealing with archives
+			self.restore_archive = True
+			self.wTree.get_widget("filechooserbutton_restore_source").set_action(gtk.FILE_CHOOSER_ACTION_OPEN)
+		else:
+			self.restore_archive = False
+			self.wTree.get_widget("filechooserbutton_restore_source").set_action(gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER)
+
 	''' handler for checkboxes '''
 	def handle_checkbox(self, widget):
 		if(widget == self.wTree.get_widget("checkbutton_integrity")):
@@ -515,13 +531,8 @@ class MintBackup:
 			if(not self.restore_source or self.restore_source == ""):
 				MessageDialog(_("Backup Tool"), _("Please choose a file to restore from"), gtk.MESSAGE_WARNING).show()
 				return
-			self.wTree.get_widget("label_overview_source_value").set_label(self.restore_source)
-			self.wTree.get_widget("label_overview_dest_value").set_label(self.restore_dest)
 			thread = threading.Thread(group=None, target=self.prepare_restore, name="mintBackup-prepare", args=(), kwargs={})
 			thread.start()
-			self.wTree.get_widget("button_forward").hide()
-			self.wTree.get_widget("button_apply").show()
-			self.wTree.get_widget("button_apply").set_sensitive(True)
 		elif(sel == 7):
 			# start restoring :D
 			self.wTree.get_widget("button_apply").hide()
@@ -714,6 +725,7 @@ class MintBackup:
 						label.set_label(path)
 						gtk.gdk.threads_leave()
 						self.wTree.get_widget("label_file_count").set_text(str(current_file) + " / " + sztotal)
+						del d
 					for f in files:
 						rpath = os.path.join(top, f)
 						path = os.path.relpath(rpath)
@@ -726,33 +738,24 @@ class MintBackup:
 							self.wTree.get_widget("label_file_count").set_text(str(current_file) + " / " + sztotal)
 							if(os.path.exists(target)):
 								if(del_policy == 1):
-									# source size > dest size
+									# source size != dest size
 									file1 = os.path.getsize(rpath)
 									file2 = os.path.getsize(target)
-									if(file1 > file2):
+									if(file1 != file2):
 										os.remove(target)
 										self.copy_file(rpath, target)
 									else:
 										self.wTree.get_widget("progressbar1").set_text(_("Skipping identical file"))
 								elif(del_policy == 2):
-										# source size < dest size
-									file1 = os.path.getsize(rpath)
-									file2 = os.path.getsize(target)
-									if(file1 < file2):
+									# source time != dest time
+									file1 = os.path.getmtime(rpath)
+									file2 = os.path.getmtime(target)
+									if(file1 != file2):
 										os.remove(target)
 										self.copy_file(rpath, target)
 									else:
 										self.wTree.get_widget("progressbar1").set_text(_("Skipping identical file"))
 								elif(del_policy == 3):
-									# source newer (less seconds from epoch)
-									file1 = os.path.getmtime(rpath)
-									file2 = os.path.getmtime(target)
-									if(file1 < file2):
-										os.remove(target)
-										self.copy_file(rpath, target)
-									else:
-										self.wTree.get_widget("progressbar1").set_text(_("Skipping identical file"))
-								elif(del_policy == 4):
 									# checksums
 									file1 = self.get_checksum(rpath)
 									file2 = self.get_checksum(target)
@@ -761,12 +764,13 @@ class MintBackup:
 										self.copy_file(rpath, target)
 									else:
 										self.wTree.get_widget("progressbar1").set_text(_("Skipping identical file"))
-								elif(del_policy == 5):
+								elif(del_policy == 4):
 									# always delete
 									os.remove(target)
 									self.copy_file(rpath, target)
 							else:
 								self.copy_file(rpath, target)
+						del f
 		except Exception, detail:
 			self.error = str(detail)
 		if(self.error is not None):
@@ -814,7 +818,7 @@ class MintBackup:
 
 	''' Utility method - copy file, also provides a quick way of aborting a copy, which
 	    using modules doesn't allow me to do.. '''
-	def copy_file(self, source, dest):
+	def copy_file(self, source, dest, restore=None):
 		try:
 			# represents max buffer size
 			BUF_MAX = 1024 # so we don't get stuck on I/O ops
@@ -832,7 +836,10 @@ class MintBackup:
 				if(read):
 					dst.write(read)
 					current += len(read)
-					self.update_backup_progress(current, total)
+					if(restore):
+						self.update_restore_progress(current, total)
+					else:
+						self.update_backup_progress(current, total)
 				else:
 					break
 			src.close()
@@ -863,8 +870,8 @@ class MintBackup:
 					dst.close()
 
 				if(self.postcheck):
-					file1 = self.get_checksum(source)
-					file2 = self.get_checksum(dest)
+					file1 = self.get_checksum(source, restore)
+					file2 = self.get_checksum(dest, restore)
 					if(file1 not in file2):
 						self.error = "Checksum Mismatch: [" + file1 + "] [" + file1 + "]"
 		except OSError as bad:
@@ -875,7 +882,7 @@ class MintBackup:
 			
 	
 	''' Grab the checksum for the input filename and return it '''
-	def get_checksum(self, source):
+	def get_checksum(self, source, restore=None):
 		MAX_BUF = 512
 		current = 0
 		try:
@@ -890,7 +897,10 @@ class MintBackup:
 					break
 				check.update(read)
 				current += len(read)
-				self.update_backup_progress(current, total, message="Calculating checksum")
+				if(restore):
+					self.update_restore_progress(current, total, message="Calculating checksum")
+				else:
+					self.update_backup_progress(current, total, message="Calculating checksum")
 			input.close()
 			return check.hexdigest()
 		except OSError as bad:
@@ -941,38 +951,58 @@ class MintBackup:
 
 	''' prepare the restore, reads the .mintbackup file if present '''
 	def prepare_restore(self):
-		gtk.gdk.threads_enter()
-		self.wTree.get_widget("button_apply").show()
-		self.wTree.get_widget("button_apply").set_sensitive(False)
-		self.wTree.get_widget("button_forward").hide()
-		gtk.gdk.threads_leave()
-		
-		# TODO: check what type of restore is happening
-		if(self.tar is not None):
-			self.wTree.get_widget("notebook1").set_current_page(7)
-			return
-		self.wTree.get_widget("main_window").set_sensitive(False)
-		self.wTree.get_widget("main_window").window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
-		self.conf = mINIFile()
-		try:
-			self.tar = tarfile.open(self.restore_source, "r")
-			mintfile = self.tar.getmember(".mintbackup")
-			if(mintfile is None):
-				self.error = "File is not a valid mintBackup archive. Aborting"
-				self.wTree.get_widget("button_apply").set_sensitive(False)
-				self.tar.close()
-				MessageDialog("Backup Tool", self.error, gtk.MESSAGE_ERROR).show()
-			else:
-				mfile = self.tar.extractfile(mintfile)
-				self.conf.load_from_list(mfile.readlines())
-				mfile.close()
+		if(self.restore_archive):
+			# restore archives.
+			if(self.tar is not None):
+				self.wTree.get_widget("notebook1").set_current_page(7)
+				self.wTree.get_widget("button_forward").hide()
+				self.wTree.get_widget("button_apply").show()
+				return
+			self.wTree.get_widget("main_window").set_sensitive(False)
+			self.wTree.get_widget("main_window").window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+			self.conf = mINIFile()
+			try:
+				self.tar = tarfile.open(self.restore_source, "r")
+				mintfile = self.tar.getmember(".mintbackup")
+				if(mintfile is None):
+					print "Processing a backup not created with this tool."
+					self.conf.description = _("(Not created with Backup Tool)")
+					self.conf.file_count = -1
+				else:
+					mfile = self.tar.extractfile(mintfile)
+					self.conf.load_from_list(mfile.readlines())
+					mfile.close()
+				
 				self.wTree.get_widget("label_overview_description_value").set_label(self.conf.description)
 				self.wTree.get_widget("button_back").set_sensitive(True)
-				self.wTree.get_widget("button_apply").set_sensitive(True)
+				self.wTree.get_widget("button_forward").hide()
+				self.wTree.get_widget("button_apply").show()
 				self.wTree.get_widget("notebook1").set_current_page(7)
 
-		except Exception, detail:
-			print detail
+			except Exception, detail:
+				print detail
+		else:
+			# Restore from directory
+			try:
+				mfile = os.path.join(self.restore_source, ".mintbackup")
+				if(not os.path.exists(mfile)):
+					gtk.gdk.threads_enter()
+					MessageDialog(_("Backup Tool"), "Specified directory is not a valid backup", gtk.MESSAGE_ERROR).show()
+					self.wTree.get_widget("button_forward").set_sensitive(True)
+					gtk.gdk.threads_leave()
+					return
+				else:
+					self.conf = mINIFile()
+					self.conf.load_from_file(mfile)
+					self.wTree.get_widget("label_overview_description_value").set_label(self.conf.description)
+					self.wTree.get_widget("button_back").set_sensitive(True)
+					self.wTree.get_widget("button_forward").hide()
+					self.wTree.get_widget("button_apply").show()
+					self.wTree.get_widget("notebook1").set_current_page(7)
+			except Exception, detail:
+				print detail
+		self.wTree.get_widget("label_overview_source_value").set_label(self.restore_source)
+		self.wTree.get_widget("label_overview_dest_value").set_label(self.restore_dest)
 		self.wTree.get_widget("main_window").set_sensitive(True)
 		self.wTree.get_widget("main_window").window.set_cursor(None)
 		
@@ -1008,6 +1038,9 @@ class MintBackup:
 
 	''' Restore from archive '''
 	def restore(self):
+		self.preserve_perms = True
+		self.preserve_times = True
+		self.postcheck = True
 		gtk.gdk.threads_enter()
 		self.wTree.get_widget("button_apply").hide()
 		self.wTree.get_widget("button_forward").set_sensitive(False)
@@ -1025,94 +1058,172 @@ class MintBackup:
 
 		# restore from archive
 		self.error = None
-		try:			
-			sztotal = self.conf.file_count
-			total = float(sztotal)
-			current_file = 0
-			MAX_BUF = 512
-			for record in self.tar.getmembers():
-				if(not self.operating or self.error is not None):
-					break
-				if(record.name == ".mintbackup"):
-					# skip mintbackup file
-					continue
-				current_file = current_file + 1
-				gtk.gdk.threads_enter()
-				label.set_label(record.name)
-				gtk.gdk.threads_leave()
-				if(record.isdir()):
-					target = os.path.join(self.restore_dest, record.name)
-					self.wTree.get_widget("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
-					if(not os.path.exists(target)):
-						os.mkdir(target)
+		if(self.restore_archive):
+			try:			
+				sztotal = self.conf.file_count
+				total = float(sztotal)
+				if(total == -1):
+					tmp = len(self.tar.getmembers())
+					szttotal = str(tmp)
+					total = float(tmp)
+				current_file = 0
+				MAX_BUF = 512
+				for record in self.tar.getmembers():
+					if(not self.operating or self.error is not None):
+						break
+					if(record.name == ".mintbackup"):
+						# skip mintbackup file
+						continue
+					current_file = current_file + 1
+					gtk.gdk.threads_enter()
+					label.set_label(record.name)
+					gtk.gdk.threads_leave()
+					if(record.isdir()):
+						target = os.path.join(self.restore_dest, record.name)
+						self.wTree.get_widget("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
+						if(not os.path.exists(target)):
+							os.mkdir(target)
 
-				if(record.isreg()):
-					target = os.path.join(self.restore_dest, record.name)
-					# todo: check existence of target and consult
-					# overwrite rule
-					self.wTree.get_widget("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
-					if(os.path.exists(target)):
-						if(del_policy == 1):
-							# source size > dest size
-							file1 = record.size
-							file2 = os.path.getsize(target)
-							if(file1 > file2):
-								os.remove(target)
-								gz = self.tar.extractfile(record)
-								out = open(target, "wb")
-								self.extract_file(gz, out, record)
-							else:
-								self.wTree.get_widget("progressbar_restore").set_text(_("Skipping identical file"))
-						elif(del_policy == 2):
-							# source size < dest size
-							file1 = record.size
-							file2 = os.path.getsize(target)
-							if(file1 < file2):
-								os.remove(target)
-								gz = self.tar.extractfile(record)
-								out = open(target, "wb")
-								self.extract_file(gz, out, record)
-							else:
-								self.wTree.get_widget("progressbar_restore").set_text(_("Skipping identical file"))
-						elif(del_policy == 3):
-								# source newer (less seconds from epoch)
-								file1 = record.mtime
-								file2 = os.path.getmtime(target)
-								if(file1 < file2):
+					if(record.isreg()):
+						target = os.path.join(self.restore_dest, record.name)
+						self.wTree.get_widget("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
+						if(os.path.exists(target)):
+							if(del_policy == 1):
+								# source size != dest size
+								file1 = record.size
+								file2 = os.path.getsize(target)
+								if(file1 != file2):
 									os.remove(target)
 									gz = self.tar.extractfile(record)
 									out = open(target, "wb")
 									self.extract_file(gz, out, record)
 								else:
 									self.wTree.get_widget("progressbar_restore").set_text(_("Skipping identical file"))
-						elif(del_policy == 4):
-							# checksums
-							gz = self.tar.extractfile(record)
-							file1 = self.get_checksum_for_file(gz)
-							file2 = self.get_checksum(target)
-							if(file1 not in file2):
-								os.remove(target)
-								out = open(target, "wb")
-								gz.close()
+							elif(del_policy == 2):
+								# source time != dest time
+								file1 = record.mtime
+								file2 = os.path.getmtime(target)
+								if(file1 != file2):
+									os.remove(target)
+									gz = self.tar.extractfile(record)
+									out = open(target, "wb")
+									self.extract_file(gz, out, record)
+								else:
+									self.wTree.get_widget("progressbar_restore").set_text(_("Skipping identical file"))
+							elif(del_policy == 3):
+								# checksums
 								gz = self.tar.extractfile(record)
+								file1 = self.get_checksum_for_file(gz)
+								file2 = self.get_checksum(target)
+								if(file1 not in file2):
+									os.remove(target)
+									out = open(target, "wb")
+									gz.close()
+									gz = self.tar.extractfile(record)
+									self.extract_file(gz, out, record)
+								else:
+									self.wTree.get_widget("progressbar_restore").set_text(_("Skipping identical file"))
+							elif(del_policy == 4):
+								# always delete
+								os.remove(target)
+								gz = self.tar.extractfile(record)
+								out = open(target, "wb")
 								self.extract_file(gz, out, record)
-							else:
-								self.wTree.get_widget("progressbar_restore").set_text(_("Skipping identical file"))
-						elif(del_policy == 5):
-							# always delete
-							os.remove(target)
+						else:
 							gz = self.tar.extractfile(record)
 							out = open(target, "wb")
 							self.extract_file(gz, out, record)
+
+				self.tar.close()
+			except Exception, detail:
+				self.error = str(detail)
+		else:
+			# restore backup from dir.
+			os.chdir(self.restore_source)
+			sztotal = self.conf.file_count
+			total = float(sztotal)
+			if(total == -1):
+				tmp = len(self.tar.getmembers())
+				szttotal = str(tmp)
+				total = float(tmp)
+			current_file = 0
+			if(total == -1):
+				for top,dirs,files in os.walk(top=self.restore_source,onerror=None, followlinks=self.follow_links):
+					pbar.pulse()
+					for d in dirs:
+						if(not self.operating or self.error is not None):
+							break
+						total += 1
+					for f in files:
+						if(not self.operating or self.error is not None):
+							break
+						total += 1
+				sztotal = str(total)
+				total = float(total)
+			for top,dirs,files in os.walk(top=self.restore_source,onerror=None,followlinks=self.follow_links):
+				if(not self.operating or self.error is not None):
+					break
+				for d in dirs:
+					# make directories
+					rpath = os.path.join(top, d)
+					path = os.path.relpath(rpath)
+					target = os.path.join(self.restore_dest, path)
+					if(not os.path.exists(target)):
+						os.mkdir(target)
+						
+					current_file = current_file + 1
+					gtk.gdk.threads_enter()
+					label.set_label(path)
+					gtk.gdk.threads_leave()
+					self.wTree.get_widget("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
+					del d
+				for f in files:
+					if ".mintbackup" in f:
+						continue
+					rpath = os.path.join(top, f)
+					path = os.path.relpath(rpath)
+					target = os.path.join(self.restore_dest, path)								
+					current_file = current_file + 1
+					gtk.gdk.threads_enter()
+					label.set_label(path)
+					gtk.gdk.threads_leave()
+					self.wTree.get_widget("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
+					if(os.path.exists(target)):
+						if(del_policy == 1):
+							# source size != dest size
+							file1 = os.path.getsize(rpath)
+							file2 = os.path.getsize(target)
+							if(file1 != file2):
+								os.remove(target)
+								self.copy_file(rpath, target, restore=True)
+							else:
+								self.wTree.get_widget("progressbar_restore").set_text(_("Skipping identical file"))
+						elif(del_policy == 2):
+							# source time != dest time
+							file1 = os.path.getmtime(rpath)
+							file2 = os.path.getmtime(target)
+							if(file1 != file2):
+								os.remove(target)
+								self.copy_file(rpath, target, restore=True)
+							else:
+								self.wTree.get_widget("progressbar_restore").set_text(_("Skipping identical file"))
+						elif(del_policy == 3):
+							# checksums
+							file1 = self.get_checksum(rpath)
+							file2 = self.get_checksum(target)
+							if(file1 not in file2):
+								os.remove(target)
+								self.copy_file(rpath, target, restore=True)
+							else:
+								self.wTree.get_widget("progressbar_restore").set_text(_("Skipping identical file"))
+						elif(del_policy == 4):
+							# always delete
+							os.remove(target)
+							self.copy_file(rpath, target, restore=True)
 					else:
-						gz = self.tar.extractfile(record)
-						out = open(target, "wb")
-						self.extract_file(gz, out, record)
-
-			self.tar.close()
-		except Exception, detail:
-			self.error = str(detail)
-
+						self.copy_file(rpath, target, restore=True)
+					del f
+						
 		if(self.error is not None):
 			gtk.gdk.threads_enter()
 			self.wTree.get_widget("label_restore_finished_value").set_label(_("An error occured during restoration:\n") + self.error)
