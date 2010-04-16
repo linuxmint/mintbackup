@@ -770,10 +770,10 @@ class MintBackup:
 								self.copy_file(rpath, target)
 								current_file = current_file + 1
 						del f
-				if(current_file != total):
-					self.error = _("Not all files appear to have been backed up. Copied: %d files out of %d total" % (current_file, total))
 		except Exception, detail:
 			self.error = str(detail)
+		if(current_file < total):
+			self.error = _("Not all files appear to have been backed up. Copied: %d files out of %d total" % (current_file, total))
 		if(self.error is not None):
 			gtk.gdk.threads_enter()
 			img = self.iconTheme.load_icon("dialog-error", 48, 0)
@@ -1074,7 +1074,6 @@ class MintBackup:
 					if(record.name == ".mintbackup"):
 						# skip mintbackup file
 						continue
-					current_file = current_file + 1
 					gtk.gdk.threads_enter()
 					label.set_label(record.name)
 					gtk.gdk.threads_leave()
@@ -1083,7 +1082,7 @@ class MintBackup:
 						self.wTree.get_widget("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
 						if(not os.path.exists(target)):
 							os.mkdir(target)
-
+							current_file = current_file + 1
 					if(record.isreg()):
 						target = os.path.join(self.restore_dest, record.name)
 						self.wTree.get_widget("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
@@ -1129,11 +1128,12 @@ class MintBackup:
 								gz = self.tar.extractfile(record)
 								out = open(target, "wb")
 								self.extract_file(gz, out, record)
+							current_file = current_file + 1
 						else:
 							gz = self.tar.extractfile(record)
 							out = open(target, "wb")
 							self.extract_file(gz, out, record)
-
+							current_file = current_file + 1
 				self.tar.close()
 			except Exception, detail:
 				self.error = str(detail)
@@ -1223,7 +1223,8 @@ class MintBackup:
 					else:
 						self.copy_file(rpath, target, restore=True)
 					del f
-						
+		if(current_file != total):
+			self.error = _("Not all files appear to have been backed up. Copied: %d files out of %d total" % (current_file, total))			
 		if(self.error is not None):
 			gtk.gdk.threads_enter()
 			self.wTree.get_widget("label_restore_finished_value").set_label(_("An error occured during restoration:\n") + self.error)
