@@ -642,7 +642,6 @@ class MintBackup:
 		self.wTree.get_widget("button_apply").hide()
 		self.wTree.get_widget("button_forward").hide()
 		self.wTree.get_widget("button_back").hide()
-		self.wTree.get_widget("button_forward").show()
 		gtk.gdk.threads_leave()
 		# get a count of all the files
 		total = 0
@@ -686,17 +685,16 @@ class MintBackup:
 						rpath = os.path.join(top, d)
 						path = os.path.relpath(rpath)
 						if(not self.is_excluded(rpath)):
-							current_file = current_file + 1
 							gtk.gdk.threads_enter()
 							label.set_label(path)
 							gtk.gdk.threads_leave()
 							self.wTree.get_widget("label_file_count").set_text(str(current_file) + " / " + sztotal)
 							tar.add(rpath, arcname=path, recursive=False, exclude=None)
+							current_file = current_file + 1
 					for f in files:
 						rpath = os.path.join(top, f)
 						path = os.path.relpath(rpath)
 						if(not self.is_excluded(rpath)):
-							current_file = current_file + 1
 							gtk.gdk.threads_enter()
 							label.set_label(path)
 							gtk.gdk.threads_leave()
@@ -705,6 +703,7 @@ class MintBackup:
 							finfo = tar.gettarinfo(name=None, arcname=path, fileobj=underfile)
 							tar.addfile(fileobj=underfile, tarinfo=finfo)
 							underfile.close()
+							current_file = current_file + 1
 				tar.close()
 				os.remove(mintfile)
 			else:
@@ -719,8 +718,7 @@ class MintBackup:
 						target = os.path.join(self.backup_dest, path)
 						if(not os.path.exists(target)):
 							os.mkdir(target)
-							
-						current_file = current_file + 1
+							current_file = current_file + 1
 						gtk.gdk.threads_enter()
 						label.set_label(path)
 						gtk.gdk.threads_leave()
@@ -731,7 +729,6 @@ class MintBackup:
 						path = os.path.relpath(rpath)
 						if(not self.is_excluded(rpath)):
 							target = os.path.join(self.backup_dest, path)								
-							current_file = current_file + 1
 							gtk.gdk.threads_enter()
 							label.set_label(path)
 							gtk.gdk.threads_leave()
@@ -768,9 +765,13 @@ class MintBackup:
 									# always delete
 									os.remove(target)
 									self.copy_file(rpath, target)
+								current_file = current_file + 1
 							else:
 								self.copy_file(rpath, target)
+								current_file = current_file + 1
 						del f
+				if(current_file != total):
+					self.error = _("Not all files appear to have been backed up. Copied: %d files out of %d total" % (current_file, total))
 		except Exception, detail:
 			self.error = str(detail)
 		if(self.error is not None):
