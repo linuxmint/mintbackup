@@ -647,11 +647,6 @@ class MintBackup:
 		total = 0
 		for top,dirs,files in os.walk(top=self.backup_source,onerror=None, followlinks=self.follow_links):
 			pbar.pulse()
-			for d in dirs:
-				if(not self.operating):
-					break
-				if(not self.is_excluded(os.path.join(top, d))):
-					total += 1
 			for f in files:
 				if(not self.operating):
 					break
@@ -681,16 +676,6 @@ class MintBackup:
 				for top,dirs,files in os.walk(top=self.backup_source, onerror=None, followlinks=self.follow_links):
 					if(not self.operating or self.error is not None):
 						break
-					for d in dirs:
-						rpath = os.path.join(top, d)
-						path = os.path.relpath(rpath)
-						if(not self.is_excluded(rpath)):
-							gtk.gdk.threads_enter()
-							label.set_label(path)
-							gtk.gdk.threads_leave()
-							self.wTree.get_widget("label_file_count").set_text(str(current_file) + " / " + sztotal)
-							tar.add(rpath, arcname=path, recursive=False, exclude=None)
-							current_file = current_file + 1
 					for f in files:
 						rpath = os.path.join(top, f)
 						path = os.path.relpath(rpath)
@@ -708,27 +693,17 @@ class MintBackup:
 				os.remove(mintfile)
 			else:
 				# Copy to other directory, possibly on another device
-				for top,dirs,files in os.walk(top=self.backup_source,onerror=None,followlinks=self.follow_links):
+				for top,dirs,files in os.walk(top=self.backup_source,topdown=False,onerror=None,followlinks=self.follow_links):
 					if(not self.operating or self.error is not None):
 						break
-					for d in dirs:
-						# make directories
-						rpath = os.path.join(top, d)
-						path = os.path.relpath(rpath)
-						target = os.path.join(self.backup_dest, path)
-						if(not os.path.exists(target)):
-							self.clone_dir(rpath, target)
-							current_file = current_file + 1
-						gtk.gdk.threads_enter()
-						label.set_label(path)
-						gtk.gdk.threads_leave()
-						self.wTree.get_widget("label_file_count").set_text(str(current_file) + " / " + sztotal)
-						del d
 					for f in files:
 						rpath = os.path.join(top, f)
 						path = os.path.relpath(rpath)
 						if(not self.is_excluded(rpath)):
-							target = os.path.join(self.backup_dest, path)								
+							target = os.path.join(self.backup_dest, path)
+							dir = os.path.split(target)
+							if(not os.path.exists(dir[0])):
+								os.makedirs(dir[0])								
 							gtk.gdk.threads_enter()
 							label.set_label(path)
 							gtk.gdk.threads_leave()
@@ -765,12 +740,20 @@ class MintBackup:
 									# always delete
 									os.remove(target)
 									self.copy_file(rpath, target)
-								current_file = current_file + 1
 							else:
 								self.copy_file(rpath, target)
-								current_file = current_file + 1
+							current_file = current_file + 1
 						del f
+						if(self.preserve_times or self.preserve_perms):
+							# loop back over the directories now to reset the a/m/time
+							for d in dirs:
+								rpath = os.path.join(top, d)
+								path = os.path.relpath(rpath)
+								target = os.path.join(self.backup_dest, path)
+								self.clone_dir(rpath, target)
+								del d
 		except Exception, detail:
+			print detail
 			self.error = str(detail)
 		if(current_file < total):
 			self.error = _("Not all files appear to have been backed up. Copied: %d files out of %d total" % (current_file, total))
@@ -850,11 +833,6 @@ class MintBackup:
 				os.remove(errfile)
 			else:
 				fd = dst.fileno()
-				if(self.preserve_times):
-					finfo = os.stat(source)
-					atime = finfo[stat.ST_ATIME]
-					mtime = finfo[stat.ST_MTIME]
-					os.utime(dest, (atime, mtime))
 				if(self.preserve_perms):
 					# set permissions
 					finfo = os.stat(source)
@@ -864,7 +842,11 @@ class MintBackup:
 					dst.flush()
 					os.fsync(fd)
 					dst.close()
-					shutil.copystat(source, dest)
+				if(self.preserve_times):
+					finfo = os.stat(source)
+					atime = finfo[stat.ST_ATIME]
+					mtime = finfo[stat.ST_MTIME]
+					os.utime(dest, (atime, mtime))
 				else:
 					dst.flush()
 					os.fsync(fd)
@@ -883,20 +865,21 @@ class MintBackup:
 			
 	
 	''' mkdir and clone permissions '''
-	def clone_dir(source, dest):
+	def clone_dir(self, source, dest):
 		try:
-			os.mkdir(dest)
+			if(not os.path.exists(dest)):
+				os.mkdir(dest)
 			if(self.preserve_perms):
 				finfo = os.stat(source)
 				owner = finfo[stat.ST_UID]
 				group = finfo[stat.ST_GID]
 				os.chown(dest, owner, group)
-				shutil.copystat(source, dest)
+				#shutil.copystat(source, dest)
 			if(self.preserve_times):
 				finfo = os.stat(source)
 				atime = finfo[stat.ST_ATIME]
 				mtime = finfo[stat.ST_MTIME]
-				ow.utime(dest, (atime, mtime))
+				os.utime(dest, (atime, mtime))
 		except OSError as bad:
 			if(len(bad.args) > 2):
 				self.error = "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + bad.args[2] + "]"
@@ -1101,7 +1084,6 @@ class MintBackup:
 					gtk.gdk.threads_leave()
 					if(record.isdir()):
 						target = os.path.join(self.restore_dest, record.name)
-						self.wTree.get_widget("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
 						if(not os.path.exists(target)):
 							os.mkdir(target)
 							os.chown(target, record.uid, record.gid)
@@ -1110,6 +1092,9 @@ class MintBackup:
 						current_file += 1
 					if(record.isreg()):
 						target = os.path.join(self.restore_dest, record.name)
+						dir = os.path.split(target)
+						if(not os.path.exists(dir[0])):
+							os.makedirs(dir[0])	
 						self.wTree.get_widget("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
 						if(os.path.exists(target)):
 							if(del_policy == 1):
@@ -1176,39 +1161,24 @@ class MintBackup:
 			if(total == -1):
 				for top,dirs,files in os.walk(top=self.restore_source,onerror=None, followlinks=self.follow_links):
 					pbar.pulse()
-					for d in dirs:
-						if(not self.operating or self.error is not None):
-							break
-						total += 1
 					for f in files:
 						if(not self.operating or self.error is not None):
 							break
 						total += 1
 				sztotal = str(total)
 				total = float(total)
-			for top,dirs,files in os.walk(top=self.restore_source,onerror=None,followlinks=self.follow_links):
+			for top,dirs,files in os.walk(top=self.restore_source,topdown=False,onerror=None,followlinks=self.follow_links):
 				if(not self.operating or self.error is not None):
 					break
-				for d in dirs:
-					# make directories
-					rpath = os.path.join(top, d)
-					path = os.path.relpath(rpath)
-					target = os.path.join(self.restore_dest, path)
-					if(not os.path.exists(target)):
-						self.clone_dir(rpath, target)
-						
-					current_file = current_file + 1
-					gtk.gdk.threads_enter()
-					label.set_label(path)
-					gtk.gdk.threads_leave()
-					self.wTree.get_widget("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
-					del d
 				for f in files:
 					if ".mintbackup" in f:
 						continue
 					rpath = os.path.join(top, f)
 					path = os.path.relpath(rpath)
-					target = os.path.join(self.restore_dest, path)								
+					target = os.path.join(self.restore_dest, path)	
+					dir = os.path.split(target)
+					if(not os.path.exists(dir[0])):
+						os.makedirs(dir[0])								
 					current_file = current_file + 1
 					gtk.gdk.threads_enter()
 					label.set_label(path)
@@ -1249,6 +1219,14 @@ class MintBackup:
 					else:
 						self.copy_file(rpath, target, restore=True)
 					del f
+					if(self.preserve_times or self.preserve_perms):
+						# loop back over the directories now to reset the a/m/time
+						for d in dirs:
+							rpath = os.path.join(top, d)
+							path = os.path.relpath(rpath)
+							target = os.path.join(self.restore_dest, path)
+							self.clone_dir(rpath, target)
+							del d
 		if(current_file < total):
 			self.error = _("Not all files appear to have been backed up. Copied: %d files out of %d total" % (current_file, total))			
 		if(self.error is not None):
