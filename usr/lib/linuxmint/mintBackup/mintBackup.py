@@ -680,6 +680,16 @@ class MintBackup:
 						rpath = os.path.join(top, f)
 						path = os.path.relpath(rpath)
 						if(not self.is_excluded(rpath)):
+							if(os.path.islink(rpath)):
+								if(self.follow_links):
+									if(not os.path.exists(rpath)):
+										self.update_restore_progress(0, 1, message="Skipping broken link")
+										current_file += 1
+										continue
+								else:
+									self.update_restore_progress(0, 1, message="Skipping link")
+									current_file += 1
+									continue
 							gtk.gdk.threads_enter()
 							label.set_label(path)
 							gtk.gdk.threads_leave()
@@ -701,6 +711,16 @@ class MintBackup:
 						path = os.path.relpath(rpath)
 						if(not self.is_excluded(rpath)):
 							target = os.path.join(self.backup_dest, path)
+							if(os.path.islink(rpath)):
+								if(self.follow_links):
+									if(not os.path.exists(rpath)):
+										self.update_restore_progress(0, 1, message="Skipping broken link")
+										current_file += 1
+										continue
+								else:
+									self.update_restore_progress(0, 1, message="Skipping link")
+									current_file += 1
+									continue
 							dir = os.path.split(target)
 							if(not os.path.exists(dir[0])):
 								os.makedirs(dir[0])								
