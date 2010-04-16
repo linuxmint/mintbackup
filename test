@@ -2,4 +2,4 @@
 
 sudo rm -rf /usr/lib/linuxmint/mintBackup
 sudo cp -R usr /
-mintbackup
+sudo mintbackup

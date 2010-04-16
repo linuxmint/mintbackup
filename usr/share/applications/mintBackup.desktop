@@ -1,9 +1,8 @@
 [Desktop Entry]
 Name=Backup Tool
-GenericName=Data backups
 Comment=Make a backup of your home directory
 Exec=mintbackup
-Icon=/usr/lib/linuxmint/mintBackup/icon_desktop.png
+Icon=/usr/lib/linuxmint/mintBackup/icon.png
 Terminal=false
 Type=Application
 Encoding=UTF-8

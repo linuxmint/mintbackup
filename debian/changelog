@@ -1,3 +1,9 @@
+mintbackup (2.0.0) isadora; urgency=low
+
+  * Complete rewrite
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri,  16 Apr 2010 19:02:00 +0000
+
 mintbackup (1.6.2) gloria; urgency=low
 
   * Updated translations

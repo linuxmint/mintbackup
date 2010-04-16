@@ -1,27 +1,5 @@
 #!/usr/bin/env python
 
-# mintBackup - A GUI backup and restoration utility
-# Author: Ikey Doherty <contactjfreak@googlemail.com>
-# Several parts of this program originate from the original
-# mintBackup code by Clement Lefebvre <root@linuxmint.com>
-# Those parts are the "MessageDialog" class, the add_folder_exclude,
-# remove_exclude and add_file_exclude methods (although somewhat modified)
-
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330,
-# Boston, MA 02111-1307, USA.
-
 try:
 	import pygtk
 	pygtk.require("2.0")
@@ -44,14 +22,16 @@ try:
 	import apt
 	import subprocess
 	from user import home
-	import apt.progress.gtk2
-	import vte
 	import tempfile
 except Exception, detail:
 	print "You do not have the required dependencies"
 
 # i18n
-gettext.install("messages", "/usr/lib/linuxmint/mintBackup/locale")
+gettext.install("mintbackup", "/usr/share/linuxmint/locale")
+
+# i18n for menu item
+menuName = _("Backup Tool")
+menuComment = _("Make a backup of your home directory")
 
 class TarFileMonitor():
 	''' Bit of a hack but I can figure out what tarfile is doing now.. (progress wise) '''
@@ -127,6 +107,7 @@ class MintBackup:
 	def __init__(self):
 		self.glade = '/usr/lib/linuxmint/mintBackup/mintBackup.glade'
 		self.wTree = gtk.glade.XML(self.glade, 'main_window')
+		self.wTree.get_widget("main_window").set_icon_from_file("/usr/lib/linuxmint/mintBackup/icon.png")
 
 		# handle command line filenames
 		if(len(sys.argv) > 1):
@@ -272,7 +253,18 @@ class MintBackup:
 		#self.wTree.get_widget("vbox_install").show_all()
 		
 		# i18n - Page 0 (choose backup or restore)
-		self.wTree.get_widget("label_wizard").set_markup(_("<big><b>Backup Tool</b></big>\nThis wizard will allow you to make a backup, or to\nrestore a previously created backup"))
+		self.wTree.get_widget("label_wizard1").set_markup("<big><b>" + _("Backup or Restore") + "</b></big>")
+		self.wTree.get_widget("label_wizard2").set_markup(_("Choose an option"))
+
+		self.wTree.get_widget("label_create_backup").set_text(_("Backup files"))
+		self.wTree.get_widget("label_restore_backup").set_text(_("Restore files"))
+		self.wTree.get_widget("label_create_packages").set_text(_("Backup software selection"))
+		self.wTree.get_widget("label_restore_packages").set_text(_("Restore software selection"))
+
+		self.wTree.get_widget("image_backup_data").set_from_file("/usr/lib/linuxmint/mintBackup/backup-data.svg")
+		self.wTree.get_widget("image_restore_data").set_from_file("/usr/lib/linuxmint/mintBackup/restore-data.svg")
+		self.wTree.get_widget("image_backup_software").set_from_file("/usr/lib/linuxmint/mintBackup/backup-software.svg")
+		self.wTree.get_widget("image_restore_software").set_from_file("/usr/lib/linuxmint/mintBackup/restore-software.svg")
 
 		# i18n - Page 1 (choose backup directories)
 		self.wTree.get_widget("label_backup_dirs").set_markup(_("<big><b>Backup Tool</b></big>\nYou now need to choose the source and destination\ndirectories for the backup"))
@@ -357,22 +349,36 @@ class MintBackup:
 		
 	''' show the pretty aboutbox. '''
 	def about_callback(self, w):
-		license = ""
+		dlg = gtk.AboutDialog()
+		dlg.set_title(_("About"))
+		dlg.set_program_name("mintBackup")	
+		dlg.set_comments(_("Backup Tool"))
 		try:
-			f = open("/usr/share/common-licenses/GPL", "r")
-			for line in f:
-				license += line
-		except:
-			license = "GPL"
-		box = gtk.AboutDialog()
-		box.connect("response", self.abt_resp)
-		box.set_license(license)
-		box.set_name("Backup Tool")
-		box.set_comments(_("Comprehensive desktop backup utility"))
-		box.set_authors(["Ikey Doherty <contactjfreak@googlemail.com>"])
-		box.set_logo_icon_name("user-home")
-		box.run()
-		box.destroy()
+			h = open('/usr/share/common-licenses/GPL','r')
+			s = h.readlines()
+			gpl = ""
+			for line in s:
+				gpl += line
+			h.close()
+			dlg.set_license(gpl)
+		except Exception, detail:
+			print detail
+		try: 
+			version = commands.getoutput("/usr/lib/linuxmint/common/version.py mintbackup")
+			dlg.set_version(version)
+		except Exception, detail:
+			print detail
+
+		dlg.set_authors(["Ikey Doherty <contactjfreak@googlemail.com>", "Clement Lefebvre <root@linuxmint.com>"]) 
+		dlg.set_icon_from_file("/usr/lib/linuxmint/mintBackup/icon.png")
+		dlg.set_logo(gtk.gdk.pixbuf_new_from_file("/usr/lib/linuxmint/mintBackup/icon.svg"))
+		def close(w, res):
+		    if res == gtk.RESPONSE_CANCEL:
+		        w.hide()
+		dlg.connect("response", close)
+		dlg.show()
+
+
 	def abt_resp(self, w, r):
 		if r == gtk.RESPONSE_CANCEL:
 			w.hide()
