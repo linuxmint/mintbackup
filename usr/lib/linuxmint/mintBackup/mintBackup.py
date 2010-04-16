@@ -717,7 +717,7 @@ class MintBackup:
 						path = os.path.relpath(rpath)
 						target = os.path.join(self.backup_dest, path)
 						if(not os.path.exists(target)):
-							os.mkdir(target)
+							self.clone_dir(rpath, target)
 							current_file = current_file + 1
 						gtk.gdk.threads_enter()
 						label.set_label(path)
@@ -882,6 +882,27 @@ class MintBackup:
 				self.error = "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + source + "]"
 			
 	
+	''' mkdir and clone permissions '''
+	def clone_dir(source, dest):
+		try:
+			os.mkdir(dest)
+			if(self.preserve_perms):
+				finfo = os.stat(source)
+				owner = finfo[stat.ST_UID]
+				group = finfo[stat.ST_GID]
+				os.chown(dest, owner, group)
+				shutil.copystat(source, dest)
+			if(self.preserve_times):
+				finfo = os.stat(source)
+				atime = finfo[stat.ST_ATIME]
+				mtime = finfo[stat.ST_MTIME]
+				ow.utime(dest, (atime, mtime))
+		except OSError as bad:
+			if(len(bad.args) > 2):
+				self.error = "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + bad.args[2] + "]"
+			else:
+				self.error = "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + source + "]"
+				
 	''' Grab the checksum for the input filename and return it '''
 	def get_checksum(self, source, restore=None):
 		MAX_BUF = 512
@@ -1060,6 +1081,7 @@ class MintBackup:
 		self.error = None
 		if(self.restore_archive):
 			try:			
+				os.chdir(self.restore_dest)
 				sztotal = self.conf.file_count
 				total = float(sztotal)
 				if(total == -1):
@@ -1082,7 +1104,10 @@ class MintBackup:
 						self.wTree.get_widget("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
 						if(not os.path.exists(target)):
 							os.mkdir(target)
-							current_file = current_file + 1
+							os.chown(target, record.uid, record.gid)
+							os.chmod(target, record.mode)
+							os.utime(target, (record.mtime, record.mtime))
+						current_file += 1
 					if(record.isreg()):
 						target = os.path.join(self.restore_dest, record.name)
 						self.wTree.get_widget("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
@@ -1136,6 +1161,7 @@ class MintBackup:
 							current_file = current_file + 1
 				self.tar.close()
 			except Exception, detail:
+				print detail
 				self.error = str(detail)
 		else:
 			# restore backup from dir.
@@ -1169,7 +1195,7 @@ class MintBackup:
 					path = os.path.relpath(rpath)
 					target = os.path.join(self.restore_dest, path)
 					if(not os.path.exists(target)):
-						os.mkdir(target)
+						self.clone_dir(rpath, target)
 						
 					current_file = current_file + 1
 					gtk.gdk.threads_enter()
@@ -1223,7 +1249,7 @@ class MintBackup:
 					else:
 						self.copy_file(rpath, target, restore=True)
 					del f
-		if(current_file != total):
+		if(current_file < total):
 			self.error = _("Not all files appear to have been backed up. Copied: %d files out of %d total" % (current_file, total))			
 		if(self.error is not None):
 			gtk.gdk.threads_enter()
