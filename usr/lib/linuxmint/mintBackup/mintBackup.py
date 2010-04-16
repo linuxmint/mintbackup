@@ -640,7 +640,7 @@ class MintBackup:
 
 		gtk.gdk.threads_enter()
 		self.wTree.get_widget("button_apply").hide()
-		self.wTree.get_widget("button_forward").set_sensitive(False)
+		self.wTree.get_widget("button_forward").hide()
 		self.wTree.get_widget("button_back").hide()
 		self.wTree.get_widget("button_forward").show()
 		gtk.gdk.threads_leave()
@@ -794,7 +794,7 @@ class MintBackup:
 				img = self.iconTheme.load_icon("dialog-information", 48, 0)
 				self.wTree.get_widget("label_finished_status").set_label(_("Backup completed without error"))
 				self.wTree.get_widget("image_finished").set_from_pixbuf(img)
-				self.wTree.get_widget("button_forward").set_sensitive(True)
+				self.wTree.get_widget("notebook1").next_page()
 				gtk.gdk.threads_leave()
 		self.operating = False
 
@@ -1043,9 +1043,8 @@ class MintBackup:
 		self.postcheck = True
 		gtk.gdk.threads_enter()
 		self.wTree.get_widget("button_apply").hide()
-		self.wTree.get_widget("button_forward").set_sensitive(False)
+		self.wTree.get_widget("button_forward").hide()
 		self.wTree.get_widget("button_back").hide()
-		self.wTree.get_widget("button_forward").show()
 		gtk.gdk.threads_leave()
 		
 		del_policy = self.wTree.get_widget("combobox_restore_del").get_active()
@@ -1245,7 +1244,7 @@ class MintBackup:
 				self.wTree.get_widget("label_restore_finished_value").set_label(_("The following archive was successfully restored:\n") + self.restore_source)
 				img = self.iconTheme.load_icon("dialog-information", 48, 0)
 				self.wTree.get_widget("image_restore_finished").set_from_pixbuf(img)
-				self.wTree.get_widget("button_forward").set_sensitive(True)
+				self.wTree.get_widget("notebook1").next_page()
 				gtk.gdk.threads_leave()
 		self.operating = False
 		
