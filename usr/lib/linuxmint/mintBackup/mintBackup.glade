@@ -58,7 +58,9 @@
                 <child>
                   <widget class="GtkTable" id="table3">
                     <property name="visible">True</property>
-                    <property name="n_rows">5</property>
+                    <property name="n_rows">2</property>
+                    <property name="n_columns">2</property>
+                    <property name="homogeneous">True</property>
                     <child>
                       <widget class="GtkButton" id="button_backup_files">
                         <property name="visible">True</property>
@@ -67,6 +69,7 @@
                         <child>
                           <widget class="GtkHBox" id="hbox19">
                             <property name="visible">True</property>
+                            <property name="spacing">6</property>
                             <child>
                               <widget class="GtkImage" id="image_backup_data">
                                 <property name="visible">True</property>
@@ -81,10 +84,31 @@
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkLabel" id="label_create_backup">
+                              <widget class="GtkVBox" id="vbox41">
                                 <property name="visible">True</property>
-                                <property name="label" translatable="yes">Create a new backup
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <widget class="GtkLabel" id="label_create_backup">
+                                    <property name="visible">True</property>
+                                    <property name="xalign">0</property>
+                                    <property name="label" translatable="yes">Create a new backup
 of your files</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="label_detail1">
+                                    <property name="visible">True</property>
+                                    <property name="xalign">0</property>
+                                    <property name="label" translatable="yes">&lt;small&gt;Make a backup of your files&lt;/small&gt;</property>
+                                    <property name="use_markup">True</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
                               </widget>
                               <packing>
                                 <property name="position">1</property>
@@ -104,9 +128,11 @@ of your files</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <property name="xalign">0</property>
                         <child>
                           <widget class="GtkHBox" id="hbox21">
                             <property name="visible">True</property>
+                            <property name="spacing">6</property>
                             <child>
                               <widget class="GtkImage" id="image_backup_software">
                                 <property name="visible">True</property>
@@ -119,10 +145,95 @@ of your files</property>
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkLabel" id="label_create_packages">
+                              <widget class="GtkVBox" id="vbox43">
                                 <property name="visible">True</property>
-                                <property name="label" translatable="yes">Create a new backup
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <widget class="GtkLabel" id="label_create_packages">
+                                    <property name="visible">True</property>
+                                    <property name="xalign">0</property>
+                                    <property name="label" translatable="yes">Create a new backup
 of your package list</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="label_detail2">
+                                    <property name="visible">True</property>
+                                    <property name="xalign">0</property>
+                                    <property name="label" translatable="yes">&lt;small&gt;Save the list of installed applications&lt;/small&gt;</property>
+                                    <property name="use_markup">True</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                              <packing>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </widget>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="y_options"></property>
+                        <property name="x_padding">6</property>
+                        <property name="y_padding">3</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkButton" id="button_restore_files">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <child>
+                          <widget class="GtkHBox" id="hbox20">
+                            <property name="visible">True</property>
+                            <property name="spacing">6</property>
+                            <child>
+                              <widget class="GtkImage" id="image_restore_data">
+                                <property name="visible">True</property>
+                                <property name="stock">gtk-undo</property>
+                                <property name="pixel_size">36</property>
+                                <property name="icon-size">5</property>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkVBox" id="vbox42">
+                                <property name="visible">True</property>
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <widget class="GtkLabel" id="label_restore_backup">
+                                    <property name="visible">True</property>
+                                    <property name="xalign">0</property>
+                                    <property name="label" translatable="yes">Restore a backup
+you have created</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="label_detail3">
+                                    <property name="visible">True</property>
+                                    <property name="xalign">0</property>
+                                    <property name="label" translatable="yes">&lt;small&gt;Restore a previous backup&lt;/small&gt;</property>
+                                    <property name="use_markup">True</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
                               </widget>
                               <packing>
                                 <property name="position">1</property>
@@ -140,17 +251,6 @@ of your package list</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkHSeparator" id="hseparator1">
-                        <property name="visible">True</property>
-                      </widget>
-                      <packing>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
-                        <property name="x_padding">9</property>
-                        <property name="y_padding">3</property>
-                      </packing>
-                    </child>
-                    <child>
                       <widget class="GtkButton" id="button_restore_packages">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
@@ -158,6 +258,7 @@ of your package list</property>
                         <child>
                           <widget class="GtkHBox" id="hbox22">
                             <property name="visible">True</property>
+                            <property name="spacing">6</property>
                             <child>
                               <widget class="GtkImage" id="image_restore_software">
                                 <property name="visible">True</property>
@@ -171,10 +272,31 @@ of your package list</property>
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkLabel" id="label_restore_packages">
+                              <widget class="GtkVBox" id="vbox44">
                                 <property name="visible">True</property>
-                                <property name="label" translatable="yes">Restore your backed
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <widget class="GtkLabel" id="label_restore_packages">
+                                    <property name="visible">True</property>
+                                    <property name="xalign">0</property>
+                                    <property name="label" translatable="yes">Restore your backed
 up packages</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="label_detail4">
+                                    <property name="visible">True</property>
+                                    <property name="xalign">0</property>
+                                    <property name="label" translatable="yes">&lt;small&gt;Restore previously installed applications&lt;/small&gt;</property>
+                                    <property name="use_markup">True</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
                               </widget>
                               <packing>
                                 <property name="position">1</property>
@@ -184,50 +306,10 @@ up packages</property>
                         </child>
                       </widget>
                       <packing>
-                        <property name="top_attach">4</property>
-                        <property name="bottom_attach">5</property>
-                        <property name="y_options"></property>
-                        <property name="x_padding">6</property>
-                        <property name="y_padding">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkButton" id="button_restore_files">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <child>
-                          <widget class="GtkHBox" id="hbox20">
-                            <property name="visible">True</property>
-                            <child>
-                              <widget class="GtkImage" id="image_restore_data">
-                                <property name="visible">True</property>
-                                <property name="stock">gtk-undo</property>
-                                <property name="pixel_size">36</property>
-                                <property name="icon-size">5</property>
-                              </widget>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkLabel" id="label_restore_backup">
-                                <property name="visible">True</property>
-                                <property name="label" translatable="yes">Restore a backup
-you have created</property>
-                              </widget>
-                              <packing>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                          </widget>
-                        </child>
-                      </widget>
-                      <packing>
-                        <property name="top_attach">3</property>
-                        <property name="bottom_attach">4</property>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">1</property>
+                        <property name="bottom_attach">2</property>
                         <property name="y_options"></property>
                         <property name="x_padding">6</property>
                         <property name="y_padding">3</property>

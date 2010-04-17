@@ -263,6 +263,11 @@ class MintBackup:
 		self.wTree.get_widget("label_create_packages").set_text(_("Backup software selection"))
 		self.wTree.get_widget("label_restore_packages").set_text(_("Restore software selection"))
 
+		self.wTree.get_widget("label_detail1").set_markup("<small>" + _("Make a backup of your files") + "</small>")
+		self.wTree.get_widget("label_detail2").set_markup("<small>" + _("Save the list of installed applications") + "</small>")
+		self.wTree.get_widget("label_detail3").set_markup("<small>" + _("Restore a previous backup") + "</small>")
+		self.wTree.get_widget("label_detail4").set_markup("<small>" + _("Restore previously installed applications") + "</small>")
+
 		self.wTree.get_widget("image_backup_data").set_from_file("/usr/lib/linuxmint/mintBackup/backup-data.svg")
 		self.wTree.get_widget("image_restore_data").set_from_file("/usr/lib/linuxmint/mintBackup/restore-data.svg")
 		self.wTree.get_widget("image_backup_software").set_from_file("/usr/lib/linuxmint/mintBackup/backup-software.svg")
