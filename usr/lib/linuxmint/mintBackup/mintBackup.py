@@ -125,9 +125,9 @@ class MintBackup:
 		self.operating = False
 
 		# preserve permissions?
-		self.preserve_perms = False
+		self.preserve_perms = True
 		# preserve times?
-		self.preserve_times = False
+		self.preserve_times = True
 		# post-check files?
 		self.postcheck = True
 		# follow symlinks?
@@ -169,10 +169,13 @@ class MintBackup:
 		self.wTree.get_widget("combobox_delete_dest").set_active(3)
 
 		# advanced options
-		self.wTree.get_widget("checkbutton_integrity").set_active(True)
+		self.wTree.get_widget("checkbutton_integrity").set_active(self.postcheck)
 		self.wTree.get_widget("checkbutton_integrity").connect("clicked", self.handle_checkbox)
+		self.wTree.get_widget("checkbutton_perms").set_active(self.preserve_perms)
 		self.wTree.get_widget("checkbutton_perms").connect("clicked", self.handle_checkbox)
+		self.wTree.get_widget("checkbutton_times").set_active(self.preserve_times)
 		self.wTree.get_widget("checkbutton_times").connect("clicked", self.handle_checkbox)
+		self.wTree.get_widget("checkbutton_links").set_active(self.follow_links)
 		self.wTree.get_widget("checkbutton_links").connect("clicked", self.handle_checkbox)
 		# set up exclusions page
 		self.iconTheme = gtk.icon_theme_get_default()
@@ -217,7 +220,6 @@ class MintBackup:
 		# open archive button, opens an archive... :P
 		self.wTree.get_widget("radiobutton_archive").connect("toggled", self.archive_switch)
 		self.wTree.get_widget("radiobutton_dir").connect("toggled", self.archive_switch)
-		self.wTree.get_widget("button_open_archive").connect("clicked", self.open_archive_callback)
 		self.wTree.get_widget("filechooserbutton_restore_source").connect("file-set", self.check_reset_file)
 		self.wTree.get_widget("combobox_restore_del").set_model(overs)
 		self.wTree.get_widget("combobox_restore_del").set_active(3)
@@ -267,11 +269,12 @@ class MintBackup:
 		self.wTree.get_widget("image_restore_software").set_from_file("/usr/lib/linuxmint/mintBackup/restore-software.svg")
 
 		# i18n - Page 1 (choose backup directories)
-		self.wTree.get_widget("label_backup_dirs").set_markup(_("<big><b>Backup Tool</b></big>\nYou now need to choose the source and destination\ndirectories for the backup"))
+		self.wTree.get_widget("label_title_destination").set_markup("<big><b>" + _("Backup files") + "</b></big>")
+		self.wTree.get_widget("label_caption_destination").set_markup(_("Please select a source and a destination for your backup"))
 		self.wTree.get_widget("label_backup_source").set_label(_("Source:"))
 		self.wTree.get_widget("label_backup_dest").set_label(_("Destination:"))
-		self.wTree.get_widget("label_backup_desc").set_label(_("Description:"))
 		self.wTree.get_widget("label_expander").set_label(_("Advanced options"))
+		self.wTree.get_widget("label_backup_desc").set_label(_("Description:"))
 		self.wTree.get_widget("label_compress").set_label(_("Output:"))
 		self.wTree.get_widget("label_overwrite_dest").set_label(_("Overwrite:"))
 		self.wTree.get_widget("checkbutton_integrity").set_label(_("Confirm integrity"))
@@ -280,23 +283,28 @@ class MintBackup:
 		self.wTree.get_widget("checkbutton_times").set_label(_("Preserve timestamps"))
 
 		# i18n - Page 2 (choose files/directories to exclude)
-		self.wTree.get_widget("label_exclude_dirs").set_markup(_("<big><b>Backup Tool</b></big>\nIf you wish to exclude any files or directories from being\nbacked up by this wizard, please add them to the list below.\nAll files and directories listed here will NOT be backed up."))
+		self.wTree.get_widget("label_title_exclude").set_markup("<big><b>" + _("Backup files") + "</b></big>")
+		self.wTree.get_widget("label_caption_exclude").set_markup(_("Please select any files or directories you want to exclude"))
 		self.wTree.get_widget("label_add_file").set_label(_("Exclude files"))
 		self.wTree.get_widget("label_add_folder").set_label(_("Exclude directories"))
 		self.wTree.get_widget("label_remove").set_label(_("Remove"))
 
 		# i18n - Page 3 (backup overview)
-		self.wTree.get_widget("label_backup_overview").set_markup(_("<big><b>Backup Tool</b></big>\nPlease review your options below.\nWhen you are happy with your choice click\nthe Forward button to continue."))
+		self.wTree.get_widget("label_title_review").set_markup("<big><b>" + _("Backup files") + "</b></big>")
+		self.wTree.get_widget("label_caption_review").set_markup(_("Please review the information below before starting the backup"))
 
 		# i18n - Page 4 (backing up status)
-		self.wTree.get_widget("label_backing_up").set_markup(_("<big><b>Backup Tool</b></big>\nCurrently backing up. This may take some time."))
-		self.wTree.get_widget("label_current_file").set_label(_("Current file:"))
+		self.wTree.get_widget("label_title_copying").set_markup("<big><b>" + _("Backup files") + "</b></big>")
+		self.wTree.get_widget("label_caption_copying").set_markup(_("Your files are being backed up, please wait"))
+		self.wTree.get_widget("label_current_file").set_label(_("Currently saving:"))
 
 		# i18n - Page 5 (backup complete)
-		self.wTree.get_widget("label_finished").set_markup(_("<big><b>Backup Tool</b></big>"))
+		self.wTree.get_widget("label_title_finished").set_markup("<big><b>" + _("Backup files") + "</b></big>")
+		self.wTree.get_widget("label_caption_finished").set_markup(_("The backup is now finished"))		
 
 		# i18n - Page 6 (Restore locations)
-		self.wTree.get_widget("label_restore_wizard").set_markup(_("<big><b>Backup Tool</b></big>\nPlease select the backup you wish to restore\nand its destination below"))
+		self.wTree.get_widget("label_title_restore1").set_markup("<big><b>" + _("Restore files") + "</b></big>")
+		self.wTree.get_widget("label_caption_restore1").set_markup(_("Please choose the type of backup to restore, its location and a destination"))
 		self.wTree.get_widget("radiobutton_archive").set_label(_("Archive"))
 		self.wTree.get_widget("radiobutton_dir").set_label(_("Directory"))
 		self.wTree.get_widget("label_restore_source").set_label(_("Source:"))
@@ -305,47 +313,56 @@ class MintBackup:
 		self.wTree.get_widget("label_restore_overwrite").set_label(_("Overwrite:"))
 
 		# i18n - Page 7 (Restore overview)
-		self.wTree.get_widget("label_restore_overview").set_markup(_("<big><b>Backup Tool</b></big>\nWhen you are happy with the settings below\npress the Forward button to restore your backup"))
+		self.wTree.get_widget("label_title_restore2").set_markup("<big><b>" + _("Restore files") + "</b></big>")
+		self.wTree.get_widget("label_caption_restore2").set_markup(_("Please review the information below"))
 		self.wTree.get_widget("label_overview_source").set_markup(_("<b>Archive:</b>"))
 		self.wTree.get_widget("label_overview_description").set_markup(_("<b>Description:</b>"))
-		self.wTree.get_widget("label_open_archive").set_label(_("Open"))
 
 		# i18n - Page 8 (restore status)
-		self.wTree.get_widget("label_restore_progress").set_markup(_("<big><b>Backup Tool</b></big>\nNow restoring your backup, this may take\nsome time so please be patient"))
+		self.wTree.get_widget("label_title_restore3").set_markup("<big><b>" + _("Restore files") + "</b></big>")
+		self.wTree.get_widget("label_caption_restore3").set_markup(_("Your files are being restored, please wait"))
 		self.wTree.get_widget("label_restore_status").set_label(_("Current file:"))
 
 		# i18n - Page 9 (restore complete)
-		self.wTree.get_widget("label_restore_finished").set_markup(_("<big><b>Backup Tool</b></big>"))
+		self.wTree.get_widget("label_title_restore4").set_markup("<big><b>" + _("Restore files") + "</b></big>")
+		self.wTree.get_widget("label_caption_restore4").set_markup(_("The restoration of the files is now finished"))
 
 		# i18n - Page 10 (packages)
-		self.wTree.get_widget("label_packages").set_markup(_("<big><b>Backup Tool</b></big>\nPlease choose the destination for the backup using\nthe options below"))
+		self.wTree.get_widget("label_title_software_backup1").set_markup("<big><b>" + _("Backup software selection") + "</b></big>")
+		self.wTree.get_widget("label_caption_software_backup1").set_markup(_("Please choose a destination"))
 		self.wTree.get_widget("label_package_dest").set_label(_("Destination"))
 		
 		# i18n - Page 11 (package list)
-		self.wTree.get_widget("label_package_overview").set_markup(_("<big><b>Backup Tool</b></big>\nA list of manually installed packages is displayed below\nWhen you are happy with the selection press forward."))
+		self.wTree.get_widget("label_title_software_backup2").set_markup("<big><b>" + _("Backup software selection") + "</b></big>")
+		self.wTree.get_widget("label_caption_software_backup2").set_markup(_("The list below shows the packages you added to Linux Mint"))
 		self.wTree.get_widget("label_select").set_label(_("Select all"))
 		self.wTree.get_widget("label_deselect").set_label(_("Deselect all"))
 		
 		# i18n - Page 12 (backing up packages)
-		self.wTree.get_widget("label_packages_backup").set_markup(_("<big><b>Backup Tool</b></big>\nCurrently backing up your package selection\nPlease wait"))
+		self.wTree.get_widget("label_title_software_backup3").set_markup("<big><b>" + _("Backup software selection") + "</b></big>")
+		self.wTree.get_widget("label_caption_software_backup3").set_markup(_("Please wait while your software selection is being backed up"))
 		self.wTree.get_widget("label_current_package").set_label(_("Current package:"))
 		
 		# i18n - Page 13 (packages done)
-		self.wTree.get_widget("label_packages_done").set_markup(_("<big><b>Backup Tool</b></big>"))
+		self.wTree.get_widget("label_title_software_backup4").set_markup("<big><b>" + _("Backup software selection") + "</b></big>")
+		self.wTree.get_widget("label_caption_software_backup4").set_markup(_("The backup is now finished"))
 
 		# i18n - Page 14 (package restore)
-		self.wTree.get_widget("label_restore_package").set_markup(_("<big><b>Backup Tool</b></big>\nPlease choose the location of the backup list using\nthe file chooser button below"))
-		self.wTree.get_widget("label_package_source").set_markup(_("Package list:"))
+		self.wTree.get_widget("label_title_software_restore1").set_markup("<big><b>" + _("Restore software selection") + "</b></big>")
+		self.wTree.get_widget("label_caption_software_restore1").set_markup(_("Please select a saved software selection"))
+		self.wTree.get_widget("label_package_source").set_markup(_("Software selection:"))
 
 		# i18n - Page 15 (packages list)
-		self.wTree.get_widget("label_restore_choose").set_markup(_("<big><b>Backup Tool</b></big>\nA list of packages from the backup file is displayed below\nWhen you are happy with the selection press forward."))
+		self.wTree.get_widget("label_title_software_restore2").set_markup("<big><b>" + _("Restore software selection") + "</b></big>")
+		self.wTree.get_widget("label_caption_software_restore2").set_markup(_("Select the packages you want to install"))
 		self.wTree.get_widget("label_select_list").set_label(_("Select all"))
 		self.wTree.get_widget("label_deselect_list").set_label(_("Deselect all"))
 		self.wTree.get_widget("label_refresh").set_label(_("Refresh"))
 		
 		# i18n - Page 16 (packages install done)
-		self.wTree.get_widget("label_install_done").set_markup(_("<big><b>Backup Tool</b></big>"))
-		self.wTree.get_widget("label_install_done_value").set_markup(_("Your package selection has been succesfully restored"))
+		self.wTree.get_widget("label_title_software_restore3").set_markup("<big><b>" + _("Restore software selection") + "</b></big>")
+		self.wTree.get_widget("label_caption_software_restore3").set_markup(_("The restoration is now finished"))
+		self.wTree.get_widget("label_install_done_value").set_markup(_("Your package selection was restored succesfully"))
 		
 	''' show the pretty aboutbox. '''
 	def about_callback(self, w):
@@ -499,20 +516,21 @@ class MintBackup:
 			self.description = self.wTree.get_widget("entry_desc").get_text()
 			# show overview
 			model = gtk.ListStore(str, str)
-			model.append([_("<b>Source</b>"), self.backup_source])
-			model.append([_("<b>Destination</b>"), self.backup_dest])
-			model.append([_("<b>Description</b>"), self.description])
+			model.append(["<b>" + _("Source") + "</b>", self.backup_source])
+			model.append(["<b>" + _("Destination") + "</b>", self.backup_dest])
+			if (self.description != ""):
+				model.append(["<b>" + _("Description") + "</b>", self.description])
 			# find compression format
 			sel = self.wTree.get_widget("combobox_compress").get_active()
 			comp = self.wTree.get_widget("combobox_compress").get_model()
-			model.append([_("<b>Compression</b>"), comp[sel][0]])
+			model.append(["<b>" + _("Compression") + "</b>", comp[sel][0]])
 			# find overwrite rules
 			sel = self.wTree.get_widget("combobox_delete_dest").get_active()
 			over = self.wTree.get_widget("combobox_delete_dest").get_model()
-			model.append([_("<b>Overwrite destination files</b>"), over[sel][0]])
+			model.append(["<b>" + _("Overwrite destination files") + "</b>", over[sel][0]])
 			excludes = self.wTree.get_widget("treeview_excludes").get_model()
 			for row in excludes:
-				model.append([_("<b>Exclude</b>"), row[2]])
+				model.append(["<b>" + _("Exclude") + "</b>", row[2]])
 			self.wTree.get_widget("treeview_overview").set_model(model)
 			book.set_current_page(3)
 			self.wTree.get_widget("button_forward").hide()
@@ -782,11 +800,11 @@ class MintBackup:
 			print detail
 			self.error = str(detail)
 		if(current_file < total):
-			self.error = _("Not all files appear to have been backed up. Copied: %d files out of %d total" % (current_file, total))
+			self.error = _("Warning: Some filed were not saved, copied: %d files out of %d total" % (current_file, total))
 		if(self.error is not None):
 			gtk.gdk.threads_enter()
 			img = self.iconTheme.load_icon("dialog-error", 48, 0)
-			self.wTree.get_widget("label_finished_status").set_markup(_("An error occured during backup:\n") + self.error)
+			self.wTree.get_widget("label_finished_status").set_markup(_("An error occured during the backup:") + "\n" + self.error)
 			self.wTree.get_widget("image_finished").set_from_pixbuf(img)
 			self.wTree.get_widget("notebook1").next_page()
 			gtk.gdk.threads_leave()
@@ -794,7 +812,7 @@ class MintBackup:
 			if(not self.operating):
 				gtk.gdk.threads_enter()
 				img = self.iconTheme.load_icon("dialog-warning", 48, 0)
-				self.wTree.get_widget("label_finished_status").set_label(_("Backup was aborted"))
+				self.wTree.get_widget("label_finished_status").set_label(_("The backup was aborted"))
 				self.wTree.get_widget("image_finished").set_from_pixbuf(img)
 				self.wTree.get_widget("notebook1").next_page()
 				gtk.gdk.threads_leave()
@@ -802,7 +820,7 @@ class MintBackup:
 				gtk.gdk.threads_enter()
 				label.set_label("Done")
 				img = self.iconTheme.load_icon("dialog-information", 48, 0)
-				self.wTree.get_widget("label_finished_status").set_label(_("Backup completed without error"))
+				self.wTree.get_widget("label_finished_status").set_label(_("The backup completed successfully"))
 				self.wTree.get_widget("image_finished").set_from_pixbuf(img)
 				self.wTree.get_widget("notebook1").next_page()
 				gtk.gdk.threads_leave()
@@ -963,12 +981,6 @@ class MintBackup:
 			self.error = str(detail)
 		return None
 		
-	''' Open the relevant archive manager '''
-	def open_archive_callback(self, widget):
-		# TODO: Add code to find out which archive manager is available
-		# for non gnome environments
-		os.system("file-roller \"" + self.restore_source + "\" &")
-
 	''' Update the restore progress bar '''
 	def update_restore_progress(self, current, total, message=None):
 		current = float(current)
@@ -996,7 +1008,7 @@ class MintBackup:
 				self.tar = tarfile.open(self.restore_source, "r")
 				mintfile = self.tar.getmember(".mintbackup")
 				if(mintfile is None):
-					print "Processing a backup not created with this tool."
+					print "Processing a backup not created with this tool"
 					self.conf.description = _("(Not created with Backup Tool)")
 					self.conf.file_count = -1
 				else:
@@ -1254,10 +1266,10 @@ class MintBackup:
 							self.clone_dir(rpath, target)
 							del d
 		if(current_file < total):
-			self.error = _("Not all files appear to have been backed up. Copied: %d files out of %d total" % (current_file, total))			
+			self.error = _("Not all files were restored, copied: %d files out of %d total" % (current_file, total))			
 		if(self.error is not None):
 			gtk.gdk.threads_enter()
-			self.wTree.get_widget("label_restore_finished_value").set_label(_("An error occured during restoration:\n") + self.error)
+			self.wTree.get_widget("label_restore_finished_value").set_label(_("An error occured during the restoration:") + "\n" + self.error)
 			img = self.iconTheme.load_icon("dialog-error", 48, 0)
 			self.wTree.get_widget("image_restore_finished").set_from_pixbuf(img)
 			self.wTree.get_widget("notebook1").next_page()
@@ -1265,7 +1277,7 @@ class MintBackup:
 		else:
 			if(not self.operating):
 				img = self.iconTheme.load_icon("dialog-warning", 48, 0)
-				self.wTree.get_widget("label_restore_finished_value").set_label(_("Restoration was aborted"))
+				self.wTree.get_widget("label_restore_finished_value").set_label(_("The restoration was aborted"))
 				self.wTree.get_widget("image_restore_finished").set_from_pixbuf(img)
 				self.wTree.get_widget("notebook1").next_page()
 				gtk.gdk.threads_leave()
@@ -1273,7 +1285,7 @@ class MintBackup:
 				gtk.gdk.threads_enter()
 				label.set_label("Done")
 				pbar.set_text("Done")
-				self.wTree.get_widget("label_restore_finished_value").set_label(_("The following archive was successfully restored:\n") + self.restore_source)
+				self.wTree.get_widget("label_restore_finished_value").set_label(_("The restoration completed successfully"))
 				img = self.iconTheme.load_icon("dialog-information", 48, 0)
 				self.wTree.get_widget("image_restore_finished").set_from_pixbuf(img)
 				self.wTree.get_widget("notebook1").next_page()
@@ -1386,7 +1398,7 @@ class MintBackup:
 			
 		if(self.error is not None):
 			gtk.gdk.threads_enter()
-			self.wTree.get_widget("label_packages_done_value").set_label(_("An error occured during backup:\n") + self.error)
+			self.wTree.get_widget("label_packages_done_value").set_label(_("An error occured during the backup:") + "\n" + self.error)
 			img = self.iconTheme.load_icon("dialog-error", 48, 0)
 			self.wTree.get_widget("image_packages_done").set_from_pixbuf(img)
 			self.wTree.get_widget("notebook1").next_page()
@@ -1394,7 +1406,7 @@ class MintBackup:
 		else:
 			if(not self.operating):
 				img = self.iconTheme.load_icon("dialog-warning", 48, 0)
-				self.wTree.get_widget("label_packages_done_value").set_label(_("Packages backup aborted"))
+				self.wTree.get_widget("label_packages_done_value").set_label(_("The backup was aborted"))
 				self.wTree.get_widget("image_packages_done").set_from_pixbuf(img)
 				self.wTree.get_widget("notebook1").next_page()
 				gtk.gdk.threads_leave()
@@ -1402,7 +1414,7 @@ class MintBackup:
 				gtk.gdk.threads_enter()
 				lab.set_label("Done")
 				pbar.set_text("Done")
-				self.wTree.get_widget("label_packages_done_value").set_label(_("Your package list was succesfully backed up"))
+				self.wTree.get_widget("label_packages_done_value").set_label(_("Your software selection was backed up succesfully"))
 				img = self.iconTheme.load_icon("dialog-information", 48, 0)
 				self.wTree.get_widget("image_packages_done").set_from_pixbuf(img)
 				self.wTree.get_widget("notebook1").next_page()

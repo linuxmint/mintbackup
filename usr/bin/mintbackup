@@ -1,8 +1,10 @@
 #!/usr/bin/python
 
 import os
-from sys import argv
-from string import join
-os.system("/usr/lib/linuxmint/mintBackup/mintBackup.py " + join(argv[1:]))
+import sys
+import commands 
 
+launcher = commands.getoutput("/usr/lib/linuxmint/common/mint-which-launcher.py")
+command = "%s /usr/lib/linuxmint/mintBackup/mintBackup.py" % (launcher)
+os.system(command)
 
