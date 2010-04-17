@@ -764,7 +764,7 @@ class MintBackup:
 									file2 = os.path.getsize(target)
 									if(file1 != file2):
 										os.remove(target)
-										self.copy_file(rpath, target)
+										self.copy_file(rpath, target, sourceChecksum=None)
 									else:
 										self.wTree.get_widget("progressbar1").set_text(_("Skipping identical file"))
 								elif(del_policy == 2):
@@ -773,7 +773,7 @@ class MintBackup:
 									file2 = os.path.getmtime(target)
 									if(file1 != file2):
 										os.remove(target)
-										self.copy_file(rpath, target)
+										self.copy_file(rpath, target, sourceChecksum=None)
 									else:
 										self.wTree.get_widget("progressbar1").set_text(_("Skipping identical file"))
 								elif(del_policy == 3):
@@ -782,15 +782,15 @@ class MintBackup:
 									file2 = self.get_checksum(target)
 									if(file1 not in file2):
 										os.remove(target)
-										self.copy_file(rpath, target)
+										self.copy_file(rpath, target, sourceChecksum=file1)
 									else:
 										self.wTree.get_widget("progressbar1").set_text(_("Skipping identical file"))
 								elif(del_policy == 4):
 									# always delete
 									os.remove(target)
-									self.copy_file(rpath, target)
+									self.copy_file(rpath, target, sourceChecksum=None)
 							else:
-								self.copy_file(rpath, target)
+								self.copy_file(rpath, target, sourceChecksum=None)
 							current_file = current_file + 1
 						del f
 						if(self.preserve_times or self.preserve_perms):
@@ -851,7 +851,7 @@ class MintBackup:
 
 	''' Utility method - copy file, also provides a quick way of aborting a copy, which
 	    using modules doesn't allow me to do.. '''
-	def copy_file(self, source, dest, restore=None):
+	def copy_file(self, source, dest, restore=None, sourceChecksum=None):
 		try:
 			# represents max buffer size
 			BUF_MAX = 1024 # so we don't get stuck on I/O ops
@@ -902,7 +902,10 @@ class MintBackup:
 					dst.close()
 
 				if(self.postcheck):
-					file1 = self.get_checksum(source, restore)
+					if (sourceChecksum is not None):
+						file1 = sourceChecksum
+					else:
+						file1 = self.get_checksum(source, restore)
 					file2 = self.get_checksum(dest, restore)
 					if(file1 not in file2):
 						self.error = "Checksum Mismatch: [" + file1 + "] [" + file1 + "]"
@@ -1234,7 +1237,7 @@ class MintBackup:
 							file2 = os.path.getsize(target)
 							if(file1 != file2):
 								os.remove(target)
-								self.copy_file(rpath, target, restore=True)
+								self.copy_file(rpath, target, restore=True, sourceChecksum=None)
 							else:
 								self.wTree.get_widget("progressbar_restore").set_text(_("Skipping identical file"))
 						elif(del_policy == 2):
@@ -1243,24 +1246,28 @@ class MintBackup:
 							file2 = os.path.getmtime(target)
 							if(file1 != file2):
 								os.remove(target)
-								self.copy_file(rpath, target, restore=True)
+								self.copy_file(rpath, target, restore=True, sourceChecksum=None)
 							else:
 								self.wTree.get_widget("progressbar_restore").set_text(_("Skipping identical file"))
 						elif(del_policy == 3):
-							# checksums
-							file1 = self.get_checksum(rpath)
-							file2 = self.get_checksum(target)
-							if(file1 not in file2):
-								os.remove(target)
-								self.copy_file(rpath, target, restore=True)
+							# checksums (check size first)
+							if(os.path.getsize(rpath) == os.path.getsize(target)):
+								file1 = self.get_checksum(rpath)
+								file2 = self.get_checksum(target)
+								if(file1 not in file2):
+									os.remove(target)
+									self.copy_file(rpath, target, restore=True, sourceChecksum=file1)
+								else:
+									self.wTree.get_widget("progressbar_restore").set_text(_("Skipping identical file"))
 							else:
-								self.wTree.get_widget("progressbar_restore").set_text(_("Skipping identical file"))
+								os.remove(target)
+								self.copy_file(rpath, target, restore=True, sourceChecksum=None)
 						elif(del_policy == 4):
 							# always delete
 							os.remove(target)
-							self.copy_file(rpath, target, restore=True)
+							self.copy_file(rpath, target, restore=True, sourceChecksum=None)
 					else:
-						self.copy_file(rpath, target, restore=True)
+						self.copy_file(rpath, target, restore=True, sourceChecksum=None)
 					del f
 					if(self.preserve_times or self.preserve_perms):
 						# loop back over the directories now to reset the a/m/time
