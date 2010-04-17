@@ -256,7 +256,7 @@ class MintBackup:
 		
 		# i18n - Page 0 (choose backup or restore)
 		self.wTree.get_widget("label_wizard1").set_markup("<big><b>" + _("Backup or Restore") + "</b></big>")
-		self.wTree.get_widget("label_wizard2").set_markup(_("Choose an option"))
+		self.wTree.get_widget("label_wizard2").set_markup("<i><span foreground=\"#555555\">" + _("Choose from the following options") + "</span></i>")
 
 		self.wTree.get_widget("label_create_backup").set_text(_("Backup files"))
 		self.wTree.get_widget("label_restore_backup").set_text(_("Restore files"))
@@ -270,7 +270,7 @@ class MintBackup:
 
 		# i18n - Page 1 (choose backup directories)
 		self.wTree.get_widget("label_title_destination").set_markup("<big><b>" + _("Backup files") + "</b></big>")
-		self.wTree.get_widget("label_caption_destination").set_markup(_("Please select a source and a destination for your backup"))
+		self.wTree.get_widget("label_caption_destination").set_markup("<i><span foreground=\"#555555\">" + _("Please select a source and a destination for your backup") + "</span></i>")
 		self.wTree.get_widget("label_backup_source").set_label(_("Source:"))
 		self.wTree.get_widget("label_backup_dest").set_label(_("Destination:"))
 		self.wTree.get_widget("label_expander").set_label(_("Advanced options"))
@@ -284,27 +284,27 @@ class MintBackup:
 
 		# i18n - Page 2 (choose files/directories to exclude)
 		self.wTree.get_widget("label_title_exclude").set_markup("<big><b>" + _("Backup files") + "</b></big>")
-		self.wTree.get_widget("label_caption_exclude").set_markup(_("Please select any files or directories you want to exclude"))
+		self.wTree.get_widget("label_caption_exclude").set_markup("<i><span foreground=\"#555555\">" + _("Please select any files or directories you want to exclude") + "</span></i>")
 		self.wTree.get_widget("label_add_file").set_label(_("Exclude files"))
 		self.wTree.get_widget("label_add_folder").set_label(_("Exclude directories"))
 		self.wTree.get_widget("label_remove").set_label(_("Remove"))
 
 		# i18n - Page 3 (backup overview)
 		self.wTree.get_widget("label_title_review").set_markup("<big><b>" + _("Backup files") + "</b></big>")
-		self.wTree.get_widget("label_caption_review").set_markup(_("Please review the information below before starting the backup"))
+		self.wTree.get_widget("label_caption_review").set_markup("<i><span foreground=\"#555555\">" + _("Please review the information below before starting the backup") + "</span></i>")
 
 		# i18n - Page 4 (backing up status)
 		self.wTree.get_widget("label_title_copying").set_markup("<big><b>" + _("Backup files") + "</b></big>")
-		self.wTree.get_widget("label_caption_copying").set_markup(_("Your files are being backed up, please wait"))
+		self.wTree.get_widget("label_caption_copying").set_markup("<i><span foreground=\"#555555\">" + _("Please wait while your files are being backed up") + "</span></i>")
 		self.wTree.get_widget("label_current_file").set_label(_("Currently saving:"))
 
 		# i18n - Page 5 (backup complete)
 		self.wTree.get_widget("label_title_finished").set_markup("<big><b>" + _("Backup files") + "</b></big>")
-		self.wTree.get_widget("label_caption_finished").set_markup(_("The backup is now finished"))		
+		self.wTree.get_widget("label_caption_finished").set_markup("<i><span foreground=\"#555555\">" + _("The backup is now finished") + "</span></i>")		
 
 		# i18n - Page 6 (Restore locations)
 		self.wTree.get_widget("label_title_restore1").set_markup("<big><b>" + _("Restore files") + "</b></big>")
-		self.wTree.get_widget("label_caption_restore1").set_markup(_("Please choose the type of backup to restore, its location and a destination"))
+		self.wTree.get_widget("label_caption_restore1").set_markup("<i><span foreground=\"#555555\">" + _("Please choose the type of backup to restore, its location and a destination") + "</span></i>")
 		self.wTree.get_widget("radiobutton_archive").set_label(_("Archive"))
 		self.wTree.get_widget("radiobutton_dir").set_label(_("Directory"))
 		self.wTree.get_widget("label_restore_source").set_label(_("Source:"))
@@ -314,54 +314,54 @@ class MintBackup:
 
 		# i18n - Page 7 (Restore overview)
 		self.wTree.get_widget("label_title_restore2").set_markup("<big><b>" + _("Restore files") + "</b></big>")
-		self.wTree.get_widget("label_caption_restore2").set_markup(_("Please review the information below"))
+		self.wTree.get_widget("label_caption_restore2").set_markup("<i><span foreground=\"#555555\">" + _("Please review the information below") + "</span></i>")
 		self.wTree.get_widget("label_overview_source").set_markup(_("<b>Archive:</b>"))
 		self.wTree.get_widget("label_overview_description").set_markup(_("<b>Description:</b>"))
 
 		# i18n - Page 8 (restore status)
 		self.wTree.get_widget("label_title_restore3").set_markup("<big><b>" + _("Restore files") + "</b></big>")
-		self.wTree.get_widget("label_caption_restore3").set_markup(_("Your files are being restored, please wait"))
+		self.wTree.get_widget("label_caption_restore3").set_markup("<i><span foreground=\"#555555\">" + _("Please wait while your files are being restored") + "</span></i>")
 		self.wTree.get_widget("label_restore_status").set_label(_("Current file:"))
 
 		# i18n - Page 9 (restore complete)
 		self.wTree.get_widget("label_title_restore4").set_markup("<big><b>" + _("Restore files") + "</b></big>")
-		self.wTree.get_widget("label_caption_restore4").set_markup(_("The restoration of the files is now finished"))
+		self.wTree.get_widget("label_caption_restore4").set_markup("<i><span foreground=\"#555555\">" + _("The restoration of the files is now finished") + "</span></i>")
 
 		# i18n - Page 10 (packages)
 		self.wTree.get_widget("label_title_software_backup1").set_markup("<big><b>" + _("Backup software selection") + "</b></big>")
-		self.wTree.get_widget("label_caption_software_backup1").set_markup(_("Please choose a destination"))
+		self.wTree.get_widget("label_caption_software_backup1").set_markup("<i><span foreground=\"#555555\">" + _("Please choose a destination") + "</span></i>")
 		self.wTree.get_widget("label_package_dest").set_label(_("Destination"))
 		
 		# i18n - Page 11 (package list)
 		self.wTree.get_widget("label_title_software_backup2").set_markup("<big><b>" + _("Backup software selection") + "</b></big>")
-		self.wTree.get_widget("label_caption_software_backup2").set_markup(_("The list below shows the packages you added to Linux Mint"))
+		self.wTree.get_widget("label_caption_software_backup2").set_markup("<i><span foreground=\"#555555\">" + _("The list below shows the packages you added to Linux Mint") + "</span></i>")
 		self.wTree.get_widget("label_select").set_label(_("Select all"))
 		self.wTree.get_widget("label_deselect").set_label(_("Deselect all"))
 		
 		# i18n - Page 12 (backing up packages)
 		self.wTree.get_widget("label_title_software_backup3").set_markup("<big><b>" + _("Backup software selection") + "</b></big>")
-		self.wTree.get_widget("label_caption_software_backup3").set_markup(_("Please wait while your software selection is being backed up"))
+		self.wTree.get_widget("label_caption_software_backup3").set_markup("<i><span foreground=\"#555555\">" + _("Please wait while your software selection is being backed up") + "</span></i>")
 		self.wTree.get_widget("label_current_package").set_label(_("Current package:"))
 		
 		# i18n - Page 13 (packages done)
 		self.wTree.get_widget("label_title_software_backup4").set_markup("<big><b>" + _("Backup software selection") + "</b></big>")
-		self.wTree.get_widget("label_caption_software_backup4").set_markup(_("The backup is now finished"))
+		self.wTree.get_widget("label_caption_software_backup4").set_markup("<i><span foreground=\"#555555\">" + _("The backup is now finished") + "</span></i>")
 
 		# i18n - Page 14 (package restore)
 		self.wTree.get_widget("label_title_software_restore1").set_markup("<big><b>" + _("Restore software selection") + "</b></big>")
-		self.wTree.get_widget("label_caption_software_restore1").set_markup(_("Please select a saved software selection"))
+		self.wTree.get_widget("label_caption_software_restore1").set_markup("<i><span foreground=\"#555555\">" + _("Please select a saved software selection") + "</span></i>")
 		self.wTree.get_widget("label_package_source").set_markup(_("Software selection:"))
 
 		# i18n - Page 15 (packages list)
 		self.wTree.get_widget("label_title_software_restore2").set_markup("<big><b>" + _("Restore software selection") + "</b></big>")
-		self.wTree.get_widget("label_caption_software_restore2").set_markup(_("Select the packages you want to install"))
+		self.wTree.get_widget("label_caption_software_restore2").set_markup("<i><span foreground=\"#555555\">" + _("Select the packages you want to install") + "</span></i>")
 		self.wTree.get_widget("label_select_list").set_label(_("Select all"))
 		self.wTree.get_widget("label_deselect_list").set_label(_("Deselect all"))
 		self.wTree.get_widget("label_refresh").set_label(_("Refresh"))
 		
 		# i18n - Page 16 (packages install done)
 		self.wTree.get_widget("label_title_software_restore3").set_markup("<big><b>" + _("Restore software selection") + "</b></big>")
-		self.wTree.get_widget("label_caption_software_restore3").set_markup(_("The restoration is now finished"))
+		self.wTree.get_widget("label_caption_software_restore3").set_markup("<i><span foreground=\"#555555\">" + _("The restoration is now finished") + "</span></i>")
 		self.wTree.get_widget("label_install_done_value").set_markup(_("Your package selection was restored succesfully"))
 		
 	''' show the pretty aboutbox. '''
