@@ -411,12 +411,10 @@ class MintBackup:
 			w.hide()
 
 	def save_backup_source(self, w):
-		self.backup_source = w.get_filename()
-		print "SAVED source: " + w.get_filename()
+		self.backup_source = w.get_filename()		
 
 	def save_backup_dest(self, w):
 		self.backup_dest = w.get_filename()
-		print "SAVED dest: " + w.get_filename()
 		
 	''' handle the file-set signal '''
 	def check_reset_file(self, w):
