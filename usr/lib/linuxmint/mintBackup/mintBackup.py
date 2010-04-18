@@ -805,7 +805,7 @@ class MintBackup:
 			print detail
 			self.error = str(detail)
 		if(current_file < total):
-			self.error = _("Warning: Some filed were not saved, copied: %d files out of %d total") % (current_file, total)
+			self.error = _("Warning: Some filed were not saved, copied: %(current_file)d files out of %(total)d total") % {'current_file':current_file, 'total':total}
 		if(self.error is not None):
 			gtk.gdk.threads_enter()
 			img = self.iconTheme.load_icon("dialog-error", 48, 0)
@@ -1278,7 +1278,7 @@ class MintBackup:
 							self.clone_dir(rpath, target)
 							del d
 		if(current_file < total):
-			self.error = _("Not all files were restored, copied: %d files out of %d total") % (current_file, total)
+			self.error = _("Warning: Some filed were not restored, copied: %(current_file)d files out of %(total)d total") % {'current_file':current_file, 'total':total}
 		if(self.error is not None):
 			gtk.gdk.threads_enter()
 			self.wTree.get_widget("label_restore_finished_value").set_label(_("An error occured during the restoration:") + "\n" + self.error)
