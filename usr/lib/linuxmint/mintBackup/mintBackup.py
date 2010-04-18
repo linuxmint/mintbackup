@@ -186,7 +186,7 @@ class MintBackup:
 		column.add_attribute(ren, "pixbuf", 1)
 		self.wTree.get_widget("treeview_excludes").append_column(column)
 		ren = gtk.CellRendererText()
-		column = gtk.TreeViewColumn("Excluded paths", ren)
+		column = gtk.TreeViewColumn(_("Excluded paths"), ren)
 		column.add_attribute(ren, "text", 0)
 		self.wTree.get_widget("treeview_excludes").append_column(column)
 		self.wTree.get_widget("treeview_excludes").set_model(gtk.ListStore(str, gtk.gdk.Pixbuf, str))
@@ -196,11 +196,11 @@ class MintBackup:
 
 		# set up overview page
 		ren = gtk.CellRendererText()
-		column = gtk.TreeViewColumn("Type", ren)
+		column = gtk.TreeViewColumn(_("Type"), ren)
 		column.add_attribute(ren, "markup", 0)
 		self.wTree.get_widget("treeview_overview").append_column(column)
 		ren = gtk.CellRendererText()
-		column = gtk.TreeViewColumn("Detail", ren)
+		column = gtk.TreeViewColumn(_("Detail"), ren)
 		column.add_attribute(ren, "text", 1)
 		self.wTree.get_widget("treeview_overview").append_column(column)
 
@@ -230,10 +230,10 @@ class MintBackup:
 		self.wTree.get_widget("button_deselect").connect("clicked", self.set_selection, t, False, False)
 		tog = gtk.CellRendererToggle()
 		tog.connect("toggled", self.toggled_cb, t)
-		c1 = gtk.TreeViewColumn("Store?", tog, active=0)
+		c1 = gtk.TreeViewColumn(_("Store?"), tog, active=0)
 		c1.set_cell_data_func(tog, self.celldatafunction_checkbox)
 		t.append_column(c1)
-		c2 = gtk.TreeViewColumn("Name", gtk.CellRendererText(), markup=2)
+		c2 = gtk.TreeViewColumn(_("Name"), gtk.CellRendererText(), markup=2)
 		t.append_column(c2)
 		
 		# choose a package list
@@ -243,10 +243,10 @@ class MintBackup:
 		self.wTree.get_widget("button_refresh").connect("clicked", self.refresh)
 		tog = gtk.CellRendererToggle()
 		tog.connect("toggled", self.toggled_cb, t)
-		c1 = gtk.TreeViewColumn("Install", tog, active=0, activatable=2)
+		c1 = gtk.TreeViewColumn(_("Install"), tog, active=0, activatable=2)
 		c1.set_cell_data_func(tog, self.celldatafunction_checkbox)
 		t.append_column(c1)
-		c2 = gtk.TreeViewColumn("Name", gtk.CellRendererText(), markup=1)
+		c2 = gtk.TreeViewColumn(_("Name"), gtk.CellRendererText(), markup=1)
 		t.append_column(c2)
 		self.wTree.get_widget("filechooserbutton_package_source").connect("file-set", self.load_package_list_cb)
 		
@@ -320,8 +320,8 @@ class MintBackup:
 		# i18n - Page 7 (Restore overview)
 		self.wTree.get_widget("label_title_restore2").set_markup("<big><b>" + _("Restore files") + "</b></big>")
 		self.wTree.get_widget("label_caption_restore2").set_markup("<i><span foreground=\"#555555\">" + _("Please review the information below") + "</span></i>")
-		self.wTree.get_widget("label_overview_source").set_markup(_("<b>Archive:</b>"))
-		self.wTree.get_widget("label_overview_description").set_markup(_("<b>Description:</b>"))
+		self.wTree.get_widget("label_overview_source").set_markup("<b>" + _("Archive:") + "</b>")
+		self.wTree.get_widget("label_overview_description").set_markup("<b>" + _("Description:") + "</b>")
 
 		# i18n - Page 8 (restore status)
 		self.wTree.get_widget("label_title_restore3").set_markup("<big><b>" + _("Restore files") + "</b></big>")
@@ -448,7 +448,7 @@ class MintBackup:
 				if (not filename.find(self.backup_source)):
 					model.append([filename[len(self.backup_source)+1:], self.fileIcon, filename])
 				else:
-					message = MessageDialog(_("Invalid path"), filename + " " + _("is not located within your source directory. Not added."), gtk.MESSAGE_WARNING)
+					message = MessageDialog(_("Invalid path"), _("%s is not located within your source directory. Not added.") % filename, gtk.MESSAGE_WARNING)
 		    			message.show()
 		dialog.destroy()
 
@@ -464,7 +464,7 @@ class MintBackup:
 				if (not filename.find(self.backup_source)):
 					model.append([filename[len(self.backup_source)+1:], self.dirIcon, filename])
 				else:
-					message = MessageDialog(_("Invalid path"), filename + " " + _("is not located within your source directory. Not added."), gtk.MESSAGE_WARNING)
+					message = MessageDialog(_("Invalid path"), _("%s is not located within your source directory. Not added.") % filename, gtk.MESSAGE_WARNING)
 		    			message.show()
 		dialog.destroy()
 
@@ -514,7 +514,7 @@ class MintBackup:
 			self.backup_source = self.wTree.get_widget("filechooserbutton_backup_source").get_filename()
 			self.backup_dest = self.wTree.get_widget("filechooserbutton_backup_dest").get_filename()
 			if(self.backup_source == self.backup_dest):
-				MessageDialog(_("Backup Tool"), _("Your source and destination directories cannot be the same"), gtk.MESSAGE_WARNING).show()
+				MessageDialog(_("Backup Tool"), _("Please choose different directories for the source and the destination"), gtk.MESSAGE_WARNING).show()
 				return
 			book.set_current_page(2)
 		elif(sel == 2):
@@ -588,7 +588,7 @@ class MintBackup:
 			book.set_current_page(12)
 			f = self.wTree.get_widget("filechooserbutton_package_dest").get_filename()
 			if f is None:
-				MessageDialog(_("Backup Tool"), _("Please choose a backup destination directory"), gtk.MESSAGE_ERROR).show()
+				MessageDialog(_("Backup Tool"), _("Please choose a destination directory"), gtk.MESSAGE_ERROR).show()
 				return
 			else:
 				self.package_dest = f
@@ -712,11 +712,11 @@ class MintBackup:
 							if(os.path.islink(rpath)):
 								if(self.follow_links):
 									if(not os.path.exists(rpath)):
-										self.update_restore_progress(0, 1, message="Skipping broken link")
+										self.update_restore_progress(0, 1, message=_("Skipping broken link"))
 										current_file += 1
 										continue
 								else:
-									self.update_restore_progress(0, 1, message="Skipping link")
+									self.update_restore_progress(0, 1, message=_("Skipping link"))
 									current_file += 1
 									continue
 							gtk.gdk.threads_enter()
@@ -743,11 +743,11 @@ class MintBackup:
 							if(os.path.islink(rpath)):
 								if(self.follow_links):
 									if(not os.path.exists(rpath)):
-										self.update_restore_progress(0, 1, message="Skipping broken link")
+										self.update_restore_progress(0, 1, message=_("Skipping broken link"))
 										current_file += 1
 										continue
 								else:
-									self.update_restore_progress(0, 1, message="Skipping link")
+									self.update_restore_progress(0, 1, message=_("Skipping link"))
 									current_file += 1
 									continue
 							dir = os.path.split(target)
@@ -805,7 +805,7 @@ class MintBackup:
 			print detail
 			self.error = str(detail)
 		if(current_file < total):
-			self.error = _("Warning: Some filed were not saved, copied: %d files out of %d total" % (current_file, total))
+			self.error = _("Warning: Some filed were not saved, copied: %d files out of %d total") % (current_file, total)
 		if(self.error is not None):
 			gtk.gdk.threads_enter()
 			img = self.iconTheme.load_icon("dialog-error", 48, 0)
@@ -908,7 +908,7 @@ class MintBackup:
 						file1 = self.get_checksum(source, restore)
 					file2 = self.get_checksum(dest, restore)
 					if(file1 not in file2):
-						self.error = "Checksum Mismatch: [" + file1 + "] [" + file1 + "]"
+						self.error = _("Checksum Mismatch:") + " [" + file1 + "] [" + file1 + "]"
 		except OSError as bad:
 			if(len(bad.args) > 2):
 				self.error = "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + bad.args[2] + "]"
@@ -955,9 +955,9 @@ class MintBackup:
 				check.update(read)
 				current += len(read)
 				if(restore):
-					self.update_restore_progress(current, total, message="Calculating checksum")
+					self.update_restore_progress(current, total, message=_("Calculating checksum"))
 				else:
-					self.update_backup_progress(current, total, message="Calculating checksum")
+					self.update_backup_progress(current, total, message=_("Calculating checksum"))
 			input.close()
 			return check.hexdigest()
 		except OSError as bad:
@@ -982,7 +982,7 @@ class MintBackup:
 					break
 				check.update(read)
 				current += len(read)
-				self.update_restore_progress(current, total, message="Calculating checksum")
+				self.update_restore_progress(current, total, message=_("Calculating checksum"))
 			source.close()
 			return check.hexdigest()
 		except Exception, detail:
@@ -1038,7 +1038,7 @@ class MintBackup:
 				mfile = os.path.join(self.restore_source, ".mintbackup")
 				if(not os.path.exists(mfile)):
 					gtk.gdk.threads_enter()
-					MessageDialog(_("Backup Tool"), "Specified directory is not a valid backup", gtk.MESSAGE_ERROR).show()
+					MessageDialog(_("Backup Tool"), _("The specified directory is not a valid backup"), gtk.MESSAGE_ERROR).show()
 					self.wTree.get_widget("button_forward").set_sensitive(True)
 					gtk.gdk.threads_leave()
 					return
@@ -1278,7 +1278,7 @@ class MintBackup:
 							self.clone_dir(rpath, target)
 							del d
 		if(current_file < total):
-			self.error = _("Not all files were restored, copied: %d files out of %d total" % (current_file, total))			
+			self.error = _("Not all files were restored, copied: %d files out of %d total") % (current_file, total)
 		if(self.error is not None):
 			gtk.gdk.threads_enter()
 			self.wTree.get_widget("label_restore_finished_value").set_label(_("An error occured during the restoration:") + "\n" + self.error)
@@ -1452,7 +1452,7 @@ class MintBackup:
 					break
 			source.close()
 			if(error):
-				MessageDialog(_("Backup Tool"), _("Specified file was not a valid backup list"), gtk.MESSAGE_ERROR).show()
+				MessageDialog(_("Backup Tool"), _("The specified file is not a valid software selection"), gtk.MESSAGE_ERROR).show()
 				#self.wTree.get_widget("scroller_packages").hide()
 				self.wTree.get_widget("button_forward").set_sensitive(False)
 				return
@@ -1460,7 +1460,7 @@ class MintBackup:
 				self.wTree.get_widget("button_forward").set_sensitive(True)
 		except Exception, detail:
 			print detail
-			MessageDialog(_("Backup Tool"), _("Error occurred while accessing file"), gtk.MESSAGE_ERROR).show()
+			MessageDialog(_("Backup Tool"), _("An error occurred while accessing the file"), gtk.MESSAGE_ERROR).show()
 
 	''' load package list into treeview '''
 	def load_package_list(self):
@@ -1493,14 +1493,14 @@ class MintBackup:
 						gtk.gdk.threads_leave()
 				else:
 					inst = False
-					line = "<big>" + line + "</big>\n<small>" + _("Could not locate package") + "</small>"
+					line = "<big>" + line + "</big>\n<small>" + _("Could not locate the package") + "</small>"
 					gtk.gdk.threads_enter()
 					model.append([inst, line, inst, pkg.name])
 					gtk.gdk.threads_leave()
 			source.close()
 		except Exception, detail:
 			print detail
-			MessageDialog(_("Backup Tool"), _("Error occurred while accessing file"), gtk.MESSAGE_ERROR).show()
+			MessageDialog(_("Backup Tool"), _("An error occurred while accessing the file"), gtk.MESSAGE_ERROR).show()
 		gtk.gdk.threads_enter()
 		self.wTree.get_widget("main_window").set_sensitive(True)
 		self.wTree.get_widget("main_window").window.set_cursor(None)
@@ -1526,7 +1526,7 @@ class MintBackup:
 		cmd.append("--progress-str")
 		cmd.append("\"" + _("Please wait, this can take some time") + "\"")
 		cmd.append("--finish-str")
-		cmd.append("\"" + _("Installation is complete") + "\"")
+		cmd.append("\"" + _("The installation is complete") + "\"")
 		f = tempfile.NamedTemporaryFile()
 		model = self.wTree.get_widget("treeview_package_list").get_model()
 		for row in model:
