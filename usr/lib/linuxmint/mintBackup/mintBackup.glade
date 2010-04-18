@@ -627,7 +627,9 @@ gzip</property>
                       <widget class="GtkFileChooserButton" id="filechooserbutton_backup_source">
                         <property name="visible">True</property>
                         <property name="action">select-folder</property>
+                        <property name="use_preview_label">False</property>
                         <property name="create_folders">False</property>
+                        <property name="preview_widget_active">False</property>
                       </widget>
                       <packing>
                         <property name="left_attach">1</property>

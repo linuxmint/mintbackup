@@ -136,7 +136,8 @@ class MintBackup:
 		self.error = None
 		# tarfile
 		self.tar = None
-		self.backup_source = ""
+		self.backup_source = self.wTree.get_widget("filechooserbutton_backup_source").get_filename()
+		self.backup_dest = self.wTree.get_widget("filechooserbutton_backup_source").get_filename()
 
 		# by default we restore archives, not directories (unless user chooses otherwise)
 		self.restore_archive = True
@@ -221,6 +222,10 @@ class MintBackup:
 		self.wTree.get_widget("radiobutton_archive").connect("toggled", self.archive_switch)
 		self.wTree.get_widget("radiobutton_dir").connect("toggled", self.archive_switch)
 		self.wTree.get_widget("filechooserbutton_restore_source").connect("file-set", self.check_reset_file)
+
+		self.wTree.get_widget("filechooserbutton_backup_source").connect("current-folder-changed", self.save_backup_source)
+		self.wTree.get_widget("filechooserbutton_backup_dest").connect("current-folder-changed", self.save_backup_dest)
+
 		self.wTree.get_widget("combobox_restore_del").set_model(overs)
 		self.wTree.get_widget("combobox_restore_del").set_active(3)
 		
@@ -405,6 +410,13 @@ class MintBackup:
 		if r == gtk.RESPONSE_CANCEL:
 			w.hide()
 
+	def save_backup_source(self, w):
+		self.backup_source = w.get_filename()
+		print "SAVED source: " + w.get_filename()
+
+	def save_backup_dest(self, w):
+		self.backup_dest = w.get_filename()
+		print "SAVED dest: " + w.get_filename()
 		
 	''' handle the file-set signal '''
 	def check_reset_file(self, w):
@@ -511,8 +523,6 @@ class MintBackup:
 		self.wTree.get_widget("button_back").set_sensitive(True)
 		if(sel == 1):
 			# choose source/dest
-			self.backup_source = self.wTree.get_widget("filechooserbutton_backup_source").get_filename()
-			self.backup_dest = self.wTree.get_widget("filechooserbutton_backup_dest").get_filename()
 			if(self.backup_source == self.backup_dest):
 				MessageDialog(_("Backup Tool"), _("Please choose different directories for the source and the destination"), gtk.MESSAGE_WARNING).show()
 				return
@@ -1017,7 +1027,7 @@ class MintBackup:
 				mintfile = self.tar.getmember(".mintbackup")
 				if(mintfile is None):
 					print "Processing a backup not created with this tool"
-					self.conf.description = _("(Not created with Backup Tool)")
+					self.conf.description = _("(Not created with the Backup Tool)")
 					self.conf.file_count = -1
 				else:
 					mfile = self.tar.extractfile(mintfile)
