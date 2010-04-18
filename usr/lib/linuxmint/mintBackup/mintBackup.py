@@ -1042,22 +1042,21 @@ class MintBackup:
 				print detail
 		else:
 			# Restore from directory
+			self.conf = mINIFile()
 			try:
 				mfile = os.path.join(self.restore_source, ".mintbackup")
 				if(not os.path.exists(mfile)):
-					gtk.gdk.threads_enter()
-					MessageDialog(_("Backup Tool"), _("The specified directory is not a valid backup"), gtk.MESSAGE_ERROR).show()
-					self.wTree.get_widget("button_forward").set_sensitive(True)
-					gtk.gdk.threads_leave()
-					return
+					print "Processing a backup not created with this tool"
+					self.conf.description = _("(Not created with the Backup Tool)")
+					self.conf.file_count = -1
 				else:
-					self.conf = mINIFile()
 					self.conf.load_from_file(mfile)
-					self.wTree.get_widget("label_overview_description_value").set_label(self.conf.description)
-					self.wTree.get_widget("button_back").set_sensitive(True)
-					self.wTree.get_widget("button_forward").hide()
-					self.wTree.get_widget("button_apply").show()
-					self.wTree.get_widget("notebook1").set_current_page(7)
+
+				self.wTree.get_widget("label_overview_description_value").set_label(self.conf.description)
+				self.wTree.get_widget("button_back").set_sensitive(True)
+				self.wTree.get_widget("button_forward").hide()
+				self.wTree.get_widget("button_apply").show()
+				self.wTree.get_widget("notebook1").set_current_page(7)
 			except Exception, detail:
 				print detail
 		self.wTree.get_widget("label_overview_source_value").set_label(self.restore_source)
@@ -1206,11 +1205,7 @@ class MintBackup:
 			# restore backup from dir.
 			os.chdir(self.restore_source)
 			sztotal = self.conf.file_count
-			total = float(sztotal)
-			if(total == -1):
-				tmp = len(self.tar.getmembers())
-				szttotal = str(tmp)
-				total = float(tmp)
+			total = float(sztotal)		
 			current_file = 0
 			if(total == -1):
 				for top,dirs,files in os.walk(top=self.restore_source,onerror=None, followlinks=self.follow_links):
