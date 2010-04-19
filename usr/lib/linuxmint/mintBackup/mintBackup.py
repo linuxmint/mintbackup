@@ -647,7 +647,7 @@ class MintBackup:
 				self.wTree.get_widget("button_forward").hide()
 				self.wTree.get_widget("button_about").show()
 			book.set_current_page(sel)
-
+		
 	''' Creates a .mintbackup file (for later restoration) '''
 	def create_backup_file(self):
 		self.description = "mintBackup"
@@ -669,21 +669,22 @@ class MintBackup:
 		
 	''' Does the actual copying '''
 	def backup(self):
-		pbar = self.wTree.get_widget("progressbar1")
 		label = self.wTree.get_widget("label_current_file_value")
 		os.chdir(self.backup_source)
-		label.set_label(_("Calculating..."))
-		pbar.set_text(_("Calculating..."))
-
+		pbar = self.wTree.get_widget("progressbar1")
 		gtk.gdk.threads_enter()
 		self.wTree.get_widget("button_apply").hide()
 		self.wTree.get_widget("button_forward").hide()
 		self.wTree.get_widget("button_back").hide()
+		label.set_label(_("Calculating..."))
+		pbar.set_text(_("Calculating..."))
 		gtk.gdk.threads_leave()
 		# get a count of all the files
 		total = 0
 		for top,dirs,files in os.walk(top=self.backup_source,onerror=None, followlinks=self.follow_links):
+			gtk.gdk.threads_enter()
 			pbar.pulse()
+			gtk.gdk.threads_leave()
 			for f in files:
 				if(not self.operating):
 					break
@@ -729,8 +730,8 @@ class MintBackup:
 									continue
 							gtk.gdk.threads_enter()
 							label.set_label(path)
-							gtk.gdk.threads_leave()
 							self.wTree.get_widget("label_file_count").set_text(str(current_file) + " / " + sztotal)
+							gtk.gdk.threads_leave()
 							underfile = TarFileMonitor(rpath, self.update_backup_progress)
 							finfo = tar.gettarinfo(name=None, arcname=path, fileobj=underfile)
 							tar.addfile(fileobj=underfile, tarinfo=finfo)
@@ -763,8 +764,8 @@ class MintBackup:
 								os.makedirs(dir[0])								
 							gtk.gdk.threads_enter()
 							label.set_label(path)
-							gtk.gdk.threads_leave()
 							self.wTree.get_widget("label_file_count").set_text(str(current_file) + " / " + sztotal)
+							gtk.gdk.threads_leave()
 							if(os.path.exists(target)):
 								if(del_policy == 1):
 									# source size != dest size
@@ -774,7 +775,7 @@ class MintBackup:
 										os.remove(target)
 										self.copy_file(rpath, target, sourceChecksum=None)
 									else:
-										self.wTree.get_widget("progressbar1").set_text(_("Skipping identical file"))
+										self.update_backup_progress(0, 1, message=_("Skipping identical file"))
 								elif(del_policy == 2):
 									# source time != dest time
 									file1 = os.path.getmtime(rpath)
@@ -783,7 +784,7 @@ class MintBackup:
 										os.remove(target)
 										self.copy_file(rpath, target, sourceChecksum=None)
 									else:
-										self.wTree.get_widget("progressbar1").set_text(_("Skipping identical file"))
+										self.update_backup_progress(0, 1, message=_("Skipping identical file"))
 								elif(del_policy == 3):
 									# checksums
 									file1 = self.get_checksum(rpath)
@@ -792,7 +793,7 @@ class MintBackup:
 										os.remove(target)
 										self.copy_file(rpath, target, sourceChecksum=file1)
 									else:
-										self.wTree.get_widget("progressbar1").set_text(_("Skipping identical file"))
+										self.update_backup_progress(0, 1, message=_("Skipping identical file"))
 								elif(del_policy == 4):
 									# always delete
 									os.remove(target)
@@ -851,11 +852,13 @@ class MintBackup:
 		current = float(current)
 		total = float(total)
 		fraction = float(current / total)
+		gtk.gdk.threads_enter()
 		self.wTree.get_widget("progressbar1").set_fraction(fraction)
 		if(message is not None):
 			self.wTree.get_widget("progressbar1").set_text(message)
 		else:
 			self.wTree.get_widget("progressbar1").set_text(str(int(fraction *100)) + "%")
+		gtk.gdk.threads_leave()
 
 	''' Utility method - copy file, also provides a quick way of aborting a copy, which
 	    using modules doesn't allow me to do.. '''
@@ -1002,23 +1005,29 @@ class MintBackup:
 		current = float(current)
 		total = float(total)
 		fraction = float(current / total)
+		gtk.gdk.threads_enter()
 		self.wTree.get_widget("progressbar_restore").set_fraction(fraction)
 		if(message is not None):
 			self.wTree.get_widget("progressbar_restore").set_text(message)
 		else:
 			self.wTree.get_widget("progressbar_restore").set_text(str(int(fraction *100)) + "%")
+		gtk.gdk.threads_leave()
 
 	''' prepare the restore, reads the .mintbackup file if present '''
 	def prepare_restore(self):
 		if(self.restore_archive):
 			# restore archives.
 			if(self.tar is not None):
+				gtk.gdk.threads_enter()
 				self.wTree.get_widget("notebook1").set_current_page(7)
 				self.wTree.get_widget("button_forward").hide()
 				self.wTree.get_widget("button_apply").show()
+				gtk.gdk.threads_leave()
 				return
+			gtk.gdk.threads_enter()
 			self.wTree.get_widget("main_window").set_sensitive(False)
 			self.wTree.get_widget("main_window").window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+			gtk.gdk.threads_leave()
 			self.conf = mINIFile()
 			try:
 				self.tar = tarfile.open(self.restore_source, "r")
@@ -1032,11 +1041,13 @@ class MintBackup:
 					self.conf.load_from_list(mfile.readlines())
 					mfile.close()
 				
+				gtk.gdk.threads_enter()
 				self.wTree.get_widget("label_overview_description_value").set_label(self.conf.description)
 				self.wTree.get_widget("button_back").set_sensitive(True)
 				self.wTree.get_widget("button_forward").hide()
 				self.wTree.get_widget("button_apply").show()
 				self.wTree.get_widget("notebook1").set_current_page(7)
+				gtk.gdk.threads_leave()
 
 			except Exception, detail:
 				print detail
@@ -1052,17 +1063,22 @@ class MintBackup:
 				else:
 					self.conf.load_from_file(mfile)
 
+				gtk.gdk.threads_enter()
 				self.wTree.get_widget("label_overview_description_value").set_label(self.conf.description)
 				self.wTree.get_widget("button_back").set_sensitive(True)
 				self.wTree.get_widget("button_forward").hide()
 				self.wTree.get_widget("button_apply").show()
 				self.wTree.get_widget("notebook1").set_current_page(7)
+				gtk.gdk.threads_leave()
+				
 			except Exception, detail:
 				print detail
+		gtk.gdk.threads_enter()
 		self.wTree.get_widget("label_overview_source_value").set_label(self.restore_source)
 		self.wTree.get_widget("label_overview_dest_value").set_label(self.restore_dest)
 		self.wTree.get_widget("main_window").set_sensitive(True)
 		self.wTree.get_widget("main_window").window.set_cursor(None)
+		gtk.gdk.threads_leave()
 		
 	''' extract file from archive '''
 	def extract_file(self, source, dest, record):
@@ -1147,8 +1163,10 @@ class MintBackup:
 						target = os.path.join(self.restore_dest, record.name)
 						dir = os.path.split(target)
 						if(not os.path.exists(dir[0])):
-							os.makedirs(dir[0])	
+							os.makedirs(dir[0])
+						gtk.gdk.threads_enter()
 						self.wTree.get_widget("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
+						gtk.gdk.threads_leave()
 						if(os.path.exists(target)):
 							if(del_policy == 1):
 								# source size != dest size
@@ -1160,7 +1178,7 @@ class MintBackup:
 									out = open(target, "wb")
 									self.extract_file(gz, out, record)
 								else:
-									self.wTree.get_widget("progressbar_restore").set_text(_("Skipping identical file"))
+									self.update_restore_progress(0, 1, message=_("Skipping identical file"))
 							elif(del_policy == 2):
 								# source time != dest time
 								file1 = record.mtime
@@ -1171,7 +1189,7 @@ class MintBackup:
 									out = open(target, "wb")
 									self.extract_file(gz, out, record)
 								else:
-									self.wTree.get_widget("progressbar_restore").set_text(_("Skipping identical file"))
+									self.update_restore_progress(0, 1, message=_("Skipping identical file"))
 							elif(del_policy == 3):
 								# checksums
 								gz = self.tar.extractfile(record)
@@ -1184,7 +1202,7 @@ class MintBackup:
 									gz = self.tar.extractfile(record)
 									self.extract_file(gz, out, record)
 								else:
-									self.wTree.get_widget("progressbar_restore").set_text(_("Skipping identical file"))
+									self.update_restore_progress(0, 1, message=_("Skipping identical file"))
 							elif(del_policy == 4):
 								# always delete
 								os.remove(target)
@@ -1242,7 +1260,7 @@ class MintBackup:
 								os.remove(target)
 								self.copy_file(rpath, target, restore=True, sourceChecksum=None)
 							else:
-								self.wTree.get_widget("progressbar_restore").set_text(_("Skipping identical file"))
+								self.update_restore_progress(0, 1, message=_("Skipping identical file"))
 						elif(del_policy == 2):
 							# source time != dest time
 							file1 = os.path.getmtime(rpath)
@@ -1251,7 +1269,7 @@ class MintBackup:
 								os.remove(target)
 								self.copy_file(rpath, target, restore=True, sourceChecksum=None)
 							else:
-								self.wTree.get_widget("progressbar_restore").set_text(_("Skipping identical file"))
+								self.update_restore_progress(0, 1, message=_("Skipping identical file"))
 						elif(del_policy == 3):
 							# checksums (check size first)
 							if(os.path.getsize(rpath) == os.path.getsize(target)):
@@ -1261,7 +1279,7 @@ class MintBackup:
 									os.remove(target)
 									self.copy_file(rpath, target, restore=True, sourceChecksum=file1)
 								else:
-									self.wTree.get_widget("progressbar_restore").set_text(_("Skipping identical file"))
+									self.update_restore_progress(0, 1, message=_("Skipping identical file"))
 							else:
 								os.remove(target)
 								self.copy_file(rpath, target, restore=True, sourceChecksum=None)
@@ -1291,6 +1309,7 @@ class MintBackup:
 			gtk.gdk.threads_leave()
 		else:
 			if(not self.operating):
+				gtk.gdk.threads_enter()
 				img = self.iconTheme.load_icon("dialog-warning", 48, 0)
 				self.wTree.get_widget("label_restore_finished_value").set_label(_("The restoration was aborted"))
 				self.wTree.get_widget("image_restore_finished").set_from_pixbuf(img)
@@ -1380,8 +1399,10 @@ class MintBackup:
 	def backup_packages(self):
 		pbar = self.wTree.get_widget("progressbar_packages")
 		lab = self.wTree.get_widget("label_current_package_value")
+		gtk.gdk.threads_enter()
 		pbar.set_text(_("Calculating..."))
 		lab.set_label(_("Calculating..."))
+		gtk.gdk.threads_leave()
 		model = self.wTree.get_widget("treeview_packages").get_model()
 		total = 0
 		count = 0
@@ -1420,6 +1441,7 @@ class MintBackup:
 			gtk.gdk.threads_leave()
 		else:
 			if(not self.operating):
+				gtk.gdk.threads_enter()
 				img = self.iconTheme.load_icon("dialog-warning", 48, 0)
 				self.wTree.get_widget("label_packages_done_value").set_label(_("The backup was aborted"))
 				self.wTree.get_widget("image_packages_done").set_from_pixbuf(img)
@@ -1571,3 +1593,4 @@ if __name__ == "__main__":
 	gtk.gdk.threads_init()
 	MintBackup()
 	gtk.main()
+
