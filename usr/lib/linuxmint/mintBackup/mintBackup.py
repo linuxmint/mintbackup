@@ -325,7 +325,7 @@ class MintBackup:
 		# i18n - Page 7 (Restore overview)
 		self.wTree.get_widget("label_title_restore2").set_markup("<big><b>" + _("Restore files") + "</b></big>")
 		self.wTree.get_widget("label_caption_restore2").set_markup("<i><span foreground=\"#555555\">" + _("Please review the information below") + "</span></i>")
-		self.wTree.get_widget("label_overview_source").set_markup("<b>" + _("Archive:") + "</b>")
+		self.wTree.get_widget("label_overview_source").set_markup("<b>" + _("Source:") + "</b>")
 		self.wTree.get_widget("label_overview_description").set_markup("<b>" + _("Description:") + "</b>")
 
 		# i18n - Page 8 (restore status)
