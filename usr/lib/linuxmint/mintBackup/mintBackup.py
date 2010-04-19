@@ -204,6 +204,18 @@ class MintBackup:
 		column = gtk.TreeViewColumn(_("Detail"), ren)
 		column.add_attribute(ren, "text", 1)
 		self.wTree.get_widget("treeview_overview").append_column(column)
+		
+		# Errors treeview for backup
+		ren = gtk.CellRendererText()
+		column = gtk.TreeViewColumn(_("Path"), ren)
+		column.add_attribute(ren, "text", 0)
+		self.wTree.get_widget("treeview_backup_errors").append_column(column)
+		column = gtk.TreeViewColumn(_("Error"), ren)
+		column.add_attribute(ren, "text", 1)
+		self.wTree.get_widget("treeview_backup_errors").append_column(column)
+		# model.
+		self.errors = gtk.ListStore(str,str)
+		self.wTree.get_widget("treeview_backup_errors").set_model(self.errors)
 
 		# nav buttons
 		self.wTree.get_widget("button_back").connect("clicked", self.back_callback)
@@ -254,10 +266,6 @@ class MintBackup:
 		c2 = gtk.TreeViewColumn(_("Name"), gtk.CellRendererText(), markup=1)
 		t.append_column(c2)
 		self.wTree.get_widget("filechooserbutton_package_source").connect("file-set", self.load_package_list_cb)
-		
-		#self.progress = apt.progress.gtk2.GtkAptProgress()
-		#self.wTree.get_widget("vbox_install").pack_start(self.progress, False, False, 3)
-		#self.wTree.get_widget("vbox_install").show_all()
 		
 		# i18n - Page 0 (choose backup or restore)
 		self.wTree.get_widget("label_wizard1").set_markup("<big><b>" + _("Backup or Restore") + "</b></big>")
@@ -704,68 +712,85 @@ class MintBackup:
 		# find out compression format, if any
 		sel = self.wTree.get_widget("combobox_compress").get_active()
 		comp = self.wTree.get_widget("combobox_compress").get_model()[sel]
-		try:
-			if(comp[1] is not None):
-				filetime = strftime("%Y-%m-%d-%H%M-backup", localtime())
-				filename = os.path.join(self.backup_dest, filetime + comp[2])
+		if(comp[1] is not None):
+			tar = None
+			filetime = strftime("%Y-%m-%d-%H%M-backup", localtime())
+			filename = os.path.join(self.backup_dest, filetime + comp[2])
+			try:
 				tar = tarfile.open(name=filename, dereference=self.follow_links, mode=comp[1], bufsize=1024)
 				mintfile = os.path.join(self.backup_dest, ".mintbackup")
 				tar.add(mintfile, arcname=".mintbackup", recursive=False, exclude=None)
-				for top,dirs,files in os.walk(top=self.backup_source, onerror=None, followlinks=self.follow_links):
-					if(not self.operating or self.error is not None):
-						break
-					for f in files:
-						rpath = os.path.join(top, f)
-						path = os.path.relpath(rpath)
-						if(not self.is_excluded(rpath)):
-							if(os.path.islink(rpath)):
-								if(self.follow_links):
-									if(not os.path.exists(rpath)):
-										self.update_restore_progress(0, 1, message=_("Skipping broken link"))
-										current_file += 1
-										continue
-								else:
-									self.update_restore_progress(0, 1, message=_("Skipping link"))
+			except Exception, detail:
+				print detail
+				self.errors.append([str(detail), None])
+			for top,dirs,files in os.walk(top=self.backup_source, onerror=None, followlinks=self.follow_links):
+				if(not self.operating or self.error is not None):
+					break
+				for f in files:
+					rpath = os.path.join(top, f)
+					path = os.path.relpath(rpath)
+					if(not self.is_excluded(rpath)):
+						if(os.path.islink(rpath)):
+							if(self.follow_links):
+								if(not os.path.exists(rpath)):
+									self.update_restore_progress(0, 1, message=_("Skipping broken link"))
 									current_file += 1
 									continue
-							gtk.gdk.threads_enter()
-							label.set_label(path)
-							self.wTree.get_widget("label_file_count").set_text(str(current_file) + " / " + sztotal)
-							gtk.gdk.threads_leave()
+							else:
+								self.update_restore_progress(0, 1, message=_("Skipping link"))
+								current_file += 1
+								continue
+						gtk.gdk.threads_enter()
+						label.set_label(path)
+						self.wTree.get_widget("label_file_count").set_text(str(current_file) + " / " + sztotal)
+						gtk.gdk.threads_leave()
+						try:
 							underfile = TarFileMonitor(rpath, self.update_backup_progress)
 							finfo = tar.gettarinfo(name=None, arcname=path, fileobj=underfile)
 							tar.addfile(fileobj=underfile, tarinfo=finfo)
 							underfile.close()
-							current_file = current_file + 1
+						except Exception, detail:
+							print detail
+							self.errors.append([rpath, str(detail)])
+						current_file = current_file + 1
+			try:
 				tar.close()
 				os.remove(mintfile)
-			else:
-				# Copy to other directory, possibly on another device
-				for top,dirs,files in os.walk(top=self.backup_source,topdown=False,onerror=None,followlinks=self.follow_links):
-					if(not self.operating or self.error is not None):
-						break
-					for f in files:
-						rpath = os.path.join(top, f)
-						path = os.path.relpath(rpath)
-						if(not self.is_excluded(rpath)):
-							target = os.path.join(self.backup_dest, path)
-							if(os.path.islink(rpath)):
-								if(self.follow_links):
-									if(not os.path.exists(rpath)):
-										self.update_restore_progress(0, 1, message=_("Skipping broken link"))
-										current_file += 1
-										continue
-								else:
-									self.update_restore_progress(0, 1, message=_("Skipping link"))
+			except Exception, detail:
+				print detail
+				self.errors.append([str(detail), None])
+		else:
+			# Copy to other directory, possibly on another device
+			for top,dirs,files in os.walk(top=self.backup_source,topdown=False,onerror=None,followlinks=self.follow_links):
+				if(not self.operating):
+					break
+				for f in files:
+					rpath = os.path.join(top, f)
+					path = os.path.relpath(rpath)
+					if(not self.is_excluded(rpath)):
+						target = os.path.join(self.backup_dest, path)
+						if(os.path.islink(rpath)):
+							if(self.follow_links):
+								if(not os.path.exists(rpath)):
+									self.update_restore_progress(0, 1, message=_("Skipping broken link"))
 									current_file += 1
 									continue
-							dir = os.path.split(target)
-							if(not os.path.exists(dir[0])):
-								os.makedirs(dir[0])								
-							gtk.gdk.threads_enter()
-							label.set_label(path)
-							self.wTree.get_widget("label_file_count").set_text(str(current_file) + " / " + sztotal)
-							gtk.gdk.threads_leave()
+							else:
+								self.update_restore_progress(0, 1, message=_("Skipping link"))
+								current_file += 1
+								continue
+						dir = os.path.split(target)
+						if(not os.path.exists(dir[0])):
+							try:
+								os.makedirs(dir[0])		
+							except Exception, detail:
+								print detail
+								self.errors.append([dir[0], str(detail)])						
+						gtk.gdk.threads_enter()
+						label.set_label(path)
+						self.wTree.get_widget("label_file_count").set_text(str(current_file) + " / " + sztotal)
+						gtk.gdk.threads_leave()
+						try:
 							if(os.path.exists(target)):
 								if(del_policy == 1):
 									# source size != dest size
@@ -801,25 +826,27 @@ class MintBackup:
 							else:
 								self.copy_file(rpath, target, sourceChecksum=None)
 							current_file = current_file + 1
-						del f
-						if(self.preserve_times or self.preserve_perms):
-							# loop back over the directories now to reset the a/m/time
-							for d in dirs:
-								rpath = os.path.join(top, d)
-								path = os.path.relpath(rpath)
-								target = os.path.join(self.backup_dest, path)
-								self.clone_dir(rpath, target)
-								del d
-		except Exception, detail:
-			print detail
-			self.error = str(detail)
+						except Exception, detail:
+							print detail
+							self.errors.append([rpath, str(detail)])
+					del f
+					if(self.preserve_times or self.preserve_perms):
+						# loop back over the directories now to reset the a/m/time
+						for d in dirs:
+							rpath = os.path.join(top, d)
+							path = os.path.relpath(rpath)
+							target = os.path.join(self.backup_dest, path)
+							self.clone_dir(rpath, target)
+							del d
+
 		if(current_file < total):
-			self.error = _("Warning: Some filed were not saved, copied: %(current_file)d files out of %(total)d total") % {'current_file':current_file, 'total':total}
-		if(self.error is not None):
+			self.errors.append([_("Warning: Some files were not saved, copied: %(current_file)d files out of %(total)d total") % {'current_file':current_file, 'total':total}, None])
+		if(len(self.errors) > 0):
 			gtk.gdk.threads_enter()
 			img = self.iconTheme.load_icon("dialog-error", 48, 0)
-			self.wTree.get_widget("label_finished_status").set_markup(_("An error occured during the backup:") + "\n" + self.error)
+			self.wTree.get_widget("label_finished_status").set_markup(_("An error occured during the backup"))
 			self.wTree.get_widget("image_finished").set_from_pixbuf(img)
+			self.wTree.get_widget("win_errors").show_all()
 			self.wTree.get_widget("notebook1").next_page()
 			gtk.gdk.threads_leave()
 		else:
@@ -872,7 +899,7 @@ class MintBackup:
 			current = 0
 			dst = open(dest, 'wb')
 			while True:
-				if(not self.operating or self.error is not None):
+				if(not self.operating):
 					# Abort!
 					errfile = dest
 					break
@@ -919,12 +946,15 @@ class MintBackup:
 						file1 = self.get_checksum(source, restore)
 					file2 = self.get_checksum(dest, restore)
 					if(file1 not in file2):
-						self.error = _("Checksum Mismatch:") + " [" + file1 + "] [" + file1 + "]"
+						print _("Checksum Mismatch:") + " [" + file1 + "] [" + file1 + "]"
+						self.errors.append([source, _("Checksum Mismatch")])
 		except OSError as bad:
 			if(len(bad.args) > 2):
-				self.error = "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + bad.args[2] + "]"
+				print "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + bad.args[2] + "]"
+				self.errors.append([bad.args[2], bad.args[1]])
 			else:
-				self.error = "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + source + "]"
+				print "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + source + "]"
+				self.errors.append([source, bad.args[1]])
 			
 	
 	''' mkdir and clone permissions '''
@@ -945,9 +975,11 @@ class MintBackup:
 				os.utime(dest, (atime, mtime))
 		except OSError as bad:
 			if(len(bad.args) > 2):
-				self.error = "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + bad.args[2] + "]"
+				print "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + bad.args[2] + "]"
+				self.errors.append([bad.args[2], bad.args[1]])
 			else:
-				self.error = "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + source + "]"
+				print "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + source + "]"
+				self.errors.append([source, bad.args[1]])
 				
 	''' Grab the checksum for the input filename and return it '''
 	def get_checksum(self, source, restore=None):
@@ -958,7 +990,7 @@ class MintBackup:
 			input = open(source, "rb")
 			total = os.path.getsize(source)
 			while True:
-				if(not self.operating or self.error is not None):
+				if(not self.operating):
 					return None
 				read = input.read(MAX_BUF)
 				if(not read):
@@ -973,9 +1005,11 @@ class MintBackup:
 			return check.hexdigest()
 		except OSError as bad:
 			if(len(bad.args) > 2):
-				self.error = "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + bad.args[2] + "]"
+				print "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + bad.args[2] + "]"
+				self.errors.append([bad.args[2], bad.args[1]])
 			else:
-				self.error = "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + source + "]"
+				print "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + source + "]"
+				self.errors.append([source, bad.args[1]])
 		return None
 
 	''' Grabs checksum for fileobj type object '''
@@ -986,7 +1020,7 @@ class MintBackup:
 		try:
 			check = hashlib.sha1()
 			while True:
-				if(not self.operating or self.error is not None):
+				if(not self.operating):
 					return None
 				read = source.read(MAX_BUF)
 				if(not read):
@@ -997,7 +1031,8 @@ class MintBackup:
 			source.close()
 			return check.hexdigest()
 		except Exception, detail:
-			self.error = str(detail)
+			self.errors.append([source, str(detail)])
+			print detail
 		return None
 		
 	''' Update the restore progress bar '''
@@ -1143,7 +1178,7 @@ class MintBackup:
 				current_file = 0
 				MAX_BUF = 512
 				for record in self.tar.getmembers():
-					if(not self.operating or self.error is not None):
+					if(not self.operating):
 						break
 					if(record.name == ".mintbackup"):
 						# skip mintbackup file
@@ -1229,13 +1264,13 @@ class MintBackup:
 				for top,dirs,files in os.walk(top=self.restore_source,onerror=None, followlinks=self.follow_links):
 					pbar.pulse()
 					for f in files:
-						if(not self.operating or self.error is not None):
+						if(not self.operating):
 							break
 						total += 1
 				sztotal = str(total)
 				total = float(total)
 			for top,dirs,files in os.walk(top=self.restore_source,topdown=False,onerror=None,followlinks=self.follow_links):
-				if(not self.operating or self.error is not None):
+				if(not self.operating):
 					break
 				for f in files:
 					if ".mintbackup" in f:

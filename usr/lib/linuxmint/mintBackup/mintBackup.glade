@@ -626,10 +626,10 @@ gzip</property>
                     <child>
                       <widget class="GtkFileChooserButton" id="filechooserbutton_backup_source">
                         <property name="visible">True</property>
-                        <property name="action">select-folder</property>
-                        <property name="use_preview_label">False</property>
-                        <property name="create_folders">False</property>
                         <property name="preview_widget_active">False</property>
+                        <property name="create_folders">False</property>
+                        <property name="use_preview_label">False</property>
+                        <property name="action">select-folder</property>
                       </widget>
                       <packing>
                         <property name="left_attach">1</property>
@@ -1248,6 +1248,30 @@ gzip</property>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
                     <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkScrolledWindow" id="win_errors">
+                    <property name="can_focus">True</property>
+                    <property name="hscrollbar_policy">automatic</property>
+                    <property name="vscrollbar_policy">automatic</property>
+                    <child>
+                      <widget class="GtkViewport" id="viewport5">
+                        <property name="visible">True</property>
+                        <property name="resize_mode">queue</property>
+                        <child>
+                          <widget class="GtkTreeView" id="treeview_backup_errors">
+                            <property name="can_focus">True</property>
+                            <property name="headers_visible">False</property>
+                            <property name="headers_clickable">False</property>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="padding">2</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
               </widget>
