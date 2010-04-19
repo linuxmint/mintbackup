@@ -213,9 +213,17 @@ class MintBackup:
 		column = gtk.TreeViewColumn(_("Error"), ren)
 		column.add_attribute(ren, "text", 1)
 		self.wTree.get_widget("treeview_backup_errors").append_column(column)
+		
+		# Errors treeview for restore. yeh.
+		ren = gtk.CellRendererText()
+		column = gtk.TreeViewColumn(_("Path"), ren)
+		column.add_attribute(ren, "text", 0)
+		self.wTree.get_widget("treeview_restore_errors").append_column(column)
+		column = gtk.TreeViewColumn(_("Error"), ren)
+		column.add_attribute(ren, "text", 1)
+		self.wTree.get_widget("treeview_restore_errors").append_column(column)
 		# model.
 		self.errors = gtk.ListStore(str,str)
-		self.wTree.get_widget("treeview_backup_errors").set_model(self.errors)
 
 		# nav buttons
 		self.wTree.get_widget("button_back").connect("clicked", self.back_callback)
@@ -734,7 +742,7 @@ class MintBackup:
 							if(self.follow_links):
 								if(not os.path.exists(rpath)):
 									self.update_restore_progress(0, 1, message=_("Skipping broken link"))
-									current_file += 1
+									self.errors.append([rpath, _("Broken link")])
 									continue
 							else:
 								self.update_restore_progress(0, 1, message=_("Skipping link"))
@@ -846,6 +854,7 @@ class MintBackup:
 			img = self.iconTheme.load_icon("dialog-error", 48, 0)
 			self.wTree.get_widget("label_finished_status").set_markup(_("An error occured during the backup"))
 			self.wTree.get_widget("image_finished").set_from_pixbuf(img)
+			self.wTree.get_widget("treeview_backup_errors").set_model(self.errors)
 			self.wTree.get_widget("win_errors").show_all()
 			self.wTree.get_widget("notebook1").next_page()
 			gtk.gdk.threads_leave()
@@ -967,7 +976,6 @@ class MintBackup:
 				owner = finfo[stat.ST_UID]
 				group = finfo[stat.ST_GID]
 				os.chown(dest, owner, group)
-				#shutil.copystat(source, dest)
 			if(self.preserve_times):
 				finfo = os.stat(source)
 				atime = finfo[stat.ST_ATIME]
@@ -1166,42 +1174,50 @@ class MintBackup:
 
 		# restore from archive
 		self.error = None
-		if(self.restore_archive):
-			try:			
-				os.chdir(self.restore_dest)
-				sztotal = self.conf.file_count
-				total = float(sztotal)
-				if(total == -1):
-					tmp = len(self.tar.getmembers())
-					szttotal = str(tmp)
-					total = float(tmp)
-				current_file = 0
-				MAX_BUF = 512
-				for record in self.tar.getmembers():
-					if(not self.operating):
-						break
-					if(record.name == ".mintbackup"):
-						# skip mintbackup file
-						continue
-					gtk.gdk.threads_enter()
-					label.set_label(record.name)
-					gtk.gdk.threads_leave()
-					if(record.isdir()):
-						target = os.path.join(self.restore_dest, record.name)
-						if(not os.path.exists(target)):
+		if(self.restore_archive):	
+			os.chdir(self.restore_dest)
+			sztotal = self.conf.file_count
+			total = float(sztotal)
+			if(total == -1):
+				tmp = len(self.tar.getmembers())
+				szttotal = str(tmp)
+				total = float(tmp)
+			current_file = 0
+			MAX_BUF = 1024
+			for record in self.tar.getmembers():
+				if(not self.operating):
+					break
+				if(record.name == ".mintbackup"):
+					# skip mintbackup file
+					continue
+				gtk.gdk.threads_enter()
+				label.set_label(record.name)
+				gtk.gdk.threads_leave()
+				if(record.isdir()):
+					target = os.path.join(self.restore_dest, record.name)
+					if(not os.path.exists(target)):
+						try:
 							os.mkdir(target)
 							os.chown(target, record.uid, record.gid)
 							os.chmod(target, record.mode)
 							os.utime(target, (record.mtime, record.mtime))
-						current_file += 1
-					if(record.isreg()):
-						target = os.path.join(self.restore_dest, record.name)
-						dir = os.path.split(target)
-						if(not os.path.exists(dir[0])):
+							current_file += 1
+						except Exception, detail:
+							print detail
+							self.errors.append([target, str(detail)])
+				if(record.isreg()):
+					target = os.path.join(self.restore_dest, record.name)
+					dir = os.path.split(target)
+					if(not os.path.exists(dir[0])):
+						try:
 							os.makedirs(dir[0])
-						gtk.gdk.threads_enter()
-						self.wTree.get_widget("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
-						gtk.gdk.threads_leave()
+						except Exception, detail:
+							print detail
+							self.errors.append([dir[0], str(detail)])
+					gtk.gdk.threads_enter()
+					self.wTree.get_widget("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
+					gtk.gdk.threads_leave()
+					try:
 						if(os.path.exists(target)):
 							if(del_policy == 1):
 								# source size != dest size
@@ -1244,16 +1260,18 @@ class MintBackup:
 								gz = self.tar.extractfile(record)
 								out = open(target, "wb")
 								self.extract_file(gz, out, record)
-							current_file = current_file + 1
 						else:
 							gz = self.tar.extractfile(record)
 							out = open(target, "wb")
 							self.extract_file(gz, out, record)
-							current_file = current_file + 1
+						current_file = current_file + 1
+					except Exception, detail:
+						print detail
+						self.errors.append([record.name, str(detail)])
+			try:
 				self.tar.close()
-			except Exception, detail:
-				print detail
-				self.error = str(detail)
+			except:
+				pass
 		else:
 			# restore backup from dir.
 			os.chdir(self.restore_source)
@@ -1280,50 +1298,59 @@ class MintBackup:
 					target = os.path.join(self.restore_dest, path)	
 					dir = os.path.split(target)
 					if(not os.path.exists(dir[0])):
-						os.makedirs(dir[0])								
+						try:
+							os.makedirs(dir[0])	
+						except Exception, detail:
+							print detail
+							self.errors.append([dir[0], str(detail)])							
 					current_file = current_file + 1
 					gtk.gdk.threads_enter()
 					label.set_label(path)
 					gtk.gdk.threads_leave()
 					self.wTree.get_widget("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
-					if(os.path.exists(target)):
-						if(del_policy == 1):
-							# source size != dest size
-							file1 = os.path.getsize(rpath)
-							file2 = os.path.getsize(target)
-							if(file1 != file2):
-								os.remove(target)
-								self.copy_file(rpath, target, restore=True, sourceChecksum=None)
-							else:
-								self.update_restore_progress(0, 1, message=_("Skipping identical file"))
-						elif(del_policy == 2):
-							# source time != dest time
-							file1 = os.path.getmtime(rpath)
-							file2 = os.path.getmtime(target)
-							if(file1 != file2):
-								os.remove(target)
-								self.copy_file(rpath, target, restore=True, sourceChecksum=None)
-							else:
-								self.update_restore_progress(0, 1, message=_("Skipping identical file"))
-						elif(del_policy == 3):
-							# checksums (check size first)
-							if(os.path.getsize(rpath) == os.path.getsize(target)):
-								file1 = self.get_checksum(rpath)
-								file2 = self.get_checksum(target)
-								if(file1 not in file2):
+					try:
+						if(os.path.exists(target)):
+							if(del_policy == 1):
+								# source size != dest size
+								file1 = os.path.getsize(rpath)
+								file2 = os.path.getsize(target)
+								if(file1 != file2):
 									os.remove(target)
-									self.copy_file(rpath, target, restore=True, sourceChecksum=file1)
+									self.copy_file(rpath, target, restore=True, sourceChecksum=None)
 								else:
 									self.update_restore_progress(0, 1, message=_("Skipping identical file"))
-							else:
+							elif(del_policy == 2):
+								# source time != dest time
+								file1 = os.path.getmtime(rpath)
+								file2 = os.path.getmtime(target)
+								if(file1 != file2):
+									os.remove(target)
+									self.copy_file(rpath, target, restore=True, sourceChecksum=None)
+								else:
+									self.update_restore_progress(0, 1, message=_("Skipping identical file"))
+							elif(del_policy == 3):
+								# checksums (check size first)
+								if(os.path.getsize(rpath) == os.path.getsize(target)):
+									file1 = self.get_checksum(rpath)
+									file2 = self.get_checksum(target)
+									if(file1 not in file2):
+										os.remove(target)
+										self.copy_file(rpath, target, restore=True, sourceChecksum=file1)
+									else:
+										self.update_restore_progress(0, 1, message=_("Skipping identical file"))
+								else:
+									os.remove(target)
+									self.copy_file(rpath, target, restore=True, sourceChecksum=None)
+							elif(del_policy == 4):
+								# always delete
 								os.remove(target)
 								self.copy_file(rpath, target, restore=True, sourceChecksum=None)
-						elif(del_policy == 4):
-							# always delete
-							os.remove(target)
+						else:
 							self.copy_file(rpath, target, restore=True, sourceChecksum=None)
-					else:
-						self.copy_file(rpath, target, restore=True, sourceChecksum=None)
+						current_file += 1
+					except Exception, detail:
+						print detail
+						self.errors.append([rpath, str(detail)])
 					del f
 					if(self.preserve_times or self.preserve_perms):
 						# loop back over the directories now to reset the a/m/time
@@ -1335,11 +1362,13 @@ class MintBackup:
 							del d
 		if(current_file < total):
 			self.error = _("Warning: Some filed were not restored, copied: %(current_file)d files out of %(total)d total") % {'current_file':current_file, 'total':total}
-		if(self.error is not None):
+		if(len(self.errors) > 0):
 			gtk.gdk.threads_enter()
-			self.wTree.get_widget("label_restore_finished_value").set_label(_("An error occured during the restoration:") + "\n" + self.error)
+			self.wTree.get_widget("label_restore_finished_value").set_label(_("An error occured during the restoration"))
 			img = self.iconTheme.load_icon("dialog-error", 48, 0)
 			self.wTree.get_widget("image_restore_finished").set_from_pixbuf(img)
+			self.wTree.get_widget("treeview_restore_errors").set_model(self.errors)
+			self.wTree.get_widget("win_restore_errors").show_all()
 			self.wTree.get_widget("notebook1").next_page()
 			gtk.gdk.threads_leave()
 		else:
