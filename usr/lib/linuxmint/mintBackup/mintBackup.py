@@ -322,7 +322,7 @@ class MintBackup:
 		# i18n - Page 4 (backing up status)
 		self.wTree.get_widget("label_title_copying").set_markup("<big><b>" + _("Backup files") + "</b></big>")
 		self.wTree.get_widget("label_caption_copying").set_markup("<i><span foreground=\"#555555\">" + _("Please wait while your files are being backed up") + "</span></i>")
-		self.wTree.get_widget("label_current_file").set_label(_("Currently saving:"))
+		self.wTree.get_widget("label_current_file").set_label(_("Backing up:"))
 
 		# i18n - Page 5 (backup complete)
 		self.wTree.get_widget("label_title_finished").set_markup("<big><b>" + _("Backup files") + "</b></big>")
@@ -347,7 +347,7 @@ class MintBackup:
 		# i18n - Page 8 (restore status)
 		self.wTree.get_widget("label_title_restore3").set_markup("<big><b>" + _("Restore files") + "</b></big>")
 		self.wTree.get_widget("label_caption_restore3").set_markup("<i><span foreground=\"#555555\">" + _("Please wait while your files are being restored") + "</span></i>")
-		self.wTree.get_widget("label_restore_status").set_label(_("Current file:"))
+		self.wTree.get_widget("label_restore_status").set_label(_("Restoring:"))
 
 		# i18n - Page 9 (restore complete)
 		self.wTree.get_widget("label_title_restore4").set_markup("<big><b>" + _("Restore files") + "</b></big>")
@@ -367,7 +367,7 @@ class MintBackup:
 		# i18n - Page 12 (backing up packages)
 		self.wTree.get_widget("label_title_software_backup3").set_markup("<big><b>" + _("Backup software selection") + "</b></big>")
 		self.wTree.get_widget("label_caption_software_backup3").set_markup("<i><span foreground=\"#555555\">" + _("Please wait while your software selection is being backed up") + "</span></i>")
-		self.wTree.get_widget("label_current_package").set_label(_("Current package:"))
+		self.wTree.get_widget("label_current_package").set_label(_("Backing up:"))
 		
 		# i18n - Page 13 (packages done)
 		self.wTree.get_widget("label_title_software_backup4").set_markup("<big><b>" + _("Backup software selection") + "</b></big>")
@@ -540,6 +540,14 @@ class MintBackup:
 			if(self.backup_source == self.backup_dest):
 				MessageDialog(_("Backup Tool"), _("Please choose different directories for the source and the destination"), gtk.MESSAGE_WARNING).show()
 				return
+
+			excludes = self.wTree.get_widget("treeview_excludes").get_model()
+			auto_excludes = [home + "/.Trash", home + "/.local/share/Trash", home + "/.thumbnails"]
+			for auto_exclude in auto_excludes:
+				if os.path.exists(auto_exclude):			
+					if (not auto_exclude.find(self.backup_source)):
+						excludes.append([auto_exclude[len(self.backup_source)+1:], self.dirIcon, auto_exclude])
+	
 			book.set_current_page(2)
 		elif(sel == 2):
 			self.description = self.wTree.get_widget("entry_desc").get_text()
@@ -723,7 +731,8 @@ class MintBackup:
 		if(comp[1] is not None):
 			tar = None
 			filetime = strftime("%Y-%m-%d-%H%M-backup", localtime())
-			filename = os.path.join(self.backup_dest, filetime + comp[2])
+			filename = os.path.join(self.backup_dest, filetime + comp[2] + ".part")
+			final_filename = os.path.join(self.backup_dest, filetime + comp[2])
 			try:
 				tar = tarfile.open(name=filename, dereference=self.follow_links, mode=comp[1], bufsize=1024)
 				mintfile = os.path.join(self.backup_dest, ".mintbackup")
@@ -764,6 +773,7 @@ class MintBackup:
 			try:
 				tar.close()
 				os.remove(mintfile)
+				os.rename(filename, final_filename)
 			except Exception, detail:
 				print detail
 				self.errors.append([str(detail), None])

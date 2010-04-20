@@ -628,8 +628,8 @@ gzip</property>
                         <property name="visible">True</property>
                         <property name="preview_widget_active">False</property>
                         <property name="create_folders">False</property>
-                        <property name="use_preview_label">False</property>
                         <property name="action">select-folder</property>
+                        <property name="use_preview_label">False</property>
                       </widget>
                       <packing>
                         <property name="left_attach">1</property>
@@ -1110,6 +1110,7 @@ gzip</property>
                     <child>
                       <widget class="GtkHBox" id="hbox1">
                         <property name="visible">True</property>
+                        <property name="spacing">6</property>
                         <child>
                           <widget class="GtkLabel" id="label_current_file">
                             <property name="visible">True</property>
@@ -1126,6 +1127,7 @@ gzip</property>
                         <child>
                           <widget class="GtkLabel" id="label_current_file_value">
                             <property name="visible">True</property>
+                            <property name="xalign">0</property>
                             <property name="wrap">True</property>
                             <property name="wrap_mode">char</property>
                             <property name="ellipsize">start</property>
@@ -1800,6 +1802,7 @@ gzip</property>
                     <child>
                       <widget class="GtkHBox" id="hbox3">
                         <property name="visible">True</property>
+                        <property name="spacing">6</property>
                         <child>
                           <widget class="GtkLabel" id="label_restore_status">
                             <property name="visible">True</property>
@@ -1816,7 +1819,7 @@ gzip</property>
                         <child>
                           <widget class="GtkLabel" id="label_restore_status_value">
                             <property name="visible">True</property>
-                            <property name="xalign">0.05000000074505806</property>
+                            <property name="xalign">0</property>
                             <property name="xpad">6</property>
                             <property name="label" translatable="yes">label</property>
                             <property name="ellipsize">start</property>
@@ -2359,6 +2362,7 @@ gzip</property>
                     <child>
                       <widget class="GtkHBox" id="hbox27">
                         <property name="visible">True</property>
+                        <property name="spacing">6</property>
                         <child>
                           <widget class="GtkLabel" id="label_current_package">
                             <property name="visible">True</property>
@@ -2372,7 +2376,7 @@ gzip</property>
                         <child>
                           <widget class="GtkLabel" id="label_current_package_value">
                             <property name="visible">True</property>
-                            <property name="xalign">0.05000000074505806</property>
+                            <property name="xalign">0</property>
                           </widget>
                           <packing>
                             <property name="position">1</property>
