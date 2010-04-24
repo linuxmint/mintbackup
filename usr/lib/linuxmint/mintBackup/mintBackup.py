@@ -1442,7 +1442,7 @@ class MintBackup:
 	''' Is the package manually installed? '''
 	def is_manual_installed(self, pkgname):
 		for b in self.blacklist:
-			if(pkgname in b):
+			if(pkgname == b):
 				return False
 		return True
 		
