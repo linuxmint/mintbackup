@@ -402,11 +402,6 @@ class MintBackup:
 			dlg.set_license(gpl)
 		except Exception, detail:
 			print detail
-		try: 
-			version = commands.getoutput("/usr/lib/linuxmint/common/version.py mintbackup")
-			dlg.set_version(version)
-		except Exception, detail:
-			print detail
 
 		dlg.set_authors(["Ikey Doherty <contactjfreak@googlemail.com>", "Clement Lefebvre <root@linuxmint.com>"]) 
 		dlg.set_icon_from_file("/usr/lib/linuxmint/mintBackup/icon.png")
