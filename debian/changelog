@@ -1,3 +1,9 @@
+mintbackup (2.0.2-mint5-1) elyssa; urgency=low
+
+  * Mint 5 Backport
+
+ -- Clement Lefebvre <root@linuxmint.com>  Sat,  24 Apr 2010 13:01:00 +0000
+
 mintbackup (2.0.2) isadora; urgency=low
 
   * Bug fixes

@@ -130,8 +130,6 @@ class MintBackup:
 		self.preserve_times = True
 		# post-check files?
 		self.postcheck = True
-		# follow symlinks?
-		self.follow_links = False
 		# error?
 		self.error = None
 		# tarfile
@@ -156,8 +154,8 @@ class MintBackup:
 		comps.append([_(".tar file"), "w", ".tar"])
 		comps.append([_(".tar.bz2 file"), "w:bz2", ".tar.bz2"])
 		comps.append([_(".tar.gz file"), "w:gz", ".tar.gz"])
-		self.wTree.get_widget("combobox_compress").set_model(comps)
-		self.wTree.get_widget("combobox_compress").set_active(0)
+		#self.wTree.get_widget("combobox_compress").set_model(comps)
+		#self.wTree.get_widget("combobox_compress").set_active(0)
 
 		# backup overwrite options
 		overs = gtk.ListStore(str)
@@ -176,8 +174,7 @@ class MintBackup:
 		self.wTree.get_widget("checkbutton_perms").connect("clicked", self.handle_checkbox)
 		self.wTree.get_widget("checkbutton_times").set_active(self.preserve_times)
 		self.wTree.get_widget("checkbutton_times").connect("clicked", self.handle_checkbox)
-		self.wTree.get_widget("checkbutton_links").set_active(self.follow_links)
-		self.wTree.get_widget("checkbutton_links").connect("clicked", self.handle_checkbox)
+		
 		# set up exclusions page
 		self.iconTheme = gtk.icon_theme_get_default()
 		self.dirIcon = self.iconTheme.load_icon("folder", 16, 0)
@@ -301,10 +298,9 @@ class MintBackup:
 		self.wTree.get_widget("label_backup_dest").set_label(_("Destination:"))
 		self.wTree.get_widget("label_expander").set_label(_("Advanced options"))
 		self.wTree.get_widget("label_backup_desc").set_label(_("Description:"))
-		self.wTree.get_widget("label_compress").set_label(_("Output:"))
+		#self.wTree.get_widget("label_compress").set_label(_("Output:"))
 		self.wTree.get_widget("label_overwrite_dest").set_label(_("Overwrite:"))
 		self.wTree.get_widget("checkbutton_integrity").set_label(_("Confirm integrity"))
-		self.wTree.get_widget("checkbutton_links").set_label(_("Follow symlinks"))
 		self.wTree.get_widget("checkbutton_perms").set_label(_("Preserve permissions"))
 		self.wTree.get_widget("checkbutton_times").set_label(_("Preserve timestamps"))
 
@@ -458,9 +454,7 @@ class MintBackup:
 		elif(widget == self.wTree.get_widget("checkbutton_perms")):
 			self.preserve_perms = widget.get_active()
 		elif(widget == self.wTree.get_widget("checkbutton_times")):
-			self.preserve_times = widget.get_active()
-		elif(widget == self.wTree.get_widget("checkbutton_links")):
-			self.follow_links = widget.get_active()
+			self.preserve_times = widget.get_active()	
 	
 	''' Exclude file '''
 	def add_file_exclude(self, widget):
@@ -558,9 +552,9 @@ class MintBackup:
 			if (self.description != ""):
 				model.append(["<b>" + _("Description") + "</b>", self.description])
 			# find compression format
-			sel = self.wTree.get_widget("combobox_compress").get_active()
-			comp = self.wTree.get_widget("combobox_compress").get_model()
-			model.append(["<b>" + _("Compression") + "</b>", comp[sel][0]])
+			#sel = self.wTree.get_widget("combobox_compress").get_active()
+			#comp = self.wTree.get_widget("combobox_compress").get_model()
+			#model.append(["<b>" + _("Compression") + "</b>", comp[sel][0]])
 			# find overwrite rules
 			sel = self.wTree.get_widget("combobox_delete_dest").get_active()
 			over = self.wTree.get_widget("combobox_delete_dest").get_model()
@@ -705,7 +699,7 @@ class MintBackup:
 		gtk.gdk.threads_leave()
 		# get a count of all the files
 		total = 0
-		for top,dirs,files in os.walk(top=self.backup_source,onerror=None, followlinks=self.follow_links):
+		for top,dirs,files in os.walk(top=self.backup_source,onerror=None):
 			gtk.gdk.threads_enter()
 			pbar.pulse()
 			gtk.gdk.threads_leave()
@@ -726,37 +720,35 @@ class MintBackup:
 		del_policy = self.wTree.get_widget("combobox_delete_dest").get_active()
 
 		# find out compression format, if any
-		sel = self.wTree.get_widget("combobox_compress").get_active()
-		comp = self.wTree.get_widget("combobox_compress").get_model()[sel]
+		#sel = self.wTree.get_widget("combobox_compress").get_active()
+		#comp = self.wTree.get_widget("combobox_compress").get_model()[sel]
+		comp = ["", ""]
+		comp[1] = None
 		if(comp[1] is not None):
 			tar = None
 			filetime = strftime("%Y-%m-%d-%H%M-backup", localtime())
 			filename = os.path.join(self.backup_dest, filetime + comp[2] + ".part")
 			final_filename = os.path.join(self.backup_dest, filetime + comp[2])
 			try:
-				tar = tarfile.open(name=filename, dereference=self.follow_links, mode=comp[1], bufsize=1024)
+				tar = tarfile.open(name=filename, mode=comp[1], bufsize=1024)
 				mintfile = os.path.join(self.backup_dest, ".mintbackup")
 				tar.add(mintfile, arcname=".mintbackup", recursive=False, exclude=None)
 			except Exception, detail:
 				print detail
 				self.errors.append([str(detail), None])
-			for top,dirs,files in os.walk(top=self.backup_source, onerror=None, followlinks=self.follow_links):
+			for top,dirs,files in os.walk(top=self.backup_source, onerror=None):
 				if(not self.operating or self.error is not None):
 					break
 				for f in files:
 					rpath = os.path.join(top, f)
-					path = os.path.relpath(rpath)
+					path = rpath.replace(self.backup_source, '')
+					path = path[1:]	
+					#path = os.path.relpath(rpath)
 					if(not self.is_excluded(rpath)):
 						if(os.path.islink(rpath)):
-							if(self.follow_links):
-								if(not os.path.exists(rpath)):
-									self.update_restore_progress(0, 1, message=_("Skipping broken link"))
-									self.errors.append([rpath, _("Broken link")])
-									continue
-							else:
-								self.update_restore_progress(0, 1, message=_("Skipping link"))
-								current_file += 1
-								continue
+							self.update_restore_progress(0, 1, message=_("Skipping link"))
+							current_file += 1
+							continue
 						gtk.gdk.threads_enter()
 						label.set_label(path)
 						self.wTree.get_widget("label_file_count").set_text(str(current_file) + " / " + sztotal)
@@ -779,24 +771,20 @@ class MintBackup:
 				self.errors.append([str(detail), None])
 		else:
 			# Copy to other directory, possibly on another device
-			for top,dirs,files in os.walk(top=self.backup_source,topdown=False,onerror=None,followlinks=self.follow_links):
+			for top,dirs,files in os.walk(top=self.backup_source,topdown=False,onerror=None):
 				if(not self.operating):
 					break
 				for f in files:
-					rpath = os.path.join(top, f)
-					path = os.path.relpath(rpath)
+					rpath = os.path.join(top, f)	
+					path = rpath.replace(self.backup_source, '')
+					path = path[1:]					
+					#path = os.path.relpath(rpath)
 					if(not self.is_excluded(rpath)):
 						target = os.path.join(self.backup_dest, path)
 						if(os.path.islink(rpath)):
-							if(self.follow_links):
-								if(not os.path.exists(rpath)):
-									self.update_restore_progress(0, 1, message=_("Skipping broken link"))
-									current_file += 1
-									continue
-							else:
-								self.update_restore_progress(0, 1, message=_("Skipping link"))
-								current_file += 1
-								continue
+							self.update_restore_progress(0, 1, message=_("Skipping link"))
+							current_file += 1
+							continue
 						dir = os.path.split(target)
 						if(not os.path.exists(dir[0])):
 							try:
@@ -852,7 +840,9 @@ class MintBackup:
 						# loop back over the directories now to reset the a/m/time
 						for d in dirs:
 							rpath = os.path.join(top, d)
-							path = os.path.relpath(rpath)
+							path = rpath.replace(self.backup_source, '')
+							path = path[1:]
+							#path = os.path.relpath(rpath)
 							target = os.path.join(self.backup_dest, path)
 							self.clone_dir(rpath, target)
 							del d
@@ -944,10 +934,11 @@ class MintBackup:
 					finfo = os.stat(source)
 					owner = finfo[stat.ST_UID]
 					group = finfo[stat.ST_GID]
-					os.fchown(fd, owner, group)
+					#os.fchown(fd, owner, group)
 					dst.flush()
 					os.fsync(fd)
 					dst.close()
+					os.chown(dest, owner, group)
 				if(self.preserve_times):
 					finfo = os.stat(source)
 					atime = finfo[stat.ST_ATIME]
@@ -967,7 +958,7 @@ class MintBackup:
 					if(file1 not in file2):
 						print _("Checksum Mismatch:") + " [" + file1 + "] [" + file1 + "]"
 						self.errors.append([source, _("Checksum Mismatch")])
-		except OSError as bad:
+		except OSError, bad:
 			if(len(bad.args) > 2):
 				print "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + bad.args[2] + "]"
 				self.errors.append([bad.args[2], bad.args[1]])
@@ -991,7 +982,7 @@ class MintBackup:
 				atime = finfo[stat.ST_ATIME]
 				mtime = finfo[stat.ST_MTIME]
 				os.utime(dest, (atime, mtime))
-		except OSError as bad:
+		except OSError, bad:
 			if(len(bad.args) > 2):
 				print "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + bad.args[2] + "]"
 				self.errors.append([bad.args[2], bad.args[1]])
@@ -1021,7 +1012,7 @@ class MintBackup:
 					self.update_backup_progress(current, total, message=_("Calculating checksum"))
 			input.close()
 			return check.hexdigest()
-		except OSError as bad:
+		except OSError, bad:
 			if(len(bad.args) > 2):
 				print "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + bad.args[2] + "]"
 				self.errors.append([bad.args[2], bad.args[1]])
@@ -1156,11 +1147,12 @@ class MintBackup:
 		else:
 			# set permissions
 			fd = dest.fileno()
-			os.fchown(fd, record.uid, record.gid)
+			#os.fchown(fd, record.uid, record.gid)
 			os.fchmod(fd, record.mode)
 			dest.flush()
 			os.fsync(fd)
 			dest.close()
+			os.chown(dest.name, record.uid, record.gid)
 			os.utime(dest.name, (record.mtime, record.mtime))
 
 	''' Restore from archive '''
@@ -1289,7 +1281,7 @@ class MintBackup:
 			total = float(sztotal)		
 			current_file = 0
 			if(total == -1):
-				for top,dirs,files in os.walk(top=self.restore_source,onerror=None, followlinks=self.follow_links):
+				for top,dirs,files in os.walk(top=self.restore_source,onerror=None):
 					pbar.pulse()
 					for f in files:
 						if(not self.operating):
@@ -1297,14 +1289,16 @@ class MintBackup:
 						total += 1
 				sztotal = str(total)
 				total = float(total)
-			for top,dirs,files in os.walk(top=self.restore_source,topdown=False,onerror=None,followlinks=self.follow_links):
+			for top,dirs,files in os.walk(top=self.restore_source,topdown=False,onerror=None):
 				if(not self.operating):
 					break
 				for f in files:
 					if ".mintbackup" in f:
 						continue
 					rpath = os.path.join(top, f)
-					path = os.path.relpath(rpath)
+					#path = os.path.relpath(rpath)
+					path = rpath.replace(self.restore_source, '')
+					path = path[1:]	
 					target = os.path.join(self.restore_dest, path)	
 					dir = os.path.split(target)
 					if(not os.path.exists(dir[0])):
@@ -1366,7 +1360,9 @@ class MintBackup:
 						# loop back over the directories now to reset the a/m/time
 						for d in dirs:
 							rpath = os.path.join(top, d)
-							path = os.path.relpath(rpath)
+							#path = os.path.relpath(rpath)
+							path = rpath.replace(self.restore_source, '')
+							path = path[1:]	
 							target = os.path.join(self.restore_dest, path)
 							self.clone_dir(rpath, target)
 							del d
@@ -1416,7 +1412,7 @@ class MintBackup:
 				l = l.rstrip("\r\n")
 				l = l.split(" ")
 				self.blacklist.append(l[2])
-			bl = open("/usr/lib/linuxmint/mintBackup/linuxmint-8-main.list", "r")
+			bl = open("/usr/lib/linuxmint/mintBackup/linuxmint-5-main.list", "r")
 			for l in bl.readlines():
 				if(l.startswith("#")):
 					# ignore comments
@@ -1428,9 +1424,9 @@ class MintBackup:
 			print detail
 		cache = apt.Cache()
 		for pkg in cache:
-			if(pkg.installed):
+			if(pkg.isInstalled):
 				if(self.is_manual_installed(pkg.name) == True):
-					desc = "<big>" + pkg.name + "</big>\n<small>" + pkg.installed.summary.replace("&", "&amp;") + "</small>"
+					desc = "<big>" + pkg.name + "</big>\n<small>" + pkg.summary.replace("&", "&amp;") + "</small>"
 					gtk.gdk.threads_enter()
 					model.append([True, pkg.name, desc])
 					gtk.gdk.threads_leave()
@@ -1442,7 +1438,7 @@ class MintBackup:
 	''' Is the package manually installed? '''
 	def is_manual_installed(self, pkgname):
 		for b in self.blacklist:
-			if(pkgname in b):
+			if(pkgname == b):
 				return False
 		return True
 		
@@ -1585,7 +1581,7 @@ class MintBackup:
 				if(cache.has_key(line)):
 					pkg = cache[line]
 					if(not pkg.isInstalled):
-						desc = pkg.candidate.summary.replace("&", "&amp;")
+						desc = pkg.summary.replace("&", "&amp;")
 						line = "<big>" + line + "</big>\n<small>" + desc + "</small>"
 						gtk.gdk.threads_enter()
 						model.append([inst, line, inst, pkg.name])
