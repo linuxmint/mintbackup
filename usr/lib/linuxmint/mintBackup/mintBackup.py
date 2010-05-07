@@ -1503,6 +1503,8 @@ class MintBackup:
 					lab.set_label(row[1])
 					gtk.gdk.threads_leave()
 			out.close()
+			os.system("chmod a+rx " + self.package_dest) 
+			os.system("chmod a+rw " + os.path.join(self.package_dest, filename))
 		except Exception, detail:
 			self.error = str(detail)
 			
