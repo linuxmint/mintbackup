@@ -2,7 +2,7 @@
 Name=Backup Tool
 Comment=Make a backup of your home directory
 Exec=mintbackup
-Icon=/usr/lib/linuxmint/mintBackup/icon.png
+Icon=/usr/lib/linuxmint/mintBackup/icon.svg
 Terminal=false
 Type=Application
 Encoding=UTF-8
