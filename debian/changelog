@@ -1,3 +1,9 @@
+mintbackup (2.0.6) isadora; urgency=low
+
+  * Updated desktop file
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri,  14 May 2010 10:35:00 +0000
+
 mintbackup (2.0.5) isadora; urgency=low
 
   * Menu item now uses svg icon
