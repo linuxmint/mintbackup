@@ -1416,7 +1416,7 @@ class MintBackup:
 				l = l.rstrip("\r\n")
 				l = l.split(" ")
 				self.blacklist.append(l[2])
-			bl = open("/usr/lib/linuxmint/mintBackup/linuxmint-8-main.list", "r")
+			bl = open("/usr/lib/linuxmint/mintBackup/software-selections.list", "r")
 			for l in bl.readlines():
 				if(l.startswith("#")):
 					# ignore comments
