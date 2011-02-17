@@ -1211,7 +1211,6 @@ class MintBackup:
 							os.chown(target, record.uid, record.gid)
 							os.chmod(target, record.mode)
 							os.utime(target, (record.mtime, record.mtime))
-							current_file += 1
 						except Exception, detail:
 							print detail
 							self.errors.append([target, str(detail)])
