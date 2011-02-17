@@ -911,7 +911,7 @@ class MintBackup:
 	def copy_file(self, source, dest, restore=None, sourceChecksum=None):
 		try:
 			# represents max buffer size
-			BUF_MAX = 1024 # so we don't get stuck on I/O ops
+			BUF_MAX = 16 * 1024 # so we don't get stuck on I/O ops
 			errfile = None
 			src = open(source, 'rb')
 			total = os.path.getsize(source)
@@ -1001,7 +1001,7 @@ class MintBackup:
 				
 	''' Grab the checksum for the input filename and return it '''
 	def get_checksum(self, source, restore=None):
-		MAX_BUF = 512
+		MAX_BUF = 16*1024
 		current = 0
 		try:
 			check = hashlib.sha1()
@@ -1032,7 +1032,7 @@ class MintBackup:
 
 	''' Grabs checksum for fileobj type object '''
 	def get_checksum_for_file(self, source):
-		MAX_BUF = 512
+		MAX_BUF = 16*1024
 		current = 0
 		total = source.size
 		try:
