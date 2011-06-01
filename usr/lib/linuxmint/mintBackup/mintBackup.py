@@ -1588,12 +1588,10 @@ class MintBackup:
 					if(not pkg.isInstalled):
 						desc = pkg.candidate.summary.replace("&", "&amp;")
 						line = "<big>" + line + "</big>\n<small>" + desc + "</small>"
-						gtk.gdk.threads_enter()
-						model.append([inst, line, inst, pkg.name])
-						gtk.gdk.threads_leave()
-				else:
-					inst = False
-					line = "<big>" + line + "</big>\n<small>" + _("Could not locate the package") + "</small>"
+					else:
+						inst = False
+						line = "<big>" + line + "</big>\n<small>" + _("Could not locate the package") + "</small>"
+
 					gtk.gdk.threads_enter()
 					model.append([inst, line, inst, pkg.name])
 					gtk.gdk.threads_leave()
