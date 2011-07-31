@@ -1595,7 +1595,7 @@ class MintBackup:
 					inst = False
 					line = "<big>" + line + "</big>\n<small>" + _("Could not locate the package") + "</small>"
 					gtk.gdk.threads_enter()
-					model.append([inst, line, inst, pkg.name])
+					model.append([inst, line, inst, line])
 					gtk.gdk.threads_leave()
 			source.close()
 		except Exception, detail:
