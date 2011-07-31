@@ -22,7 +22,8 @@ try:
 	import apt
 	import subprocess
 	from user import home
-	import tempfile
+    	import tempfile
+	import apt.progress.gtk2
 except Exception, detail:
 	print "You do not have the required dependencies"
 
@@ -84,7 +85,7 @@ class mINIFile():
 		except:
 			pass
 ''' Handy. Makes message dialogs easy :D '''
-class MessageDialog(apt.FetchProgress):
+class MessageDialog(apt.progress.gtk2.GOpProgress):
 
 	def __init__(self, title, message, style):
 		self.title = title

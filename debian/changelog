@@ -1,3 +1,9 @@
+mintbackup (2.0.8) debian; urgency=low
+
+  * https://bugs.launchpad.net/linuxmint/+bug/795132
+
+ -- Clement Lefebvre <root@linuxmint.com>  Sun,  31 Jul 2011 10:14:00 +0000
+
 mintbackup (2.0.7) katya; urgency=low
 
   * https://bugs.launchpad.net/linuxmint/+bug/722522
