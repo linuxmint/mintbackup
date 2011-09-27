@@ -1,3 +1,9 @@
+mintbackup (2.0.9) debian; urgency=low
+
+  * Indentation and a few improvements (ignore empty lines in software list file) and call is_installed() on apt instead of the deprecated isInstalled().
+
+ -- Clement Lefebvre <root@linuxmint.com>  Tue,  27 Sep 2011 15:10:00 +0000
+
 mintbackup (2.0.8) debian; urgency=low
 
   * https://bugs.launchpad.net/linuxmint/+bug/795132
