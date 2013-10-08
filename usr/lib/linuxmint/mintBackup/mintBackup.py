@@ -94,7 +94,6 @@ class MessageDialog(apt.progress.gtk2.GOpProgress):
 
     ''' Show me on screen '''
     def show(self):
-    def show(self):
 
         dialog = gtk.MessageDialog(None, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, self.style, gtk.BUTTONS_OK, self.message)
         dialog.set_title(_("Backup Tool"))
