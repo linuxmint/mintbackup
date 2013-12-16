@@ -1,3 +1,9 @@
+mintbackup (2.1.2) petra; urgency=low
+
+  * Added explicit dependencies on python-apt and python-vte
+
+ -- Clement Lefebvre <root@linuxmint.com>  Mon, 16 Dec 2013 10:48:00 +0000
+
 mintbackup (2.1.1) petra; urgency=low
 
   * Fix desktop file
