@@ -1,3 +1,9 @@
+mintbackup (2.1.3) petra; urgency=low
+
+  * Fixed typo
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 17 Jan 2014 09:57:01 +0000
+
 mintbackup (2.1.2) petra; urgency=low
 
   * Added explicit dependencies on python-apt and python-vte
