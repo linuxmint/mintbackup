@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-14 12:43+0100\n"
+"POT-Creation-Date: 2014-05-04 02:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,494 +17,494 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:34
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:99
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:238
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:427
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:443
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:501
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:504
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:556
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:559
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:579
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:602
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:609
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1426
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1519
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1527
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1570
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:95
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:234
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:423
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:439
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:497
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:500
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:552
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:555
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:575
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:598
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:605
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1422
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1515
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1523
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1566
+#: generate_desktop_files.py:24 generate_desktop_files.py:39
 msgid "Backup Tool"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:35
-msgid "Make a backup of your home directory"
-msgstr ""
-
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:155
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:151
 msgid "Preserve structure"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:157
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:153
 msgid ".tar file"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:158
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:154
 msgid ".tar.bz2 file"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:159
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:155
 msgid ".tar.gz file"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:165
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:161
 msgid "Never"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:166
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:162
 msgid "Size mismatch"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:167
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:163
 msgid "Modification time mismatch"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:168
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:164
 msgid "Checksum mismatch"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:169
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:165
 msgid "Always"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:191
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:187
 msgid "Excluded paths"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:201
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:197
 msgid "Type"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:205
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:201
 msgid "Detail"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:211
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:220
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:207
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:216
 msgid "Path"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:214
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:223
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:210
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:219
 msgid "Error"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:255
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:251
 msgid "Store?"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:258
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:271
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:254
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:267
 msgid "Name"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:268
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:264
 msgid "Install"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:276
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:272
 msgid "Backup or Restore"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:277
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:273
 msgid "Choose from the following options"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:279
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:295
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:309
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:275
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:291
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:305
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:312
 #: usr/lib/linuxmint/mintBackup/mintBackup.py:316
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:320
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:325
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:321
 msgid "Backup files"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:280
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:329
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:339
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:345
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:350
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:276
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:325
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:335
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:341
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:346
 msgid "Restore files"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:281
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:354
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:359
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:365
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:370
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:277
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:350
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:355
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:361
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:366
 msgid "Backup software selection"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:282
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:374
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:379
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:386
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:278
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:370
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:375
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:382
 msgid "Restore software selection"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:284
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:280
 msgid "Make a backup of your files"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:285
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:281
 msgid "Save the list of installed applications"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:286
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:282
 msgid "Restore a previous backup"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:287
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:283
 msgid "Restore previously installed applications"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:296
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:292
 msgid "Please select a source and a destination for your backup"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:297
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:333
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:341
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:293
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:329
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:337
 msgid "Source:"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:298
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:334
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:294
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:330
 msgid "Destination:"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:299
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:335
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:295
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:331
 msgid "Advanced options"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:300
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:342
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:296
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:338
 msgid "Description:"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:301
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:297
 msgid "Output:"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:302
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:336
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:298
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:332
 msgid "Overwrite:"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:303
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:299
 msgid "Confirm integrity"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:304
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:300
 msgid "Follow symlinks"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:305
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:301
 msgid "Preserve permissions"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:306
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:302
 msgid "Preserve timestamps"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:310
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:306
 msgid "Please select any files or directories you want to exclude"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:311
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:307
 msgid "Exclude files"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:312
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:308
 msgid "Exclude directories"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:313
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:309
 msgid "Remove"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:317
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:313
 msgid "Please review the information below before starting the backup"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:321
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:317
 msgid "Please wait while your files are being backed up"
+msgstr ""
+
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:318
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:363
+msgid "Backing up:"
 msgstr ""
 
 #: usr/lib/linuxmint/mintBackup/mintBackup.py:322
 #: usr/lib/linuxmint/mintBackup/mintBackup.py:367
-msgid "Backing up:"
-msgstr ""
-
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:326
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:371
 msgid "The backup is now finished"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:330
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:326
 msgid ""
 "Please choose the type of backup to restore, its location and a destination"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:331
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:327
 msgid "Archive"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:332
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:328
 msgid "Directory"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:340
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:336
 msgid "Please review the information below"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:346
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:342
 msgid "Please wait while your files are being restored"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:347
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:343
 msgid "Restoring:"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:351
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:347
 msgid "The restoration of the files is now finished"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:355
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:351
 msgid "Please choose a destination"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:356
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:520
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:352
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:516
 msgid "Destination"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:360
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:356
 msgid "The list below shows the packages you added to Linux Mint"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:361
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:381
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:357
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:377
 msgid "Select all"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:362
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:382
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:358
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:378
 msgid "Deselect all"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:366
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:362
 msgid "Please wait while your software selection is being backed up"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:375
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:371
 msgid "Please select a saved software selection"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:376
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:372
 msgid "Software selection:"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:380
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:376
 msgid "Select the packages you want to install"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:383
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:379
 msgid "Refresh"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:387
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:383
 msgid "The restoration is now finished"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:388
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:384
 msgid "Your package selection was restored succesfully"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:436
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:452
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:432
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:448
 msgid "Invalid path"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:436
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:452
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:432
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:448
 #, python-format
 msgid "%s is not located within your source directory. Not added."
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:501
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:497
 msgid "Please choose directories for the source and the destination"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:504
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:500
 msgid "Please choose different directories for the source and the destination"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:519
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:515
 msgid "Source"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:522
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:518
 msgid "Description"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:526
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:522
 msgid "Compression"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:530
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:526
 msgid "Overwrite destination files"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:533
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:529
 msgid "Exclude"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:556
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:552
 msgid "Please choose a file to restore from"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:559
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:579
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:555
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:575
 msgid "Please choose a destination directory"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:602
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:598
 msgid "No packages need to be installed at this time"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:609
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:605
 msgid "Please select one or more packages to install"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:666
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:667
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1143
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1145
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1439
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1440
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:662
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:663
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1139
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1141
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1435
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1436
 msgid "Calculating..."
+msgstr ""
+
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:712
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:752
+msgid "Skipping broken link"
+msgstr ""
+
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:713
+msgid "Broken link"
 msgstr ""
 
 #: usr/lib/linuxmint/mintBackup/mintBackup.py:716
 #: usr/lib/linuxmint/mintBackup/mintBackup.py:756
-msgid "Skipping broken link"
-msgstr ""
-
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:717
-msgid "Broken link"
-msgstr ""
-
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:720
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:760
 msgid "Skipping link"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:784
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:793
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:802
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1204
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1215
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1228
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1293
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1302
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1312
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:780
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:789
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:798
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1200
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1211
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1224
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1289
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1298
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1308
 msgid "Skipping identical file"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:824
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:820
 #, python-format
 msgid ""
 "Warning: Some files were not saved, copied: %(current_file)d files out of "
 "%(total)d total"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:828
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:824
 msgid "An error occured during the backup"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:838
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1484
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:834
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1480
 msgid "The backup was aborted"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:846
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:842
 msgid "The backup completed successfully"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:931
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:927
 msgid "Checksum Mismatch:"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:932
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:928
 msgid "Checksum Mismatch"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:982
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:984
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1011
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:978
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:980
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1007
 msgid "Calculating checksum"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1053
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1077
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1049
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1073
 msgid "(Not created with the Backup Tool)"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1336
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1332
 #, python-format
 msgid ""
 "Warning: Some files were not restored, copied: %(current_file)d files out of "
 "%(total)d total"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1339
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1335
 msgid "An error occured during the restoration"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1350
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1346
 msgid "The restoration was aborted"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1358
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1354
 msgid "The restoration completed successfully"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1475
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1471
 msgid "An error occured during the backup:"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1492
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1488
 msgid "Your software selection was backed up succesfully"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1519
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1515
 msgid "The specified file is not a valid software selection"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1527
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1570
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1523
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1566
 msgid "An error occurred while accessing the file"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1563
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1559
 msgid "Could not locate the package"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1594
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1590
 msgid "Please wait, this can take some time"
 msgstr ""
 
-#: usr/lib/linuxmint/mintBackup/mintBackup.py:1596
+#: usr/lib/linuxmint/mintBackup/mintBackup.py:1592
 msgid "The installation is complete"
+msgstr ""
+
+#: generate_desktop_files.py:24 generate_desktop_files.py:39
+msgid "Make a backup of your home directory"
 msgstr ""

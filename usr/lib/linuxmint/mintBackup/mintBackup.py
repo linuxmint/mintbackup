@@ -30,10 +30,6 @@ except Exception, detail:
 # i18n
 gettext.install("mintbackup", "/usr/share/linuxmint/locale")
 
-# i18n for menu item
-menuName = _("Backup Tool")
-menuComment = _("Make a backup of your home directory")
-
 class TarFileMonitor():
     ''' Bit of a hack but I can figure out what tarfile is doing now.. (progress wise) '''
     def __init__(self, target, callback):
