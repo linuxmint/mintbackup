@@ -1,3 +1,9 @@
+mintbackup (2.1.5) qiana; urgency=medium
+
+  * Updated desktop files
+
+ -- Clement Lefebvre <root@linuxmint.com>  Sun, 04 May 2014 02:24:40 +0100
+
 mintbackup (2.1.4) qiana; urgency=medium
 
   * Fixed issues with Gtk.FileChooser
