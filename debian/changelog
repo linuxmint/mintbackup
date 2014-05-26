@@ -1,3 +1,11 @@
+mintbackup (2.1.6) qiana; urgency=low
+
+  * [1ebec83] KDE desktop file generation
+  * [5545856] New KDE4 desktop file
+  * [3066d03] GNOME based desktop file hidden in KDE
+
+ -- Frédéric Gaudet <fred@linuxmint.com>  Mon, 26 May 2014 11:30:56 +0200
+
 mintbackup (2.1.5) qiana; urgency=medium
 
   * Updated desktop files
