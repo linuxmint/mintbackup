@@ -1,3 +1,10 @@
+mintbackup (2.1.7) qiana; urgency=low
+
+  * [ca9110c] Add trailing semicolon
+  * [2bcbfb3] Update translations
+
+ -- Frédéric Gaudet <fred@linuxmint.com>  Mon, 26 May 2014 13:41:06 +0200
+
 mintbackup (2.1.6) qiana; urgency=low
 
   * [1ebec83] KDE desktop file generation
