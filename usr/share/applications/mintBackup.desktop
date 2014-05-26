@@ -176,3 +176,4 @@ Terminal=false
 Type=Application
 Encoding=UTF-8
 Categories=Application;System;Settings
+NotShowIn=KDE
