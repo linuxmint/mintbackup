@@ -104,7 +104,7 @@ class MintBackup:
     def __init__(self):
         self.glade = '/usr/lib/linuxmint/mintBackup/mintBackup.glade'
         self.wTree = gtk.glade.XML(self.glade, 'main_window')
-        self.wTree.get_widget("main_window").set_icon_from_file("/usr/lib/linuxmint/mintBackup/icon.png")
+        self.wTree.get_widget("main_window").set_icon_from_file("/usr/share/linuxmint/mintBackup/icon.png")
 
         # handle command line filenames
         if(len(sys.argv) > 1):
@@ -282,10 +282,10 @@ class MintBackup:
         self.wTree.get_widget("label_detail3").set_markup("<small>" + _("Restore a previous backup") + "</small>")
         self.wTree.get_widget("label_detail4").set_markup("<small>" + _("Restore previously installed applications") + "</small>")
 
-        self.wTree.get_widget("image_backup_data").set_from_file("/usr/lib/linuxmint/mintBackup/backup-data.svg")
-        self.wTree.get_widget("image_restore_data").set_from_file("/usr/lib/linuxmint/mintBackup/restore-data.svg")
-        self.wTree.get_widget("image_backup_software").set_from_file("/usr/lib/linuxmint/mintBackup/backup-software.svg")
-        self.wTree.get_widget("image_restore_software").set_from_file("/usr/lib/linuxmint/mintBackup/restore-software.svg")
+        self.wTree.get_widget("image_backup_data").set_from_file("/usr/share/linuxmint/mintBackup/backup-data.svg")
+        self.wTree.get_widget("image_restore_data").set_from_file("/usr/share/linuxmint/mintBackup/restore-data.svg")
+        self.wTree.get_widget("image_backup_software").set_from_file("/usr/share/linuxmint/mintBackup/backup-software.svg")
+        self.wTree.get_widget("image_restore_software").set_from_file("/usr/share/linuxmint/mintBackup/restore-software.svg")
 
         # i18n - Page 1 (choose backup directories)
         self.wTree.get_widget("label_title_destination").set_markup("<big><b>" + _("Backup files") + "</b></big>")
