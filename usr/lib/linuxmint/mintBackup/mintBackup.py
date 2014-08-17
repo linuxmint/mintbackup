@@ -1585,7 +1585,7 @@ class MintBackup:
         self.wTree.get_widget("main_window").set_sensitive(False)
         gtk.gdk.threads_leave()
 
-        cmd = ["sudo", "/usr/sbin/synaptic", "--hide-main-window", "--non-interactive", "--parent-window-id", str(self.wTree.get_widget("main_window").window.xid)]
+        cmd = ["synaptic-pkexec", "--hide-main-window", "--non-interactive", "--parent-window-id", str(self.wTree.get_widget("main_window").window.xid)]
         cmd.append("--progress-str")
         cmd.append("\"" + _("Please wait, this can take some time") + "\"")
         cmd.append("--finish-str")
