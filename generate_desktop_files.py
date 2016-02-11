@@ -15,7 +15,7 @@ gettext.install(DOMAIN, PATH)
 prefix = "[Desktop Entry]\n"
 
 suffix = """Exec=mintbackup
-Icon=/usr/lib/linuxmint/mintBackup/icon.svg
+Icon=/usr/share/linuxmint/mintBackup/icon.svg
 Terminal=false
 Type=Application
 Encoding=UTF-8
@@ -29,7 +29,7 @@ additionalfiles.generate(DOMAIN, PATH, "usr/share/applications/mintBackup.deskto
 prefix = "[Desktop Entry]\n"
 
 suffix = """Exec=mintBackup
-Icon=/usr/lib/linuxmint/mintBackup/icon.png
+Icon=/usr/share/linuxmint/mintBackup/icon.png
 Terminal=false
 Type=Application
 Encoding=UTF-8
@@ -44,7 +44,7 @@ additionalfiles.generate(DOMAIN, PATH, "usr/share/applications/mintBackup_mime.d
 prefix = "[Desktop Entry]\n"
 
 suffix= """Exec=mintBackup
-Icon=/usr/lib/linuxmint/mintBackup/icon.png
+Icon=/usr/share/linuxmint/mintBackup/icon.png
 Terminal=false
 Type=Application
 Encoding=UTF-8
