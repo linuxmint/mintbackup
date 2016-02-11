@@ -237,7 +237,7 @@ class MintBackup:
         # open archive button, opens an archive... :P
         self.wTree.get_widget("radiobutton_archive").connect("toggled", self.archive_switch)
         self.wTree.get_widget("radiobutton_dir").connect("toggled", self.archive_switch)
-        self.wTree.get_widget("filechooserbutton_restore_source").connect("file-set", self.check_reset_file)        
+        self.wTree.get_widget("filechooserbutton_restore_source").connect("file-set", self.check_reset_file)
 
         self.wTree.get_widget("combobox_restore_del").set_model(overs)
         self.wTree.get_widget("combobox_restore_del").set_active(3)
@@ -382,10 +382,10 @@ class MintBackup:
         self.wTree.get_widget("label_title_software_restore3").set_markup("<big><b>" + _("Restore software selection") + "</b></big>")
         self.wTree.get_widget("label_caption_software_restore3").set_markup("<i><span foreground=\"#555555\">" + _("The restoration is now finished") + "</span></i>")
         self.wTree.get_widget("label_install_done_value").set_markup(_("Your package selection was restored succesfully"))
-    
+
     def abt_resp(self, w, r):
         if r == gtk.RESPONSE_CANCEL:
-            w.hide()   
+            w.hide()
 
     ''' handle the file-set signal '''
     def check_reset_file(self, w):
@@ -495,7 +495,7 @@ class MintBackup:
             # choose source/dest
             if(self.backup_source is None or self.backup_dest is None):
                 MessageDialog(_("Backup Tool"), _("Please choose directories for the source and the destination"), gtk.MESSAGE_WARNING).show()
-                return            
+                return
             if(self.backup_source == self.backup_dest):
                 MessageDialog(_("Backup Tool"), _("Please choose different directories for the source and the destination"), gtk.MESSAGE_WARNING).show()
                 return
@@ -584,7 +584,7 @@ class MintBackup:
             # show progress of packages page
             self.wTree.get_widget("button_forward").set_sensitive(False)
             self.wTree.get_widget("button_back").set_sensitive(False)
-            book.set_current_page(12)        
+            book.set_current_page(12)
             self.operating = True
             thr = threading.Thread(group=None, name="mintBackup-packages", target=self.backup_packages, args=(), kwargs={})
             thr.start()
@@ -1504,10 +1504,10 @@ class MintBackup:
             source = open(self.package_source, "r")
             re = source.readlines()
             error = False
-            for line in re:                
+            for line in re:
                 line = line.rstrip("\r\n")
                 if (line != ""):
-                    if(not line.endswith("\tinstall")):                        
+                    if(not line.endswith("\tinstall")):
                         error = True
                         break
             source.close()
