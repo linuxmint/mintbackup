@@ -1,10 +1,7 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
-import os
-import sys
-import commands 
+import os, subprocess
 
-launcher = commands.getoutput("/usr/lib/linuxmint/common/mint-which-launcher.py")
+launcher = subprocess.getoutput("/usr/lib/linuxmint/common/mint-which-launcher.py")
 command = "%s /usr/lib/linuxmint/mintBackup/mintBackup.py" % (launcher)
 os.system(command)
-

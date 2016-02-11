@@ -1,10 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 DOMAIN = "mintbackup"
 PATH = "/usr/share/linuxmint/locale"
 
-
-import commands, os
 import os, gettext, sys
 sys.path.append('/usr/lib/linuxmint/common')
 import additionalfiles
