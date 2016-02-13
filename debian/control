@@ -2,14 +2,16 @@ Source: mintbackup
 Section: admin
 Priority: optional
 Maintainer: Clement Lefebvre <root@linuxmint.com>
-Build-Depends: debhelper (>= 9), python
+Build-Depends: debhelper (>= 9)
 Standards-Version: 3.9.5
 
 Package: mintbackup
 Architecture: all
-Depends:
- ${python:Depends}, ${misc:Depends},
- python (>= 2.4), python (<< 3),
- python-gtk2, python-glade2, python-apt, python-vte
+Depends: python (>= 2.4), python (<< 3),
+         python-gtk2,
+         python-glade2,
+         python-apt,
+         python-vte,
+         ${misc:Depends}
 Description: Home Directory Backup Tool
  Easily backup and restore your personal data and your software selection.
