@@ -3,7 +3,9 @@
 DOMAIN = "mintbackup"
 PATH = "/usr/share/linuxmint/locale"
 
-import os, gettext, sys
+import os
+import gettext
+import sys
 sys.path.append('/usr/lib/linuxmint/common')
 import additionalfiles
 
@@ -41,7 +43,7 @@ additionalfiles.generate(DOMAIN, PATH, "usr/share/applications/mintBackup_mime.d
 
 prefix = "[Desktop Entry]\n"
 
-suffix= """Exec=mintBackup
+suffix = """Exec=mintBackup
 Icon=/usr/lib/linuxmint/mintBackup/icon.png
 Terminal=false
 Type=Application
@@ -51,4 +53,4 @@ X-KDE-StartupNotify=false
 OnlyShowIn=KDE;
 """
 
-additionalfiles.generate(DOMAIN, PATH, "usr/share/applications/kde4/mintBackup.desktop", prefix, _("Backup Tool"), _("Make a backup of your home directory"),  suffix, genericName=_("Make a backup of your home directory"))
+additionalfiles.generate(DOMAIN, PATH, "usr/share/applications/kde4/mintBackup.desktop", prefix, _("Backup Tool"), _("Make a backup of your home directory"), suffix, genericName=_("Make a backup of your home directory"))
