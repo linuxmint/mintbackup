@@ -1,3 +1,17 @@
+mintbackup (2.1.8) sarah; urgency=medium
+
+  [ djcj ]
+  * update Debian files, fix command-with-path-in-maintainer-script
+
+  [ monsta ]
+  * Don't crash with glib >= 2.41
+
+  [ Clement Lefebvre ]
+  * Reviewed shebangs
+  * Removed trailing spaces
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 19 Feb 2016 11:58:10 +0000
+
 mintbackup (2.1.7) qiana; urgency=low
 
   * [ca9110c] Add trailing semicolon
