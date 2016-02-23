@@ -10,8 +10,8 @@ try:
     import os
     import sys
     import commands
-    from gi.repository import Gtk
-    import Gtk.glade
+    from gi.repository import Gtk, Gdk
+    from gi.repository import GdkPixbuf
     import gettext
     import threading
     import tarfile
@@ -23,12 +23,13 @@ try:
     import subprocess
     from user import home
     import tempfile
-    import apt.progress.gtk2
 except Exception, detail:
     print "You do not have the required dependencies"
 
 # i18n
 gettext.install("mintbackup", "/usr/share/linuxmint/locale")
+
+UI_FILE = '/usr/lib/linuxmint/mintBackup/mintBackup.ui'
 
 
 class TarFileMonitor():
@@ -92,7 +93,7 @@ class mINIFile():
 ''' Handy. Makes message dialogs easy :D '''
 
 
-class MessageDialog(apt.progress.gtk2.GOpProgress):
+class MessageDialog:
 
     def __init__(self, title, message, style):
         self.title = title
@@ -117,21 +118,21 @@ class MintBackup:
     ''' New MintBackup '''
 
     def __init__(self):
-        self.glade = '/usr/lib/linuxmint/mintBackup/mintBackup.glade'
-        self.wTree = Gtk.glade.XML(self.glade, 'main_window')
-        self.wTree.get_widget("main_window").set_icon_from_file("/usr/lib/linuxmint/mintBackup/icon.png")
+        self.builder = Gtk.Builder()
+        self.builder.add_from_file(UI_FILE)
+        self.builder.get_object("main_window").set_icon_from_file("/usr/lib/linuxmint/mintBackup/icon.png")
 
         # handle command line filenames
         if(len(sys.argv) > 1):
             if(len(sys.argv) == 2):
                 filebackup = sys.argv[1]
-                self.wTree.get_widget("filechooserbutton_restore_source").set_filename(filebackup)
-                self.wTree.get_widget("notebook1").set_current_page(6)
+                self.builder.get_object("filechooserbutton_restore_source").set_filename(filebackup)
+                self.builder.get_object("notebook1").set_current_page(6)
             else:
                 print "usage: " + sys.argv[0] + " filename.backup"
                 sys.exit(1)
         else:
-            self.wTree.get_widget("notebook1").set_current_page(0)
+            self.builder.get_object("notebook1").set_current_page(0)
 
         # inidicates whether an operation is taking place.
         self.operating = False
@@ -155,10 +156,10 @@ class MintBackup:
         self.restore_archive = True
 
         # page 0
-        self.wTree.get_widget("button_backup_files").connect("clicked", self.wizard_buttons_cb, 1)
-        self.wTree.get_widget("button_restore_files").connect("clicked", self.wizard_buttons_cb, 6)
-        self.wTree.get_widget("button_backup_packages").connect("clicked", self.wizard_buttons_cb, 10)
-        self.wTree.get_widget("button_restore_packages").connect("clicked", self.wizard_buttons_cb, 14)
+        self.builder.get_object("button_backup_files").connect("clicked", self.wizard_buttons_cb, 1)
+        self.builder.get_object("button_restore_files").connect("clicked", self.wizard_buttons_cb, 6)
+        self.builder.get_object("button_backup_packages").connect("clicked", self.wizard_buttons_cb, 10)
+        self.builder.get_object("button_restore_packages").connect("clicked", self.wizard_buttons_cb, 14)
 
         # set up backup page 1 (source/dest/options)
         # Displayname, [tarfile mode, file extension]
@@ -168,8 +169,8 @@ class MintBackup:
         comps.append([_(".tar file"), "w", ".tar"])
         comps.append([_(".tar.bz2 file"), "w:bz2", ".tar.bz2"])
         comps.append([_(".tar.gz file"), "w:gz", ".tar.gz"])
-        self.wTree.get_widget("combobox_compress").set_model(comps)
-        self.wTree.get_widget("combobox_compress").set_active(0)
+        self.builder.get_object("combobox_compress").set_model(comps)
+        self.builder.get_object("combobox_compress").set_active(0)
 
         # backup overwrite options
         overs = Gtk.ListStore(str)
@@ -178,18 +179,18 @@ class MintBackup:
         overs.append([_("Modification time mismatch")])
         overs.append([_("Checksum mismatch")])
         overs.append([_("Always")])
-        self.wTree.get_widget("combobox_delete_dest").set_model(overs)
-        self.wTree.get_widget("combobox_delete_dest").set_active(3)
+        self.builder.get_object("combobox_delete_dest").set_model(overs)
+        self.builder.get_object("combobox_delete_dest").set_active(3)
 
         # advanced options
-        self.wTree.get_widget("checkbutton_integrity").set_active(self.postcheck)
-        self.wTree.get_widget("checkbutton_integrity").connect("clicked", self.handle_checkbox)
-        self.wTree.get_widget("checkbutton_perms").set_active(self.preserve_perms)
-        self.wTree.get_widget("checkbutton_perms").connect("clicked", self.handle_checkbox)
-        self.wTree.get_widget("checkbutton_times").set_active(self.preserve_times)
-        self.wTree.get_widget("checkbutton_times").connect("clicked", self.handle_checkbox)
-        self.wTree.get_widget("checkbutton_links").set_active(self.follow_links)
-        self.wTree.get_widget("checkbutton_links").connect("clicked", self.handle_checkbox)
+        self.builder.get_object("checkbutton_integrity").set_active(self.postcheck)
+        self.builder.get_object("checkbutton_integrity").connect("clicked", self.handle_checkbox)
+        self.builder.get_object("checkbutton_perms").set_active(self.preserve_perms)
+        self.builder.get_object("checkbutton_perms").connect("clicked", self.handle_checkbox)
+        self.builder.get_object("checkbutton_times").set_active(self.preserve_times)
+        self.builder.get_object("checkbutton_times").connect("clicked", self.handle_checkbox)
+        self.builder.get_object("checkbutton_links").set_active(self.follow_links)
+        self.builder.get_object("checkbutton_links").connect("clicked", self.handle_checkbox)
         # set up exclusions page
         self.iconTheme = Gtk.IconTheme.get_default()
         self.dirIcon = self.iconTheme.load_icon("folder", 16, 0)
@@ -197,206 +198,206 @@ class MintBackup:
         ren = Gtk.CellRendererPixbuf()
         column = Gtk.TreeViewColumn("", ren)
         column.add_attribute(ren, "pixbuf", 1)
-        self.wTree.get_widget("treeview_excludes").append_column(column)
+        self.builder.get_object("treeview_excludes").append_column(column)
         ren = Gtk.CellRendererText()
         column = Gtk.TreeViewColumn(_("Excluded paths"), ren)
         column.add_attribute(ren, "text", 0)
-        self.wTree.get_widget("treeview_excludes").append_column(column)
-        self.wTree.get_widget("treeview_excludes").set_model(Gtk.ListStore(str, GdkPixbuf.Pixbuf, str))
-        self.wTree.get_widget("button_add_file").connect("clicked", self.add_file_exclude)
-        self.wTree.get_widget("button_add_folder").connect("clicked", self.add_folder_exclude)
-        self.wTree.get_widget("button_remove_exclude").connect("clicked", self.remove_exclude)
+        self.builder.get_object("treeview_excludes").append_column(column)
+        self.builder.get_object("treeview_excludes").set_model(Gtk.ListStore(str, GdkPixbuf.Pixbuf, str))
+        self.builder.get_object("button_add_file").connect("clicked", self.add_file_exclude)
+        self.builder.get_object("button_add_folder").connect("clicked", self.add_folder_exclude)
+        self.builder.get_object("button_remove_exclude").connect("clicked", self.remove_exclude)
 
         # set up overview page
         ren = Gtk.CellRendererText()
         column = Gtk.TreeViewColumn(_("Type"), ren)
         column.add_attribute(ren, "markup", 0)
-        self.wTree.get_widget("treeview_overview").append_column(column)
+        self.builder.get_object("treeview_overview").append_column(column)
         ren = Gtk.CellRendererText()
         column = Gtk.TreeViewColumn(_("Detail"), ren)
         column.add_attribute(ren, "text", 1)
-        self.wTree.get_widget("treeview_overview").append_column(column)
+        self.builder.get_object("treeview_overview").append_column(column)
 
         # Errors treeview for backup
         ren = Gtk.CellRendererText()
         column = Gtk.TreeViewColumn(_("Path"), ren)
         column.add_attribute(ren, "text", 0)
-        self.wTree.get_widget("treeview_backup_errors").append_column(column)
+        self.builder.get_object("treeview_backup_errors").append_column(column)
         column = Gtk.TreeViewColumn(_("Error"), ren)
         column.add_attribute(ren, "text", 1)
-        self.wTree.get_widget("treeview_backup_errors").append_column(column)
+        self.builder.get_object("treeview_backup_errors").append_column(column)
 
         # Errors treeview for restore. yeh.
         ren = Gtk.CellRendererText()
         column = Gtk.TreeViewColumn(_("Path"), ren)
         column.add_attribute(ren, "text", 0)
-        self.wTree.get_widget("treeview_restore_errors").append_column(column)
+        self.builder.get_object("treeview_restore_errors").append_column(column)
         column = Gtk.TreeViewColumn(_("Error"), ren)
         column.add_attribute(ren, "text", 1)
-        self.wTree.get_widget("treeview_restore_errors").append_column(column)
+        self.builder.get_object("treeview_restore_errors").append_column(column)
         # model.
         self.errors = Gtk.ListStore(str, str)
 
         # nav buttons
-        self.wTree.get_widget("button_back").connect("clicked", self.back_callback)
-        self.wTree.get_widget("button_forward").connect("clicked", self.forward_callback)
-        self.wTree.get_widget("button_apply").connect("clicked", self.forward_callback)
-        self.wTree.get_widget("button_cancel").connect("clicked", self.cancel_callback)
+        self.builder.get_object("button_back").connect("clicked", self.back_callback)
+        self.builder.get_object("button_forward").connect("clicked", self.forward_callback)
+        self.builder.get_object("button_apply").connect("clicked", self.forward_callback)
+        self.builder.get_object("button_cancel").connect("clicked", self.cancel_callback)
 
-        self.wTree.get_widget("button_back").hide()
-        self.wTree.get_widget("button_forward").hide()
-        self.wTree.get_widget("main_window").connect("destroy", self.cancel_callback)
-        self.wTree.get_widget("main_window").set_title(_("Backup Tool"))
-        self.wTree.get_widget("main_window").show()
+        self.builder.get_object("button_back").hide()
+        self.builder.get_object("button_forward").hide()
+        self.builder.get_object("main_window").connect("destroy", self.cancel_callback)
+        self.builder.get_object("main_window").set_title(_("Backup Tool"))
+        self.builder.get_object("main_window").show()
 
         # open archive button, opens an archive... :P
-        self.wTree.get_widget("radiobutton_archive").connect("toggled", self.archive_switch)
-        self.wTree.get_widget("radiobutton_dir").connect("toggled", self.archive_switch)
-        self.wTree.get_widget("filechooserbutton_restore_source").connect("file-set", self.check_reset_file)
+        self.builder.get_object("radiobutton_archive").connect("toggled", self.archive_switch)
+        self.builder.get_object("radiobutton_dir").connect("toggled", self.archive_switch)
+        self.builder.get_object("filechooserbutton_restore_source").connect("file-set", self.check_reset_file)
 
-        self.wTree.get_widget("combobox_restore_del").set_model(overs)
-        self.wTree.get_widget("combobox_restore_del").set_active(3)
+        self.builder.get_object("combobox_restore_del").set_model(overs)
+        self.builder.get_object("combobox_restore_del").set_active(3)
 
         # packages list
-        t = self.wTree.get_widget("treeview_packages")
-        self.wTree.get_widget("button_select").connect("clicked", self.set_selection, t, True, False)
-        self.wTree.get_widget("button_deselect").connect("clicked", self.set_selection, t, False, False)
+        t = self.builder.get_object("treeview_packages")
+        self.builder.get_object("button_select").connect("clicked", self.set_selection, t, True, False)
+        self.builder.get_object("button_deselect").connect("clicked", self.set_selection, t, False, False)
         tog = Gtk.CellRendererToggle()
         tog.connect("toggled", self.toggled_cb, t)
         c1 = Gtk.TreeViewColumn(_("Store?"), tog, active=0)
-        c1.set_cell_data_func(tog, self.celldatafunction_checkbox)
+        c1.set_cell_data_func(tog, self.celldatamethod_checkbox)
         t.append_column(c1)
         c2 = Gtk.TreeViewColumn(_("Name"), Gtk.CellRendererText(), markup=2)
         t.append_column(c2)
 
         # choose a package list
-        t = self.wTree.get_widget("treeview_package_list")
-        self.wTree.get_widget("button_select_list").connect("clicked", self.set_selection, t, True, True)
-        self.wTree.get_widget("button_deselect_list").connect("clicked", self.set_selection, t, False, True)
-        self.wTree.get_widget("button_refresh").connect("clicked", self.refresh)
+        t = self.builder.get_object("treeview_package_list")
+        self.builder.get_object("button_select_list").connect("clicked", self.set_selection, t, True, True)
+        self.builder.get_object("button_deselect_list").connect("clicked", self.set_selection, t, False, True)
+        self.builder.get_object("button_refresh").connect("clicked", self.refresh)
         tog = Gtk.CellRendererToggle()
         tog.connect("toggled", self.toggled_cb, t)
         c1 = Gtk.TreeViewColumn(_("Install"), tog, active=0, activatable=2)
-        c1.set_cell_data_func(tog, self.celldatafunction_checkbox)
+        c1.set_cell_data_func(tog, self.celldatamethod_checkbox)
         t.append_column(c1)
         c2 = Gtk.TreeViewColumn(_("Name"), Gtk.CellRendererText(), markup=1)
         t.append_column(c2)
-        self.wTree.get_widget("filechooserbutton_package_source").connect("file-set", self.load_package_list_cb)
+        self.builder.get_object("filechooserbutton_package_source").connect("file-set", self.load_package_list_cb)
 
         # i18n - Page 0 (choose backup or restore)
-        self.wTree.get_widget("label_wizard1").set_markup("<big><b>" + _("Backup or Restore") + "</b></big>")
-        self.wTree.get_widget("label_wizard2").set_markup("<i><span foreground=\"#555555\">" + _("Choose from the following options") + "</span></i>")
+        self.builder.get_object("label_wizard1").set_markup("<big><b>" + _("Backup or Restore") + "</b></big>")
+        self.builder.get_object("label_wizard2").set_markup("<i><span foreground=\"#555555\">" + _("Choose from the following options") + "</span></i>")
 
-        self.wTree.get_widget("label_create_backup").set_text(_("Backup files"))
-        self.wTree.get_widget("label_restore_backup").set_text(_("Restore files"))
-        self.wTree.get_widget("label_create_packages").set_text(_("Backup software selection"))
-        self.wTree.get_widget("label_restore_packages").set_text(_("Restore software selection"))
+        self.builder.get_object("label_create_backup").set_text(_("Backup files"))
+        self.builder.get_object("label_restore_backup").set_text(_("Restore files"))
+        self.builder.get_object("label_create_packages").set_text(_("Backup software selection"))
+        self.builder.get_object("label_restore_packages").set_text(_("Restore software selection"))
 
-        self.wTree.get_widget("label_detail1").set_markup("<small>" + _("Make a backup of your files") + "</small>")
-        self.wTree.get_widget("label_detail2").set_markup("<small>" + _("Save the list of installed applications") + "</small>")
-        self.wTree.get_widget("label_detail3").set_markup("<small>" + _("Restore a previous backup") + "</small>")
-        self.wTree.get_widget("label_detail4").set_markup("<small>" + _("Restore previously installed applications") + "</small>")
+        self.builder.get_object("label_detail1").set_markup("<small>" + _("Make a backup of your files") + "</small>")
+        self.builder.get_object("label_detail2").set_markup("<small>" + _("Save the list of installed applications") + "</small>")
+        self.builder.get_object("label_detail3").set_markup("<small>" + _("Restore a previous backup") + "</small>")
+        self.builder.get_object("label_detail4").set_markup("<small>" + _("Restore previously installed applications") + "</small>")
 
-        self.wTree.get_widget("image_backup_data").set_from_file("/usr/lib/linuxmint/mintBackup/backup-data.svg")
-        self.wTree.get_widget("image_restore_data").set_from_file("/usr/lib/linuxmint/mintBackup/restore-data.svg")
-        self.wTree.get_widget("image_backup_software").set_from_file("/usr/lib/linuxmint/mintBackup/backup-software.svg")
-        self.wTree.get_widget("image_restore_software").set_from_file("/usr/lib/linuxmint/mintBackup/restore-software.svg")
+        self.builder.get_object("image_backup_data").set_from_file("/usr/lib/linuxmint/mintBackup/backup-data.svg")
+        self.builder.get_object("image_restore_data").set_from_file("/usr/lib/linuxmint/mintBackup/restore-data.svg")
+        self.builder.get_object("image_backup_software").set_from_file("/usr/lib/linuxmint/mintBackup/backup-software.svg")
+        self.builder.get_object("image_restore_software").set_from_file("/usr/lib/linuxmint/mintBackup/restore-software.svg")
 
         # i18n - Page 1 (choose backup directories)
-        self.wTree.get_widget("label_title_destination").set_markup("<big><b>" + _("Backup files") + "</b></big>")
-        self.wTree.get_widget("label_caption_destination").set_markup("<i><span foreground=\"#555555\">" + _("Please select a source and a destination for your backup") + "</span></i>")
-        self.wTree.get_widget("label_backup_source").set_label(_("Source:"))
-        self.wTree.get_widget("label_backup_dest").set_label(_("Destination:"))
-        self.wTree.get_widget("label_expander").set_label(_("Advanced options"))
-        self.wTree.get_widget("label_backup_desc").set_label(_("Description:"))
-        self.wTree.get_widget("label_compress").set_label(_("Output:"))
-        self.wTree.get_widget("label_overwrite_dest").set_label(_("Overwrite:"))
-        self.wTree.get_widget("checkbutton_integrity").set_label(_("Confirm integrity"))
-        self.wTree.get_widget("checkbutton_links").set_label(_("Follow symlinks"))
-        self.wTree.get_widget("checkbutton_perms").set_label(_("Preserve permissions"))
-        self.wTree.get_widget("checkbutton_times").set_label(_("Preserve timestamps"))
+        self.builder.get_object("label_title_destination").set_markup("<big><b>" + _("Backup files") + "</b></big>")
+        self.builder.get_object("label_caption_destination").set_markup("<i><span foreground=\"#555555\">" + _("Please select a source and a destination for your backup") + "</span></i>")
+        self.builder.get_object("label_backup_source").set_label(_("Source:"))
+        self.builder.get_object("label_backup_dest").set_label(_("Destination:"))
+        self.builder.get_object("label_expander").set_label(_("Advanced options"))
+        self.builder.get_object("label_backup_desc").set_label(_("Description:"))
+        self.builder.get_object("label_compress").set_label(_("Output:"))
+        self.builder.get_object("label_overwrite_dest").set_label(_("Overwrite:"))
+        self.builder.get_object("checkbutton_integrity").set_label(_("Confirm integrity"))
+        self.builder.get_object("checkbutton_links").set_label(_("Follow symlinks"))
+        self.builder.get_object("checkbutton_perms").set_label(_("Preserve permissions"))
+        self.builder.get_object("checkbutton_times").set_label(_("Preserve timestamps"))
 
         # i18n - Page 2 (choose files/directories to exclude)
-        self.wTree.get_widget("label_title_exclude").set_markup("<big><b>" + _("Backup files") + "</b></big>")
-        self.wTree.get_widget("label_caption_exclude").set_markup("<i><span foreground=\"#555555\">" + _("Please select any files or directories you want to exclude") + "</span></i>")
-        self.wTree.get_widget("label_add_file").set_label(_("Exclude files"))
-        self.wTree.get_widget("label_add_folder").set_label(_("Exclude directories"))
-        self.wTree.get_widget("label_remove").set_label(_("Remove"))
+        self.builder.get_object("label_title_exclude").set_markup("<big><b>" + _("Backup files") + "</b></big>")
+        self.builder.get_object("label_caption_exclude").set_markup("<i><span foreground=\"#555555\">" + _("Please select any files or directories you want to exclude") + "</span></i>")
+        self.builder.get_object("label_add_file").set_label(_("Exclude files"))
+        self.builder.get_object("label_add_folder").set_label(_("Exclude directories"))
+        self.builder.get_object("label_remove").set_label(_("Remove"))
 
         # i18n - Page 3 (backup overview)
-        self.wTree.get_widget("label_title_review").set_markup("<big><b>" + _("Backup files") + "</b></big>")
-        self.wTree.get_widget("label_caption_review").set_markup("<i><span foreground=\"#555555\">" + _("Please review the information below before starting the backup") + "</span></i>")
+        self.builder.get_object("label_title_review").set_markup("<big><b>" + _("Backup files") + "</b></big>")
+        self.builder.get_object("label_caption_review").set_markup("<i><span foreground=\"#555555\">" + _("Please review the information below before starting the backup") + "</span></i>")
 
         # i18n - Page 4 (backing up status)
-        self.wTree.get_widget("label_title_copying").set_markup("<big><b>" + _("Backup files") + "</b></big>")
-        self.wTree.get_widget("label_caption_copying").set_markup("<i><span foreground=\"#555555\">" + _("Please wait while your files are being backed up") + "</span></i>")
-        self.wTree.get_widget("label_current_file").set_label(_("Backing up:"))
+        self.builder.get_object("label_title_copying").set_markup("<big><b>" + _("Backup files") + "</b></big>")
+        self.builder.get_object("label_caption_copying").set_markup("<i><span foreground=\"#555555\">" + _("Please wait while your files are being backed up") + "</span></i>")
+        self.builder.get_object("label_current_file").set_label(_("Backing up:"))
 
         # i18n - Page 5 (backup complete)
-        self.wTree.get_widget("label_title_finished").set_markup("<big><b>" + _("Backup files") + "</b></big>")
-        self.wTree.get_widget("label_caption_finished").set_markup("<i><span foreground=\"#555555\">" + _("The backup is now finished") + "</span></i>")
+        self.builder.get_object("label_title_finished").set_markup("<big><b>" + _("Backup files") + "</b></big>")
+        self.builder.get_object("label_caption_finished").set_markup("<i><span foreground=\"#555555\">" + _("The backup is now finished") + "</span></i>")
 
         # i18n - Page 6 (Restore locations)
-        self.wTree.get_widget("label_title_restore1").set_markup("<big><b>" + _("Restore files") + "</b></big>")
-        self.wTree.get_widget("label_caption_restore1").set_markup("<i><span foreground=\"#555555\">" + _("Please choose the type of backup to restore, its location and a destination") + "</span></i>")
-        self.wTree.get_widget("radiobutton_archive").set_label(_("Archive"))
-        self.wTree.get_widget("radiobutton_dir").set_label(_("Directory"))
-        self.wTree.get_widget("label_restore_source").set_label(_("Source:"))
-        self.wTree.get_widget("label_restore_dest").set_label(_("Destination:"))
-        self.wTree.get_widget("label_restore_advanced").set_label(_("Advanced options"))
-        self.wTree.get_widget("label_restore_overwrite").set_label(_("Overwrite:"))
+        self.builder.get_object("label_title_restore1").set_markup("<big><b>" + _("Restore files") + "</b></big>")
+        self.builder.get_object("label_caption_restore1").set_markup("<i><span foreground=\"#555555\">" + _("Please choose the type of backup to restore, its location and a destination") + "</span></i>")
+        self.builder.get_object("radiobutton_archive").set_label(_("Archive"))
+        self.builder.get_object("radiobutton_dir").set_label(_("Directory"))
+        self.builder.get_object("label_restore_source").set_label(_("Source:"))
+        self.builder.get_object("label_restore_dest").set_label(_("Destination:"))
+        self.builder.get_object("label_restore_advanced").set_label(_("Advanced options"))
+        self.builder.get_object("label_restore_overwrite").set_label(_("Overwrite:"))
 
         # i18n - Page 7 (Restore overview)
-        self.wTree.get_widget("label_title_restore2").set_markup("<big><b>" + _("Restore files") + "</b></big>")
-        self.wTree.get_widget("label_caption_restore2").set_markup("<i><span foreground=\"#555555\">" + _("Please review the information below") + "</span></i>")
-        self.wTree.get_widget("label_overview_source").set_markup("<b>" + _("Source:") + "</b>")
-        self.wTree.get_widget("label_overview_description").set_markup("<b>" + _("Description:") + "</b>")
+        self.builder.get_object("label_title_restore2").set_markup("<big><b>" + _("Restore files") + "</b></big>")
+        self.builder.get_object("label_caption_restore2").set_markup("<i><span foreground=\"#555555\">" + _("Please review the information below") + "</span></i>")
+        self.builder.get_object("label_overview_source").set_markup("<b>" + _("Source:") + "</b>")
+        self.builder.get_object("label_overview_description").set_markup("<b>" + _("Description:") + "</b>")
 
         # i18n - Page 8 (restore status)
-        self.wTree.get_widget("label_title_restore3").set_markup("<big><b>" + _("Restore files") + "</b></big>")
-        self.wTree.get_widget("label_caption_restore3").set_markup("<i><span foreground=\"#555555\">" + _("Please wait while your files are being restored") + "</span></i>")
-        self.wTree.get_widget("label_restore_status").set_label(_("Restoring:"))
+        self.builder.get_object("label_title_restore3").set_markup("<big><b>" + _("Restore files") + "</b></big>")
+        self.builder.get_object("label_caption_restore3").set_markup("<i><span foreground=\"#555555\">" + _("Please wait while your files are being restored") + "</span></i>")
+        self.builder.get_object("label_restore_status").set_label(_("Restoring:"))
 
         # i18n - Page 9 (restore complete)
-        self.wTree.get_widget("label_title_restore4").set_markup("<big><b>" + _("Restore files") + "</b></big>")
-        self.wTree.get_widget("label_caption_restore4").set_markup("<i><span foreground=\"#555555\">" + _("The restoration of the files is now finished") + "</span></i>")
+        self.builder.get_object("label_title_restore4").set_markup("<big><b>" + _("Restore files") + "</b></big>")
+        self.builder.get_object("label_caption_restore4").set_markup("<i><span foreground=\"#555555\">" + _("The restoration of the files is now finished") + "</span></i>")
 
         # i18n - Page 10 (packages)
-        self.wTree.get_widget("label_title_software_backup1").set_markup("<big><b>" + _("Backup software selection") + "</b></big>")
-        self.wTree.get_widget("label_caption_software_backup1").set_markup("<i><span foreground=\"#555555\">" + _("Please choose a destination") + "</span></i>")
-        self.wTree.get_widget("label_package_dest").set_label(_("Destination"))
+        self.builder.get_object("label_title_software_backup1").set_markup("<big><b>" + _("Backup software selection") + "</b></big>")
+        self.builder.get_object("label_caption_software_backup1").set_markup("<i><span foreground=\"#555555\">" + _("Please choose a destination") + "</span></i>")
+        self.builder.get_object("label_package_dest").set_label(_("Destination"))
 
         # i18n - Page 11 (package list)
-        self.wTree.get_widget("label_title_software_backup2").set_markup("<big><b>" + _("Backup software selection") + "</b></big>")
-        self.wTree.get_widget("label_caption_software_backup2").set_markup("<i><span foreground=\"#555555\">" + _("The list below shows the packages you added to Linux Mint") + "</span></i>")
-        self.wTree.get_widget("label_select").set_label(_("Select all"))
-        self.wTree.get_widget("label_deselect").set_label(_("Deselect all"))
+        self.builder.get_object("label_title_software_backup2").set_markup("<big><b>" + _("Backup software selection") + "</b></big>")
+        self.builder.get_object("label_caption_software_backup2").set_markup("<i><span foreground=\"#555555\">" + _("The list below shows the packages you added to Linux Mint") + "</span></i>")
+        self.builder.get_object("label_select").set_label(_("Select all"))
+        self.builder.get_object("label_deselect").set_label(_("Deselect all"))
 
         # i18n - Page 12 (backing up packages)
-        self.wTree.get_widget("label_title_software_backup3").set_markup("<big><b>" + _("Backup software selection") + "</b></big>")
-        self.wTree.get_widget("label_caption_software_backup3").set_markup("<i><span foreground=\"#555555\">" + _("Please wait while your software selection is being backed up") + "</span></i>")
-        self.wTree.get_widget("label_current_package").set_label(_("Backing up:"))
+        self.builder.get_object("label_title_software_backup3").set_markup("<big><b>" + _("Backup software selection") + "</b></big>")
+        self.builder.get_object("label_caption_software_backup3").set_markup("<i><span foreground=\"#555555\">" + _("Please wait while your software selection is being backed up") + "</span></i>")
+        self.builder.get_object("label_current_package").set_label(_("Backing up:"))
 
         # i18n - Page 13 (packages done)
-        self.wTree.get_widget("label_title_software_backup4").set_markup("<big><b>" + _("Backup software selection") + "</b></big>")
-        self.wTree.get_widget("label_caption_software_backup4").set_markup("<i><span foreground=\"#555555\">" + _("The backup is now finished") + "</span></i>")
+        self.builder.get_object("label_title_software_backup4").set_markup("<big><b>" + _("Backup software selection") + "</b></big>")
+        self.builder.get_object("label_caption_software_backup4").set_markup("<i><span foreground=\"#555555\">" + _("The backup is now finished") + "</span></i>")
 
         # i18n - Page 14 (package restore)
-        self.wTree.get_widget("label_title_software_restore1").set_markup("<big><b>" + _("Restore software selection") + "</b></big>")
-        self.wTree.get_widget("label_caption_software_restore1").set_markup("<i><span foreground=\"#555555\">" + _("Please select a saved software selection") + "</span></i>")
-        self.wTree.get_widget("label_package_source").set_markup(_("Software selection:"))
+        self.builder.get_object("label_title_software_restore1").set_markup("<big><b>" + _("Restore software selection") + "</b></big>")
+        self.builder.get_object("label_caption_software_restore1").set_markup("<i><span foreground=\"#555555\">" + _("Please select a saved software selection") + "</span></i>")
+        self.builder.get_object("label_package_source").set_markup(_("Software selection:"))
 
         # i18n - Page 15 (packages list)
-        self.wTree.get_widget("label_title_software_restore2").set_markup("<big><b>" + _("Restore software selection") + "</b></big>")
-        self.wTree.get_widget("label_caption_software_restore2").set_markup("<i><span foreground=\"#555555\">" + _("Select the packages you want to install") + "</span></i>")
-        self.wTree.get_widget("label_select_list").set_label(_("Select all"))
-        self.wTree.get_widget("label_deselect_list").set_label(_("Deselect all"))
-        self.wTree.get_widget("label_refresh").set_label(_("Refresh"))
+        self.builder.get_object("label_title_software_restore2").set_markup("<big><b>" + _("Restore software selection") + "</b></big>")
+        self.builder.get_object("label_caption_software_restore2").set_markup("<i><span foreground=\"#555555\">" + _("Select the packages you want to install") + "</span></i>")
+        self.builder.get_object("label_select_list").set_label(_("Select all"))
+        self.builder.get_object("label_deselect_list").set_label(_("Deselect all"))
+        self.builder.get_object("label_refresh").set_label(_("Refresh"))
 
         # i18n - Page 16 (packages install done)
-        self.wTree.get_widget("label_title_software_restore3").set_markup("<big><b>" + _("Restore software selection") + "</b></big>")
-        self.wTree.get_widget("label_caption_software_restore3").set_markup("<i><span foreground=\"#555555\">" + _("The restoration is now finished") + "</span></i>")
-        self.wTree.get_widget("label_install_done_value").set_markup(_("Your package selection was restored succesfully"))
+        self.builder.get_object("label_title_software_restore3").set_markup("<big><b>" + _("Restore software selection") + "</b></big>")
+        self.builder.get_object("label_caption_software_restore3").set_markup("<i><span foreground=\"#555555\">" + _("The restoration is now finished") + "</span></i>")
+        self.builder.get_object("label_install_done_value").set_markup(_("Your package selection was restored succesfully"))
 
     def abt_resp(self, w, r):
         if r == Gtk.ResponseType.CANCEL:
@@ -415,30 +416,30 @@ class MintBackup:
     ''' switch between archive and directory sources '''
 
     def archive_switch(self, w):
-        if(self.wTree.get_widget("radiobutton_archive").get_active()):
+        if(self.builder.get_object("radiobutton_archive").get_active()):
             # dealing with archives
             self.restore_archive = True
-            self.wTree.get_widget("filechooserbutton_restore_source").set_action(Gtk.FileChooserAction.OPEN)
+            self.builder.get_object("filechooserbutton_restore_source").set_action(Gtk.FileChooserAction.OPEN)
         else:
             self.restore_archive = False
-            self.wTree.get_widget("filechooserbutton_restore_source").set_action(Gtk.FileChooserAction.SELECT_FOLDER)
+            self.builder.get_object("filechooserbutton_restore_source").set_action(Gtk.FileChooserAction.SELECT_FOLDER)
 
     ''' handler for checkboxes '''
 
     def handle_checkbox(self, widget):
-        if(widget == self.wTree.get_widget("checkbutton_integrity")):
+        if(widget == self.builder.get_object("checkbutton_integrity")):
             self.postcheck = widget.get_active()
-        elif(widget == self.wTree.get_widget("checkbutton_perms")):
+        elif(widget == self.builder.get_object("checkbutton_perms")):
             self.preserve_perms = widget.get_active()
-        elif(widget == self.wTree.get_widget("checkbutton_times")):
+        elif(widget == self.builder.get_object("checkbutton_times")):
             self.preserve_times = widget.get_active()
-        elif(widget == self.wTree.get_widget("checkbutton_links")):
+        elif(widget == self.builder.get_object("checkbutton_links")):
             self.follow_links = widget.get_active()
 
     ''' Exclude file '''
 
     def add_file_exclude(self, widget):
-        model = self.wTree.get_widget("treeview_excludes").get_model()
+        model = self.builder.get_object("treeview_excludes").get_model()
         dialog = Gtk.FileChooserDialog(_("Backup Tool"), None, Gtk.FileChooserAction.OPEN, (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
         dialog.set_current_folder(self.backup_source)
         dialog.set_select_multiple(True)
@@ -455,7 +456,7 @@ class MintBackup:
     ''' Exclude directory '''
 
     def add_folder_exclude(self, widget):
-        model = self.wTree.get_widget("treeview_excludes").get_model()
+        model = self.builder.get_object("treeview_excludes").get_model()
         dialog = Gtk.FileChooserDialog(_("Backup Tool"), None, Gtk.FileChooserAction.SELECT_FOLDER, (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
         dialog.set_current_folder(self.backup_source)
         dialog.set_select_multiple(True)
@@ -472,8 +473,8 @@ class MintBackup:
     ''' Remove the exclude '''
 
     def remove_exclude(self, widget):
-        model = self.wTree.get_widget("treeview_excludes").get_model()
-        selection = self.wTree.get_widget("treeview_excludes").get_selection()
+        model = self.builder.get_object("treeview_excludes").get_model()
+        selection = self.builder.get_object("treeview_excludes").get_selection()
         selected_rows = selection.get_selected_rows()[1]
         # don't you just hate python? :) Here's another hack for python not to get confused with its own paths while we're deleting multiple stuff.
         # actually.. gtk is probably to blame here.
@@ -498,23 +499,23 @@ class MintBackup:
     ''' First page buttons '''
 
     def wizard_buttons_cb(self, widget, param):
-        self.wTree.get_widget("notebook1").set_current_page(param)
-        self.wTree.get_widget("button_back").show()
-        self.wTree.get_widget("button_back").set_sensitive(True)
-        self.wTree.get_widget("button_forward").show()
+        self.builder.get_object("notebook1").set_current_page(param)
+        self.builder.get_object("button_back").show()
+        self.builder.get_object("button_back").set_sensitive(True)
+        self.builder.get_object("button_forward").show()
         if(param == 14):
-            self.wTree.get_widget("button_forward").set_sensitive(False)
+            self.builder.get_object("button_forward").set_sensitive(False)
         else:
-            self.wTree.get_widget("button_forward").set_sensitive(True)
+            self.builder.get_object("button_forward").set_sensitive(True)
 
     ''' Next button '''
 
     def forward_callback(self, widget):
-        self.backup_source = self.wTree.get_widget("filechooserbutton_backup_source").get_filename()
-        self.backup_dest = self.wTree.get_widget("filechooserbutton_backup_dest").get_filename()
-        book = self.wTree.get_widget("notebook1")
+        self.backup_source = self.builder.get_object("filechooserbutton_backup_source").get_filename()
+        self.backup_dest = self.builder.get_object("filechooserbutton_backup_dest").get_filename()
+        book = self.builder.get_object("notebook1")
         sel = book.get_current_page()
-        self.wTree.get_widget("button_back").set_sensitive(True)
+        self.builder.get_object("button_back").set_sensitive(True)
         if(sel == 1):
             # choose source/dest
             if(self.backup_source is None or self.backup_dest is None):
@@ -524,7 +525,7 @@ class MintBackup:
                 MessageDialog(_("Backup Tool"), _("Please choose different directories for the source and the destination"), Gtk.MessageType.WARNING).show()
                 return
 
-            excludes = self.wTree.get_widget("treeview_excludes").get_model()
+            excludes = self.builder.get_object("treeview_excludes").get_model()
             auto_excludes = [home + "/.Trash", home + "/.local/share/Trash", home + "/.thumbnails"]
             for auto_exclude in auto_excludes:
                 if os.path.exists(auto_exclude):
@@ -533,7 +534,7 @@ class MintBackup:
 
             book.set_current_page(2)
         elif(sel == 2):
-            self.description = self.wTree.get_widget("entry_desc").get_text()
+            self.description = self.builder.get_object("entry_desc").get_text()
             # show overview
             model = Gtk.ListStore(str, str)
             model.append(["<b>" + _("Source") + "</b>", self.backup_source])
@@ -541,37 +542,37 @@ class MintBackup:
             if (self.description != ""):
                 model.append(["<b>" + _("Description") + "</b>", self.description])
             # find compression format
-            sel = self.wTree.get_widget("combobox_compress").get_active()
-            comp = self.wTree.get_widget("combobox_compress").get_model()
+            sel = self.builder.get_object("combobox_compress").get_active()
+            comp = self.builder.get_object("combobox_compress").get_model()
             model.append(["<b>" + _("Compression") + "</b>", comp[sel][0]])
             # find overwrite rules
-            sel = self.wTree.get_widget("combobox_delete_dest").get_active()
-            over = self.wTree.get_widget("combobox_delete_dest").get_model()
+            sel = self.builder.get_object("combobox_delete_dest").get_active()
+            over = self.builder.get_object("combobox_delete_dest").get_model()
             model.append(["<b>" + _("Overwrite destination files") + "</b>", over[sel][0]])
-            excludes = self.wTree.get_widget("treeview_excludes").get_model()
+            excludes = self.builder.get_object("treeview_excludes").get_model()
             for row in excludes:
                 model.append(["<b>" + _("Exclude") + "</b>", row[2]])
-            self.wTree.get_widget("treeview_overview").set_model(model)
+            self.builder.get_object("treeview_overview").set_model(model)
             book.set_current_page(3)
-            self.wTree.get_widget("button_forward").hide()
-            self.wTree.get_widget("button_apply").show()
+            self.builder.get_object("button_forward").hide()
+            self.builder.get_object("button_apply").show()
         elif(sel == 3):
             # start copying :D
             book.set_current_page(4)
-            self.wTree.get_widget("button_apply").set_sensitive(False)
-            self.wTree.get_widget("button_back").set_sensitive(False)
+            self.builder.get_object("button_apply").set_sensitive(False)
+            self.builder.get_object("button_back").set_sensitive(False)
             self.operating = True
             thread = threading.Thread(group=None, target=self.backup, name="mintBackup-copy", args=(), kwargs={})
             thread.start()
         elif(sel == 4):
             # show info page.
-            self.wTree.get_widget("button_forward").hide()
-            self.wTree.get_widget("button_back").hide()
+            self.builder.get_object("button_forward").hide()
+            self.builder.get_object("button_back").hide()
             book.set_current_page(5)
         elif(sel == 6):
             # sanity check the files (file --mimetype)
-            self.restore_source = self.wTree.get_widget("filechooserbutton_restore_source").get_filename()
-            self.restore_dest = self.wTree.get_widget("filechooserbutton_restore_dest").get_filename()
+            self.restore_source = self.builder.get_object("filechooserbutton_restore_source").get_filename()
+            self.restore_dest = self.builder.get_object("filechooserbutton_restore_dest").get_filename()
             if(not self.restore_source or self.restore_source == ""):
                 MessageDialog(_("Backup Tool"), _("Please choose a file to restore from"), Gtk.MessageType.WARNING).show()
                 return
@@ -582,19 +583,19 @@ class MintBackup:
             thread.start()
         elif(sel == 7):
             # start restoring :D
-            self.wTree.get_widget("button_apply").hide()
-            self.wTree.get_widget("button_back").hide()
+            self.builder.get_object("button_apply").hide()
+            self.builder.get_object("button_back").hide()
             book.set_current_page(8)
             self.operating = True
             thread = threading.Thread(group=None, target=self.restore, name="mintBackup-restore", args=(), kwargs={})
             thread.start()
         elif(sel == 8):
             # show last page(restore finished status)
-            self.wTree.get_widget("button_forward").hide()
-            self.wTree.get_widget("button_back").hide()
+            self.builder.get_object("button_forward").hide()
+            self.builder.get_object("button_back").hide()
             book.set_current_page(9)
         elif(sel == 10):
-            f = self.wTree.get_widget("filechooserbutton_package_dest").get_filename()
+            f = self.builder.get_object("filechooserbutton_package_dest").get_filename()
             if f is None:
                 MessageDialog(_("Backup Tool"), _("Please choose a destination directory"), Gtk.MessageType.ERROR).show()
                 return
@@ -602,12 +603,12 @@ class MintBackup:
             book.set_current_page(11)
             thr = threading.Thread(group=None, name="mintBackup-packages", target=self.load_packages, args=(), kwargs={})
             thr.start()
-            self.wTree.get_widget("button_forward").hide()
-            self.wTree.get_widget("button_apply").show()
+            self.builder.get_object("button_forward").hide()
+            self.builder.get_object("button_apply").show()
         elif(sel == 11):
             # show progress of packages page
-            self.wTree.get_widget("button_forward").set_sensitive(False)
-            self.wTree.get_widget("button_back").set_sensitive(False)
+            self.builder.get_object("button_forward").set_sensitive(False)
+            self.builder.get_object("button_back").set_sensitive(False)
             book.set_current_page(12)
             self.operating = True
             thr = threading.Thread(group=None, name="mintBackup-packages", target=self.backup_packages, args=(), kwargs={})
@@ -617,7 +618,7 @@ class MintBackup:
             thr.start()
         elif(sel == 15):
             inst = False
-            model = self.wTree.get_widget("treeview_package_list").get_model()
+            model = self.builder.get_object("treeview_package_list").get_model()
             if(len(model) == 0):
                 MessageDialog(_("Backup Tool"), _("No packages need to be installed at this time"), Gtk.MessageType.INFO).show()
                 return
@@ -635,32 +636,32 @@ class MintBackup:
     ''' Back button '''
 
     def back_callback(self, widget):
-        book = self.wTree.get_widget("notebook1")
+        book = self.builder.get_object("notebook1")
         sel = book.get_current_page()
-        self.wTree.get_widget("button_apply").hide()
-        self.wTree.get_widget("button_forward").show()
+        self.builder.get_object("button_apply").hide()
+        self.builder.get_object("button_forward").show()
         if(sel == 7 and len(sys.argv) == 2):
-            self.wTree.get_widget("button_back").set_sensitive(False)
+            self.builder.get_object("button_back").set_sensitive(False)
         if(sel == 6 or sel == 10 or sel == 14):
             book.set_current_page(0)
-            self.wTree.get_widget("button_back").set_sensitive(False)
-            self.wTree.get_widget("button_back").hide()
-            self.wTree.get_widget("button_forward").hide()
+            self.builder.get_object("button_back").set_sensitive(False)
+            self.builder.get_object("button_back").hide()
+            self.builder.get_object("button_forward").hide()
             if(self.tar is not None):
                 self.tar.close()
                 self.tar = None
         else:
             sel = sel - 1
             if(sel == 0):
-                self.wTree.get_widget("button_back").hide()
-                self.wTree.get_widget("button_forward").hide()
+                self.builder.get_object("button_back").hide()
+                self.builder.get_object("button_forward").hide()
             book.set_current_page(sel)
 
     ''' Creates a .mintbackup file (for later restoration) '''
 
     def create_backup_file(self):
         self.description = "mintBackup"
-        desc = self.wTree.get_widget("entry_desc").get_text()
+        desc = self.builder.get_object("entry_desc").get_text()
         if(desc != ""):
             self.description = desc
         try:
@@ -679,13 +680,13 @@ class MintBackup:
     ''' Does the actual copying '''
 
     def backup(self):
-        label = self.wTree.get_widget("label_current_file_value")
+        label = self.builder.get_object("label_current_file_value")
         os.chdir(self.backup_source)
-        pbar = self.wTree.get_widget("progressbar1")
+        pbar = self.builder.get_object("progressbar1")
         Gdk.threads_enter()
-        self.wTree.get_widget("button_apply").hide()
-        self.wTree.get_widget("button_forward").hide()
-        self.wTree.get_widget("button_back").hide()
+        self.builder.get_object("button_apply").hide()
+        self.builder.get_object("button_forward").hide()
+        self.builder.get_object("button_back").hide()
         label.set_label(_("Calculating..."))
         pbar.set_text(_("Calculating..."))
         Gdk.threads_leave()
@@ -709,11 +710,11 @@ class MintBackup:
         self.create_backup_file()
 
         # deletion policy
-        del_policy = self.wTree.get_widget("combobox_delete_dest").get_active()
+        del_policy = self.builder.get_object("combobox_delete_dest").get_active()
 
         # find out compression format, if any
-        sel = self.wTree.get_widget("combobox_compress").get_active()
-        comp = self.wTree.get_widget("combobox_compress").get_model()[sel]
+        sel = self.builder.get_object("combobox_compress").get_active()
+        comp = self.builder.get_object("combobox_compress").get_model()[sel]
         if(comp[1] is not None):
             tar = None
             filetime = strftime("%Y-%m-%d-%H%M-backup", localtime())
@@ -745,7 +746,7 @@ class MintBackup:
                                 continue
                         Gdk.threads_enter()
                         label.set_label(path)
-                        self.wTree.get_widget("label_file_count").set_text(str(current_file) + " / " + sztotal)
+                        self.builder.get_object("label_file_count").set_text(str(current_file) + " / " + sztotal)
                         Gdk.threads_leave()
                         try:
                             underfile = TarFileMonitor(rpath, self.update_backup_progress)
@@ -792,7 +793,7 @@ class MintBackup:
                                 self.errors.append([dir[0], str(detail)])
                         Gdk.threads_enter()
                         label.set_label(path)
-                        self.wTree.get_widget("label_file_count").set_text(str(current_file) + " / " + sztotal)
+                        self.builder.get_object("label_file_count").set_text(str(current_file) + " / " + sztotal)
                         Gdk.threads_leave()
                         try:
                             if(os.path.exists(target)):
@@ -848,34 +849,34 @@ class MintBackup:
         if(len(self.errors) > 0):
             Gdk.threads_enter()
             img = self.iconTheme.load_icon("dialog-error", 48, 0)
-            self.wTree.get_widget("label_finished_status").set_markup(_("An error occured during the backup"))
-            self.wTree.get_widget("image_finished").set_from_pixbuf(img)
-            self.wTree.get_widget("treeview_backup_errors").set_model(self.errors)
-            self.wTree.get_widget("win_errors").show_all()
-            self.wTree.get_widget("notebook1").next_page()
+            self.builder.get_object("label_finished_status").set_markup(_("An error occured during the backup"))
+            self.builder.get_object("image_finished").set_from_pixbuf(img)
+            self.builder.get_object("treeview_backup_errors").set_model(self.errors)
+            self.builder.get_object("win_errors").show_all()
+            self.builder.get_object("notebook1").next_page()
             Gdk.threads_leave()
         else:
             if(not self.operating):
                 Gdk.threads_enter()
                 img = self.iconTheme.load_icon("dialog-warning", 48, 0)
-                self.wTree.get_widget("label_finished_status").set_label(_("The backup was aborted"))
-                self.wTree.get_widget("image_finished").set_from_pixbuf(img)
-                self.wTree.get_widget("notebook1").next_page()
+                self.builder.get_object("label_finished_status").set_label(_("The backup was aborted"))
+                self.builder.get_object("image_finished").set_from_pixbuf(img)
+                self.builder.get_object("notebook1").next_page()
                 Gdk.threads_leave()
             else:
                 Gdk.threads_enter()
                 label.set_label("Done")
                 img = self.iconTheme.load_icon("dialog-information", 48, 0)
-                self.wTree.get_widget("label_finished_status").set_label(_("The backup completed successfully"))
-                self.wTree.get_widget("image_finished").set_from_pixbuf(img)
-                self.wTree.get_widget("notebook1").next_page()
+                self.builder.get_object("label_finished_status").set_label(_("The backup completed successfully"))
+                self.builder.get_object("image_finished").set_from_pixbuf(img)
+                self.builder.get_object("notebook1").next_page()
                 Gdk.threads_leave()
         self.operating = False
 
     ''' Returns true if the file/directory is on the exclude list '''
 
     def is_excluded(self, filename):
-        for row in self.wTree.get_widget("treeview_excludes").get_model():
+        for row in self.builder.get_object("treeview_excludes").get_model():
             if(filename.startswith(row[2])):
                 return True
         return False
@@ -887,11 +888,11 @@ class MintBackup:
         total = float(total)
         fraction = float(current / total)
         Gdk.threads_enter()
-        self.wTree.get_widget("progressbar1").set_fraction(fraction)
+        self.builder.get_object("progressbar1").set_fraction(fraction)
         if(message is not None):
-            self.wTree.get_widget("progressbar1").set_text(message)
+            self.builder.get_object("progressbar1").set_text(message)
         else:
-            self.wTree.get_widget("progressbar1").set_text(str(int(fraction * 100)) + "%")
+            self.builder.get_object("progressbar1").set_text(str(int(fraction * 100)) + "%")
         Gdk.threads_leave()
 
     ''' Utility method - copy file, also provides a quick way of aborting a copy, which
@@ -900,7 +901,7 @@ class MintBackup:
     def copy_file(self, source, dest, restore=None, sourceChecksum=None):
         try:
             # represents max buffer size
-            BUF_MAX = 16 * 1024 # so we don't get stuck on I/O ops
+            BUF_MAX = 16 * 1024  # so we don't get stuck on I/O ops
             errfile = None
             src = open(source, 'rb')
             total = os.path.getsize(source)
@@ -1051,11 +1052,11 @@ class MintBackup:
         total = float(total)
         fraction = float(current / total)
         Gdk.threads_enter()
-        self.wTree.get_widget("progressbar_restore").set_fraction(fraction)
+        self.builder.get_object("progressbar_restore").set_fraction(fraction)
         if(message is not None):
-            self.wTree.get_widget("progressbar_restore").set_text(message)
+            self.builder.get_object("progressbar_restore").set_text(message)
         else:
-            self.wTree.get_widget("progressbar_restore").set_text(str(int(fraction * 100)) + "%")
+            self.builder.get_object("progressbar_restore").set_text(str(int(fraction * 100)) + "%")
         Gdk.threads_leave()
 
     ''' prepare the restore, reads the .mintbackup file if present '''
@@ -1065,14 +1066,14 @@ class MintBackup:
             # restore archives.
             if(self.tar is not None):
                 Gdk.threads_enter()
-                self.wTree.get_widget("notebook1").set_current_page(7)
-                self.wTree.get_widget("button_forward").hide()
-                self.wTree.get_widget("button_apply").show()
+                self.builder.get_object("notebook1").set_current_page(7)
+                self.builder.get_object("button_forward").hide()
+                self.builder.get_object("button_apply").show()
                 Gdk.threads_leave()
                 return
             Gdk.threads_enter()
-            self.wTree.get_widget("main_window").set_sensitive(False)
-            self.wTree.get_widget("main_window").window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
+            self.builder.get_object("main_window").set_sensitive(False)
+            self.builder.get_object("main_window").get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
             Gdk.threads_leave()
             self.conf = mINIFile()
             try:
@@ -1088,11 +1089,11 @@ class MintBackup:
                     mfile.close()
 
                 Gdk.threads_enter()
-                self.wTree.get_widget("label_overview_description_value").set_label(self.conf.description)
-                self.wTree.get_widget("button_back").set_sensitive(True)
-                self.wTree.get_widget("button_forward").hide()
-                self.wTree.get_widget("button_apply").show()
-                self.wTree.get_widget("notebook1").set_current_page(7)
+                self.builder.get_object("label_overview_description_value").set_label(self.conf.description)
+                self.builder.get_object("button_back").set_sensitive(True)
+                self.builder.get_object("button_forward").hide()
+                self.builder.get_object("button_apply").show()
+                self.builder.get_object("notebook1").set_current_page(7)
                 Gdk.threads_leave()
 
             except Exception, detail:
@@ -1110,20 +1111,20 @@ class MintBackup:
                     self.conf.load_from_file(mfile)
 
                 Gdk.threads_enter()
-                self.wTree.get_widget("label_overview_description_value").set_label(self.conf.description)
-                self.wTree.get_widget("button_back").set_sensitive(True)
-                self.wTree.get_widget("button_forward").hide()
-                self.wTree.get_widget("button_apply").show()
-                self.wTree.get_widget("notebook1").set_current_page(7)
+                self.builder.get_object("label_overview_description_value").set_label(self.conf.description)
+                self.builder.get_object("button_back").set_sensitive(True)
+                self.builder.get_object("button_forward").hide()
+                self.builder.get_object("button_apply").show()
+                self.builder.get_object("notebook1").set_current_page(7)
                 Gdk.threads_leave()
 
             except Exception, detail:
                 print detail
         Gdk.threads_enter()
-        self.wTree.get_widget("label_overview_source_value").set_label(self.restore_source)
-        self.wTree.get_widget("label_overview_dest_value").set_label(self.restore_dest)
-        self.wTree.get_widget("main_window").set_sensitive(True)
-        self.wTree.get_widget("main_window").window.set_cursor(None)
+        self.builder.get_object("label_overview_source_value").set_label(self.restore_source)
+        self.builder.get_object("label_overview_dest_value").set_label(self.restore_dest)
+        self.builder.get_object("main_window").set_sensitive(True)
+        self.builder.get_object("main_window").get_window().set_cursor(None)
         Gdk.threads_leave()
 
     ''' extract file from archive '''
@@ -1164,16 +1165,16 @@ class MintBackup:
         self.preserve_times = True
         self.postcheck = True
         Gdk.threads_enter()
-        self.wTree.get_widget("button_apply").hide()
-        self.wTree.get_widget("button_forward").hide()
-        self.wTree.get_widget("button_back").hide()
+        self.builder.get_object("button_apply").hide()
+        self.builder.get_object("button_forward").hide()
+        self.builder.get_object("button_back").hide()
         Gdk.threads_leave()
 
-        del_policy = self.wTree.get_widget("combobox_restore_del").get_active()
+        del_policy = self.builder.get_object("combobox_restore_del").get_active()
         Gdk.threads_enter()
-        pbar = self.wTree.get_widget("progressbar_restore")
+        pbar = self.builder.get_object("progressbar_restore")
         pbar.set_text(_("Calculating..."))
-        label = self.wTree.get_widget("label_restore_status_value")
+        label = self.builder.get_object("label_restore_status_value")
         label.set_label(_("Calculating..."))
         Gdk.threads_leave()
 
@@ -1219,7 +1220,7 @@ class MintBackup:
                             print detail
                             self.errors.append([dir[0], str(detail)])
                     Gdk.threads_enter()
-                    self.wTree.get_widget("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
+                    self.builder.get_object("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
                     Gdk.threads_leave()
                     try:
                         if(os.path.exists(target)):
@@ -1311,7 +1312,7 @@ class MintBackup:
                     Gdk.threads_enter()
                     label.set_label(path)
                     Gdk.threads_leave()
-                    self.wTree.get_widget("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
+                    self.builder.get_object("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
                     try:
                         if(os.path.exists(target)):
                             if(del_policy == 1):
@@ -1368,29 +1369,29 @@ class MintBackup:
             self.error = _("Warning: Some files were not restored, copied: %(current_file)d files out of %(total)d total") % {'current_file': current_file, 'total': total}
         if(len(self.errors) > 0):
             Gdk.threads_enter()
-            self.wTree.get_widget("label_restore_finished_value").set_label(_("An error occured during the restoration"))
+            self.builder.get_object("label_restore_finished_value").set_label(_("An error occured during the restoration"))
             img = self.iconTheme.load_icon("dialog-error", 48, 0)
-            self.wTree.get_widget("image_restore_finished").set_from_pixbuf(img)
-            self.wTree.get_widget("treeview_restore_errors").set_model(self.errors)
-            self.wTree.get_widget("win_restore_errors").show_all()
-            self.wTree.get_widget("notebook1").next_page()
+            self.builder.get_object("image_restore_finished").set_from_pixbuf(img)
+            self.builder.get_object("treeview_restore_errors").set_model(self.errors)
+            self.builder.get_object("win_restore_errors").show_all()
+            self.builder.get_object("notebook1").next_page()
             Gdk.threads_leave()
         else:
             if(not self.operating):
                 Gdk.threads_enter()
                 img = self.iconTheme.load_icon("dialog-warning", 48, 0)
-                self.wTree.get_widget("label_restore_finished_value").set_label(_("The restoration was aborted"))
-                self.wTree.get_widget("image_restore_finished").set_from_pixbuf(img)
-                self.wTree.get_widget("notebook1").next_page()
+                self.builder.get_object("label_restore_finished_value").set_label(_("The restoration was aborted"))
+                self.builder.get_object("image_restore_finished").set_from_pixbuf(img)
+                self.builder.get_object("notebook1").next_page()
                 Gdk.threads_leave()
             else:
                 Gdk.threads_enter()
                 label.set_label("Done")
                 pbar.set_text("Done")
-                self.wTree.get_widget("label_restore_finished_value").set_label(_("The restoration completed successfully"))
+                self.builder.get_object("label_restore_finished_value").set_label(_("The restoration completed successfully"))
                 img = self.iconTheme.load_icon("dialog-information", 48, 0)
-                self.wTree.get_widget("image_restore_finished").set_from_pixbuf(img)
-                self.wTree.get_widget("notebook1").next_page()
+                self.builder.get_object("image_restore_finished").set_from_pixbuf(img)
+                self.builder.get_object("notebook1").next_page()
                 Gdk.threads_leave()
         self.operating = False
 
@@ -1400,9 +1401,9 @@ class MintBackup:
         Gdk.threads_enter()
         model = Gtk.ListStore(bool, str, str)
         model.set_sort_column_id(1, Gtk.SortType.ASCENDING)
-        self.wTree.get_widget("treeview_packages").set_model(model)
-        self.wTree.get_widget("main_window").set_sensitive(False)
-        self.wTree.get_widget("main_window").window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
+        self.builder.get_object("treeview_packages").set_model(model)
+        self.builder.get_object("main_window").set_sensitive(False)
+        self.builder.get_object("main_window").get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
         Gdk.threads_leave()
         try:
             p = subprocess.Popen("aptitude search ~M", shell=True, stdout=subprocess.PIPE)
@@ -1430,8 +1431,8 @@ class MintBackup:
                     model.append([True, pkg.name, desc])
                     Gdk.threads_leave()
         Gdk.threads_enter()
-        self.wTree.get_widget("main_window").set_sensitive(True)
-        self.wTree.get_widget("main_window").window.set_cursor(None)
+        self.builder.get_object("main_window").set_sensitive(True)
+        self.builder.get_object("main_window").get_window().set_cursor(None)
         Gdk.threads_leave()
 
     ''' Is the package manually installed? '''
@@ -1453,7 +1454,7 @@ class MintBackup:
 
     ''' for the packages treeview '''
 
-    def celldatafunction_checkbox(self, column, cell, model, iter):
+    def celldatamethod_checkbox(self, column, cell, model, iter, user_data):
         checked = model.get_value(iter, 0)
         cell.set_property("active", checked)
 
@@ -1465,19 +1466,19 @@ class MintBackup:
         dialog.set_select_multiple(False)
         if dialog.run() == Gtk.ResponseType.OK:
             self.package_dest = dialog.get_filename()
-            self.wTree.get_widget("entry_package_dest").set_text(self.package_dest)
+            self.builder.get_object("entry_package_dest").set_text(self.package_dest)
         dialog.destroy()
 
     ''' "backup" the package selection '''
 
     def backup_packages(self):
-        pbar = self.wTree.get_widget("progressbar_packages")
-        lab = self.wTree.get_widget("label_current_package_value")
+        pbar = self.builder.get_object("progressbar_packages")
+        lab = self.builder.get_object("label_current_package_value")
         Gdk.threads_enter()
         pbar.set_text(_("Calculating..."))
         lab.set_label(_("Calculating..."))
         Gdk.threads_leave()
-        model = self.wTree.get_widget("treeview_packages").get_model()
+        model = self.builder.get_object("treeview_packages").get_model()
         total = 0
         count = 0
         for row in model:
@@ -1510,31 +1511,31 @@ class MintBackup:
 
         if(self.error is not None):
             Gdk.threads_enter()
-            self.wTree.get_widget("label_packages_done_value").set_label(_("An error occured during the backup:") + "\n" + self.error)
+            self.builder.get_object("label_packages_done_value").set_label(_("An error occured during the backup:") + "\n" + self.error)
             img = self.iconTheme.load_icon("dialog-error", 48, 0)
-            self.wTree.get_widget("image_packages_done").set_from_pixbuf(img)
-            self.wTree.get_widget("notebook1").next_page()
+            self.builder.get_object("image_packages_done").set_from_pixbuf(img)
+            self.builder.get_object("notebook1").next_page()
             Gdk.threads_leave()
         else:
             if(not self.operating):
                 Gdk.threads_enter()
                 img = self.iconTheme.load_icon("dialog-warning", 48, 0)
-                self.wTree.get_widget("label_packages_done_value").set_label(_("The backup was aborted"))
-                self.wTree.get_widget("image_packages_done").set_from_pixbuf(img)
-                self.wTree.get_widget("notebook1").next_page()
+                self.builder.get_object("label_packages_done_value").set_label(_("The backup was aborted"))
+                self.builder.get_object("image_packages_done").set_from_pixbuf(img)
+                self.builder.get_object("notebook1").next_page()
                 Gdk.threads_leave()
             else:
                 Gdk.threads_enter()
                 lab.set_label("Done")
                 pbar.set_text("Done")
-                self.wTree.get_widget("label_packages_done_value").set_label(_("Your software selection was backed up succesfully"))
+                self.builder.get_object("label_packages_done_value").set_label(_("Your software selection was backed up succesfully"))
                 img = self.iconTheme.load_icon("dialog-information", 48, 0)
-                self.wTree.get_widget("image_packages_done").set_from_pixbuf(img)
-                self.wTree.get_widget("notebook1").next_page()
+                self.builder.get_object("image_packages_done").set_from_pixbuf(img)
+                self.builder.get_object("notebook1").next_page()
                 Gdk.threads_leave()
         Gdk.threads_enter()
-        self.wTree.get_widget("button_apply").hide()
-        self.wTree.get_widget("button_back").hide()
+        self.builder.get_object("button_apply").hide()
+        self.builder.get_object("button_back").hide()
         Gdk.threads_leave()
         self.operating = False
 
@@ -1556,11 +1557,11 @@ class MintBackup:
             source.close()
             if(error):
                 MessageDialog(_("Backup Tool"), _("The specified file is not a valid software selection"), Gtk.MessageType.ERROR).show()
-                #self.wTree.get_widget("scroller_packages").hide()
-                self.wTree.get_widget("button_forward").set_sensitive(False)
+                #self.builder.get_object("scroller_packages").hide()
+                self.builder.get_object("button_forward").set_sensitive(False)
                 return
             else:
-                self.wTree.get_widget("button_forward").set_sensitive(True)
+                self.builder.get_object("button_forward").set_sensitive(True)
         except Exception, detail:
             print detail
             MessageDialog(_("Backup Tool"), _("An error occurred while accessing the file"), Gtk.MessageType.ERROR).show()
@@ -1569,13 +1570,13 @@ class MintBackup:
 
     def load_package_list(self):
         Gdk.threads_enter()
-        self.wTree.get_widget("button_forward").hide()
-        self.wTree.get_widget("button_apply").show()
-        self.wTree.get_widget("button_apply").set_sensitive(True)
-        self.wTree.get_widget("main_window").set_sensitive(False)
-        self.wTree.get_widget("main_window").window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
+        self.builder.get_object("button_forward").hide()
+        self.builder.get_object("button_apply").show()
+        self.builder.get_object("button_apply").set_sensitive(True)
+        self.builder.get_object("main_window").set_sensitive(False)
+        self.builder.get_object("main_window").get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
         model = Gtk.ListStore(bool, str, bool, str)
-        self.wTree.get_widget("treeview_package_list").set_model(model)
+        self.builder.get_object("treeview_package_list").set_model(model)
         Gdk.threads_leave()
         try:
             source = open(self.package_source, "r")
@@ -1609,16 +1610,16 @@ class MintBackup:
             print detail
             MessageDialog(_("Backup Tool"), _("An error occurred while accessing the file"), Gtk.MessageType.ERROR).show()
         Gdk.threads_enter()
-        self.wTree.get_widget("main_window").set_sensitive(True)
-        self.wTree.get_widget("main_window").window.set_cursor(None)
+        self.builder.get_object("main_window").set_sensitive(True)
+        self.builder.get_object("main_window").get_window().set_cursor(None)
         if(len(model) == 0):
-            self.wTree.get_widget("button_forward").hide()
-            self.wTree.get_widget("button_back").hide()
-            self.wTree.get_widget("button_apply").hide()
-            self.wTree.get_widget("notebook1").set_current_page(16)
+            self.builder.get_object("button_forward").hide()
+            self.builder.get_object("button_back").hide()
+            self.builder.get_object("button_apply").hide()
+            self.builder.get_object("notebook1").set_current_page(16)
         else:
-            self.wTree.get_widget("notebook1").set_current_page(15)
-            self.wTree.get_widget("button_forward").set_sensitive(True)
+            self.builder.get_object("notebook1").set_current_page(15)
+            self.builder.get_object("button_forward").set_sensitive(True)
         Gdk.threads_leave()
 
     ''' Installs the package selection '''
@@ -1626,17 +1627,17 @@ class MintBackup:
     def install_packages(self):
         # launch synaptic..
         Gdk.threads_enter()
-        self.wTree.get_widget("main_window").window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
-        self.wTree.get_widget("main_window").set_sensitive(False)
+        self.builder.get_object("main_window").get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
+        self.builder.get_object("main_window").set_sensitive(False)
         Gdk.threads_leave()
 
-        cmd = ["sudo", "/usr/sbin/synaptic", "--hide-main-window", "--non-interactive", "--parent-window-id", str(self.wTree.get_widget("main_window").window.xid)]
+        cmd = ["sudo", "/usr/sbin/synaptic", "--hide-main-window", "--non-interactive", "--parent-window-id", str(self.builder.get_object("main_window").get_window().xid)]
         cmd.append("--progress-str")
         cmd.append("\"" + _("Please wait, this can take some time") + "\"")
         cmd.append("--finish-str")
         cmd.append("\"" + _("The installation is complete") + "\"")
         f = tempfile.NamedTemporaryFile()
-        model = self.wTree.get_widget("treeview_package_list").get_model()
+        model = self.builder.get_object("treeview_package_list").get_model()
         for row in model:
             if(row[0]):
                 f.write("%s\tinstall\n" % row[3])
@@ -1648,10 +1649,10 @@ class MintBackup:
         f.close()
 
         Gdk.threads_enter()
-        self.wTree.get_widget("main_window").window.set_cursor(None)
-        self.wTree.get_widget("main_window").set_sensitive(True)
-        self.wTree.get_widget("button_back").set_sensitive(True)
-        self.wTree.get_widget("button_forward").set_sensitive(True)
+        self.builder.get_object("main_window").get_window().set_cursor(None)
+        self.builder.get_object("main_window").set_sensitive(True)
+        self.builder.get_object("button_back").set_sensitive(True)
+        self.builder.get_object("button_forward").set_sensitive(True)
         Gdk.threads_leave()
 
         self.refresh(None)
