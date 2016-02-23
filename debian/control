@@ -8,8 +8,7 @@ Standards-Version: 3.9.5
 Package: mintbackup
 Architecture: all
 Depends: python (>= 2.4), python (<< 3),
-         python-gtk2,
-         python-glade2,
+         python-gi,
          python-apt,
          python-vte,
          ${misc:Depends}
