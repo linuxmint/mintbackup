@@ -44,7 +44,6 @@
     <property name="default_width">400</property>
     <property name="default_height">300</property>
     <property name="type_hint">normal</property>
-    <property name="has_separator">False</property>
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox1">
         <property name="visible">True</property>
@@ -1174,7 +1173,6 @@ up packages</property>
                     <child>
                       <object class="GtkProgressBar" id="progressbar1">
                         <property name="visible">True</property>
-                        <property name="activity_mode">True</property>
                         <property name="pulse_step">0.01</property>
                       </object>
                       <packing>
