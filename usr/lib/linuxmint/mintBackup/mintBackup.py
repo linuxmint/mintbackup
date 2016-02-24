@@ -1,5 +1,17 @@
 #!/usr/bin/python2
 
+import os
+import sys
+import commands
+import subprocess
+import gettext
+import threading
+import tarfile
+import stat
+import tempfile
+import hashlib
+from time import strftime, localtime
+
 try:
     import gi
     gi.require_version("Gtk", "3.0")
@@ -7,28 +19,15 @@ except Exception, detail:
     print "You do not have a recent version of GTK"
 
 try:
-    import os
-    import sys
-    import commands
-    from gi.repository import Gtk, Gdk
-    from gi.repository import GdkPixbuf
-    import gettext
-    import threading
-    import tarfile
-    import stat
-    import shutil
-    import hashlib
-    from time import strftime, localtime, sleep
     import apt
-    import subprocess
-    from user import home
-    import tempfile
+    from gi.repository import Gtk, Gdk, GdkPixbuf
 except Exception, detail:
     print "You do not have the required dependencies"
 
 # i18n
 gettext.install("mintbackup", "/usr/share/linuxmint/locale")
 
+HOME = os.path.expanduser("~")
 UI_FILE = '/usr/lib/linuxmint/mintBackup/mintBackup.ui'
 
 
@@ -526,7 +525,7 @@ class MintBackup:
                 return
 
             excludes = self.builder.get_object("treeview_excludes").get_model()
-            auto_excludes = [home + "/.Trash", home + "/.local/share/Trash", home + "/.thumbnails"]
+            auto_excludes = [HOME + "/.Trash", HOME + "/.local/share/Trash", HOME + "/.thumbnails"]
             for auto_exclude in auto_excludes:
                 if os.path.exists(auto_exclude):
                     if (not auto_exclude.find(self.backup_source)):
@@ -1462,7 +1461,7 @@ class MintBackup:
 
     def show_package_choose(self, w):
         dialog = Gtk.FileChooserDialog(_("Backup Tool"), None, Gtk.FileChooserAction.SAVE, (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
-        dialog.set_current_folder(home)
+        dialog.set_current_folder(HOME)
         dialog.set_select_multiple(False)
         if dialog.run() == Gtk.ResponseType.OK:
             self.package_dest = dialog.get_filename()
@@ -1568,6 +1567,11 @@ class MintBackup:
 
     ''' load package list into treeview '''
 
+    def refresh(self, w):
+        # refresh package list
+        thr = threading.Thread(group=None, name="mintBackup-packages", target=self.load_package_list, args=(), kwargs={})
+        thr.start()
+
     def load_package_list(self):
         Gdk.threads_enter()
         self.builder.get_object("button_forward").hide()
@@ -1668,11 +1672,6 @@ class MintBackup:
                 row[0] = selection
 
     ''' refresh package selection '''
-
-    def refresh(self, w):
-        # refresh package list
-        thr = threading.Thread(group=None, name="mintBackup-packages", target=self.load_package_list, args=(), kwargs={})
-        thr.start()
 
 if __name__ == "__main__":
     Gdk.threads_init()
