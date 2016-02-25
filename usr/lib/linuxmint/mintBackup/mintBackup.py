@@ -33,7 +33,8 @@ UI_FILE = '/usr/lib/linuxmint/mintBackup/mintBackup.ui'
 
 class TarFileMonitor():
 
-    ''' Bit of a hack but I can figure out what tarfile is doing now.. (progress wise) '''
+    """ Bit of a hack but I can figure out what tarfile is doing now.. (progress wise)
+    """
 
     def __init__(self, target, callback):
         self.counter = 0
@@ -61,10 +62,11 @@ class TarFileMonitor():
     def close(self):
         self.f.close()
 
-''' Funkai little class for abuse-safety. all atrr's are set from file '''
-
 
 class mINIFile():
+
+    """ Funkai little class for abuse-safety. all atrr's are set from file
+    """
 
     def load_from_string(self, line):
         if(line.find(":")):
@@ -89,19 +91,22 @@ class mINIFile():
             fi.close()
         except:
             pass
-''' Handy. Makes message dialogs easy :D '''
 
 
 class MessageDialog:
+
+    """ Handy. Makes message dialogs easy :D
+    """
 
     def __init__(self, title, message, style):
         self.title = title
         self.message = message
         self.style = style
 
-    ''' Show me on screen '''
-
     def show(self):
+
+        """ Show me on screen
+        """
 
         dialog = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT, self.style, Gtk.ButtonsType.OK, self.message)
         dialog.set_title(_("Backup Tool"))
@@ -109,12 +114,11 @@ class MessageDialog:
         dialog.run()
         dialog.destroy()
 
-''' The main class of the app '''
-
 
 class MintBackup:
 
-    ''' New MintBackup '''
+    """ The main class of the app
+    """
 
     def __init__(self):
         self.builder = Gtk.Builder()
@@ -402,9 +406,10 @@ class MintBackup:
         if r == Gtk.ResponseType.CANCEL:
             w.hide()
 
-    ''' handle the file-set signal '''
-
     def check_reset_file(self, w):
+        """ Handle the file-set signal
+        """
+
         fileset = w.get_filename()
         if(fileset not in self.backup_source):
             if(self.tar is not None):
@@ -412,9 +417,10 @@ class MintBackup:
                 self.tar = None
         self.backup_source = fileset
 
-    ''' switch between archive and directory sources '''
-
     def archive_switch(self, w):
+        """ Switch between archive and directory sources
+        """
+
         if(self.builder.get_object("radiobutton_archive").get_active()):
             # dealing with archives
             self.restore_archive = True
@@ -423,9 +429,10 @@ class MintBackup:
             self.restore_archive = False
             self.builder.get_object("filechooserbutton_restore_source").set_action(Gtk.FileChooserAction.SELECT_FOLDER)
 
-    ''' handler for checkboxes '''
-
     def handle_checkbox(self, widget):
+        """ Handler for checkboxes
+        """
+
         if(widget == self.builder.get_object("checkbutton_integrity")):
             self.postcheck = widget.get_active()
         elif(widget == self.builder.get_object("checkbutton_perms")):
@@ -435,9 +442,10 @@ class MintBackup:
         elif(widget == self.builder.get_object("checkbutton_links")):
             self.follow_links = widget.get_active()
 
-    ''' Exclude file '''
-
     def add_file_exclude(self, widget):
+        """ Exclude file
+        """
+
         model = self.builder.get_object("treeview_excludes").get_model()
         dialog = Gtk.FileChooserDialog(_("Backup Tool"), None, Gtk.FileChooserAction.OPEN, (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
         dialog.set_current_folder(self.backup_source)
@@ -452,9 +460,10 @@ class MintBackup:
                     message.show()
         dialog.destroy()
 
-    ''' Exclude directory '''
-
     def add_folder_exclude(self, widget):
+        """ Exclude directory
+        """
+
         model = self.builder.get_object("treeview_excludes").get_model()
         dialog = Gtk.FileChooserDialog(_("Backup Tool"), None, Gtk.FileChooserAction.SELECT_FOLDER, (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
         dialog.set_current_folder(self.backup_source)
@@ -469,9 +478,10 @@ class MintBackup:
                     message.show()
         dialog.destroy()
 
-    ''' Remove the exclude '''
-
     def remove_exclude(self, widget):
+        """ Remove the exclude
+        """
+
         model = self.builder.get_object("treeview_excludes").get_model()
         selection = self.builder.get_object("treeview_excludes").get_selection()
         selected_rows = selection.get_selected_rows()[1]
@@ -481,9 +491,10 @@ class MintBackup:
         for iter in args:
             model.remove(iter)
 
-    ''' Cancel clicked '''
-
     def cancel_callback(self, widget):
+        """ Cancel clicked
+        """
+
         if(self.tar is not None):
             self.tar.close()
             self.tar = None
@@ -495,9 +506,10 @@ class MintBackup:
             # just quit :)
             Gtk.main_quit()
 
-    ''' First page buttons '''
-
     def wizard_buttons_cb(self, widget, param):
+        """ First page buttons
+        """
+
         self.builder.get_object("notebook1").set_current_page(param)
         self.builder.get_object("button_back").show()
         self.builder.get_object("button_back").set_sensitive(True)
@@ -507,9 +519,10 @@ class MintBackup:
         else:
             self.builder.get_object("button_forward").set_sensitive(True)
 
-    ''' Next button '''
-
     def forward_callback(self, widget):
+        """ Forward / next buttons
+        """
+
         self.backup_source = self.builder.get_object("filechooserbutton_backup_source").get_filename()
         self.backup_dest = self.builder.get_object("filechooserbutton_backup_dest").get_filename()
         book = self.builder.get_object("notebook1")
@@ -632,9 +645,10 @@ class MintBackup:
                 thr = threading.Thread(group=None, name="mintBackup-packages", target=self.install_packages, args=(), kwargs={})
                 thr.start()
 
-    ''' Back button '''
-
     def back_callback(self, widget):
+        """ Back button
+        """
+
         book = self.builder.get_object("notebook1")
         sel = book.get_current_page()
         self.builder.get_object("button_apply").hide()
@@ -656,9 +670,10 @@ class MintBackup:
                 self.builder.get_object("button_forward").hide()
             book.set_current_page(sel)
 
-    ''' Creates a .mintbackup file (for later restoration) '''
-
     def create_backup_file(self):
+        """ Creates a .mintbackup file (for later restoration)
+        """
+
         self.description = "mintBackup"
         desc = self.builder.get_object("entry_desc").get_text()
         if(desc != ""):
@@ -676,9 +691,10 @@ class MintBackup:
             return False
         return True
 
-    ''' Does the actual copying '''
-
     def backup(self):
+        """ Does the actual copying
+        """
+
         label = self.builder.get_object("label_current_file_value")
         os.chdir(self.backup_source)
         pbar = self.builder.get_object("progressbar1")
@@ -872,17 +888,19 @@ class MintBackup:
                 Gdk.threads_leave()
         self.operating = False
 
-    ''' Returns true if the file/directory is on the exclude list '''
-
     def is_excluded(self, filename):
+        """ Returns true if the file/directory is on the exclude list
+        """
+
         for row in self.builder.get_object("treeview_excludes").get_model():
             if(filename.startswith(row[2])):
                 return True
         return False
 
-    ''' Update the backup progress bar '''
-
     def update_backup_progress(self, current, total, message=None):
+        """ Update the backup progress bar
+        """
+
         current = float(current)
         total = float(total)
         fraction = float(current / total)
@@ -894,10 +912,10 @@ class MintBackup:
             self.builder.get_object("progressbar1").set_text(str(int(fraction * 100)) + "%")
         Gdk.threads_leave()
 
-    ''' Utility method - copy file, also provides a quick way of aborting a copy, which
-        using modules doesn't allow me to do.. '''
-
     def copy_file(self, source, dest, restore=None, sourceChecksum=None):
+        """ Utility method - copy file, also provides a quick way of aborting a copy, which
+        using modules doesn't allow me to do..
+        """
         try:
             # represents max buffer size
             BUF_MAX = 16 * 1024  # so we don't get stuck on I/O ops
@@ -964,9 +982,10 @@ class MintBackup:
                 print "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + source + "]"
                 self.errors.append([source, bad.args[1]])
 
-    ''' mkdir and clone permissions '''
-
     def clone_dir(self, source, dest):
+        """ mkdir and clone permissions
+        """
+
         try:
             if(not os.path.exists(dest)):
                 os.mkdir(dest)
@@ -988,9 +1007,9 @@ class MintBackup:
                 print "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + source + "]"
                 self.errors.append([source, bad.args[1]])
 
-    ''' Grab the checksum for the input filename and return it '''
-
     def get_checksum(self, source, restore=None):
+        """ Grab the checksum for the input filename and return it
+        """
         MAX_BUF = 16 * 1024
         current = 0
         try:
@@ -1020,9 +1039,10 @@ class MintBackup:
                 self.errors.append([source, bad.args[1]])
         return None
 
-    ''' Grabs checksum for fileobj type object '''
-
     def get_checksum_for_file(self, source):
+        """ Grabs checksum for fileobj type object
+        """
+
         MAX_BUF = 16 * 1024
         current = 0
         total = source.size
@@ -1044,9 +1064,10 @@ class MintBackup:
             print detail
         return None
 
-    ''' Update the restore progress bar '''
-
     def update_restore_progress(self, current, total, message=None):
+        """ Update the restore progress bar
+        """
+
         current = float(current)
         total = float(total)
         fraction = float(current / total)
@@ -1058,9 +1079,10 @@ class MintBackup:
             self.builder.get_object("progressbar_restore").set_text(str(int(fraction * 100)) + "%")
         Gdk.threads_leave()
 
-    ''' prepare the restore, reads the .mintbackup file if present '''
-
     def prepare_restore(self):
+        """ Prepare the restore, reads the .mintbackup file if present
+        """
+
         if(self.restore_archive):
             # restore archives.
             if(self.tar is not None):
@@ -1126,9 +1148,10 @@ class MintBackup:
         self.builder.get_object("main_window").get_window().set_cursor(None)
         Gdk.threads_leave()
 
-    ''' extract file from archive '''
-
     def extract_file(self, source, dest, record):
+        """ Extract file from archive
+        """
+
         MAX_BUF = 512
         current = 0
         total = record.size
@@ -1157,9 +1180,10 @@ class MintBackup:
             dest.close()
             os.utime(dest.name, (record.mtime, record.mtime))
 
-    ''' Restore from archive '''
-
     def restore(self):
+        """ Restore from archive
+        """
+
         self.preserve_perms = True
         self.preserve_times = True
         self.postcheck = True
@@ -1394,9 +1418,10 @@ class MintBackup:
                 Gdk.threads_leave()
         self.operating = False
 
-        ''' load the package list '''
-
     def load_packages(self):
+        """ Load the package list
+        """
+
         Gdk.threads_enter()
         model = Gtk.ListStore(bool, str, str)
         model.set_sort_column_id(1, Gtk.SortType.ASCENDING)
@@ -1434,32 +1459,36 @@ class MintBackup:
         self.builder.get_object("main_window").get_window().set_cursor(None)
         Gdk.threads_leave()
 
-    ''' Is the package manually installed? '''
-
     def is_manual_installed(self, pkgname):
+        """ Is the package manually installed?
+        """
+
         for b in self.blacklist:
             if(pkgname == b):
                 return False
         return True
 
-    ''' toggled (update model)'''
-
     def toggled_cb(self, ren, path, treeview):
+        """ Toggled (update model)
+        """
+
         model = treeview.get_model()
         iter = model.get_iter(path)
         if (iter != None):
             checked = model.get_value(iter, 0)
             model.set_value(iter, 0, (not checked))
 
-    ''' for the packages treeview '''
-
     def celldatamethod_checkbox(self, column, cell, model, iter, user_data):
+        """ For the packages treeview
+        """
+
         checked = model.get_value(iter, 0)
         cell.set_property("active", checked)
 
-    ''' Show filechooser for package backup '''
-
     def show_package_choose(self, w):
+        """ Show filechooser for package backup
+        """
+
         dialog = Gtk.FileChooserDialog(_("Backup Tool"), None, Gtk.FileChooserAction.SAVE, (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
         dialog.set_current_folder(HOME)
         dialog.set_select_multiple(False)
@@ -1468,9 +1497,10 @@ class MintBackup:
             self.builder.get_object("entry_package_dest").set_text(self.package_dest)
         dialog.destroy()
 
-    ''' "backup" the package selection '''
-
     def backup_packages(self):
+        """ "backup" the package selection
+        """
+
         pbar = self.builder.get_object("progressbar_packages")
         lab = self.builder.get_object("label_current_package_value")
         Gdk.threads_enter()
@@ -1538,9 +1568,10 @@ class MintBackup:
         Gdk.threads_leave()
         self.operating = False
 
-    ''' check validity of file'''
-
     def load_package_list_cb(self, w):
+        """ Check validity of file
+        """
+
         self.package_source = w.get_filename()
         # magic info, i.e. we ignore files that don't have this.
         try:
@@ -1565,14 +1596,17 @@ class MintBackup:
             print detail
             MessageDialog(_("Backup Tool"), _("An error occurred while accessing the file"), Gtk.MessageType.ERROR).show()
 
-    ''' load package list into treeview '''
-
     def refresh(self, w):
-        # refresh package list
+        """ Refresh package list
+        """
+
         thr = threading.Thread(group=None, name="mintBackup-packages", target=self.load_package_list, args=(), kwargs={})
         thr.start()
 
     def load_package_list(self):
+        """ Load package list into treeview
+        """
+
         Gdk.threads_enter()
         self.builder.get_object("button_forward").hide()
         self.builder.get_object("button_apply").show()
@@ -1626,9 +1660,9 @@ class MintBackup:
             self.builder.get_object("button_forward").set_sensitive(True)
         Gdk.threads_leave()
 
-    ''' Installs the package selection '''
-
     def install_packages(self):
+        """ Installs the package selection
+        """
         # launch synaptic..
         Gdk.threads_enter()
         self.builder.get_object("main_window").get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
@@ -1660,9 +1694,11 @@ class MintBackup:
         Gdk.threads_leave()
 
         self.refresh(None)
-    ''' select/deselect all '''
 
     def set_selection(self, w, treeview, selection, check):
+        """ Select / deselect all
+        """
+
         model = treeview.get_model()
         for row in model:
             if(check):
@@ -1670,8 +1706,6 @@ class MintBackup:
                     row[0] = selection
             else:
                 row[0] = selection
-
-    ''' refresh package selection '''
 
 if __name__ == "__main__":
     Gdk.threads_init()
