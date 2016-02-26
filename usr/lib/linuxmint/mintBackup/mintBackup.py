@@ -47,14 +47,14 @@ class TarFileMonitor():
 
     def read(self, size=None):
         bytes = 0
-        if(size is not None):
+        if size is not None:
             bytes = self.f.read(size)
-            if(bytes):
+            if bytes:
                 self.counter += len(bytes)
                 self.callback(self.counter, self.size)
         else:
             bytes = self.f.read()
-            if(bytes is not None):
+            if bytes is not None:
                 self.counter += len(bytes)
                 self.callback(self.counter, self.size)
         return bytes
@@ -69,14 +69,14 @@ class mINIFile():
     """
 
     def load_from_string(self, line):
-        if(line.find(":")):
+        if line.find(":"):
             l = line.split(":")
-            if(len(l) >= 2):
+            if len(l) >= 2:
                 tmp = ":".join(l[1:]).rstrip("\r\n")
                 setattr(self, l[0], tmp)
-        elif(line.find("=")):
+        elif line.find("="):
             l = line.split("=")
-            if(len(l) >= 2):
+            if len(l) >= 2:
                 tmp = "=".join(l[1:]).rstrip("\r\n")
                 setattr(self, l[0], tmp)
 
@@ -126,8 +126,8 @@ class MintBackup:
         self.builder.get_object("main_window").set_icon_from_file("/usr/lib/linuxmint/mintBackup/icon.png")
 
         # handle command line filenames
-        if(len(sys.argv) > 1):
-            if(len(sys.argv) == 2):
+        if len(sys.argv) > 1:
+            if len(sys.argv) == 2:
                 filebackup = sys.argv[1]
                 self.builder.get_object("filechooserbutton_restore_source").set_filename(filebackup)
                 self.builder.get_object("notebook1").set_current_page(6)
@@ -411,8 +411,8 @@ class MintBackup:
         """
 
         fileset = w.get_filename()
-        if(fileset not in self.backup_source):
-            if(self.tar is not None):
+        if fileset not in self.backup_source:
+            if self.tar is not None:
                 self.tar.close()
                 self.tar = None
         self.backup_source = fileset
@@ -421,7 +421,7 @@ class MintBackup:
         """ Switch between archive and directory sources
         """
 
-        if(self.builder.get_object("radiobutton_archive").get_active()):
+        if self.builder.get_object("radiobutton_archive").get_active():
             # dealing with archives
             self.restore_archive = True
             self.builder.get_object("filechooserbutton_restore_source").set_action(Gtk.FileChooserAction.OPEN)
@@ -433,13 +433,13 @@ class MintBackup:
         """ Handler for checkboxes
         """
 
-        if(widget == self.builder.get_object("checkbutton_integrity")):
+        if widget == self.builder.get_object("checkbutton_integrity"):
             self.postcheck = widget.get_active()
-        elif(widget == self.builder.get_object("checkbutton_perms")):
+        elif widget == self.builder.get_object("checkbutton_perms"):
             self.preserve_perms = widget.get_active()
-        elif(widget == self.builder.get_object("checkbutton_times")):
+        elif widget == self.builder.get_object("checkbutton_times"):
             self.preserve_times = widget.get_active()
-        elif(widget == self.builder.get_object("checkbutton_links")):
+        elif widget == self.builder.get_object("checkbutton_links"):
             self.follow_links = widget.get_active()
 
     def add_file_exclude(self, widget):
@@ -453,7 +453,7 @@ class MintBackup:
         if dialog.run() == Gtk.ResponseType.OK:
             filenames = dialog.get_filenames()
             for filename in filenames:
-                if (not filename.find(self.backup_source)):
+                if not filename.find(self.backup_source):
                     model.append([filename[len(self.backup_source) + 1:], self.fileIcon, filename])
                 else:
                     message = MessageDialog(_("Invalid path"), _("%s is not located within your source directory. Not added.") % filename, Gtk.MessageType.WARNING)
@@ -471,7 +471,7 @@ class MintBackup:
         if dialog.run() == Gtk.ResponseType.OK:
             filenames = dialog.get_filenames()
             for filename in filenames:
-                if (not filename.find(self.backup_source)):
+                if not filename.find(self.backup_source):
                     model.append([filename[len(self.backup_source) + 1:], self.dirIcon, filename])
                 else:
                     message = MessageDialog(_("Invalid path"), _("%s is not located within your source directory. Not added.") % filename, Gtk.MessageType.WARNING)
@@ -495,10 +495,10 @@ class MintBackup:
         """ Cancel clicked
         """
 
-        if(self.tar is not None):
+        if self.tar is not None:
             self.tar.close()
             self.tar = None
-        if(self.operating):
+        if self.operating:
             # in the middle of a job, let the appropriate thread
             # handle the cancel
             self.operating = False
@@ -514,7 +514,7 @@ class MintBackup:
         self.builder.get_object("button_back").show()
         self.builder.get_object("button_back").set_sensitive(True)
         self.builder.get_object("button_forward").show()
-        if(param == 14):
+        if param == 14:
             self.builder.get_object("button_forward").set_sensitive(False)
         else:
             self.builder.get_object("button_forward").set_sensitive(True)
@@ -528,12 +528,12 @@ class MintBackup:
         book = self.builder.get_object("notebook1")
         sel = book.get_current_page()
         self.builder.get_object("button_back").set_sensitive(True)
-        if(sel == 1):
+        if sel == 1:
             # choose source/dest
-            if(self.backup_source is None or self.backup_dest is None):
+            if self.backup_source is None or self.backup_dest is None:
                 MessageDialog(_("Backup Tool"), _("Please choose directories for the source and the destination"), Gtk.MessageType.WARNING).show()
                 return
-            if(self.backup_source == self.backup_dest):
+            if self.backup_source == self.backup_dest:
                 MessageDialog(_("Backup Tool"), _("Please choose different directories for the source and the destination"), Gtk.MessageType.WARNING).show()
                 return
 
@@ -541,17 +541,17 @@ class MintBackup:
             auto_excludes = [HOME + "/.Trash", HOME + "/.local/share/Trash", HOME + "/.thumbnails"]
             for auto_exclude in auto_excludes:
                 if os.path.exists(auto_exclude):
-                    if (not auto_exclude.find(self.backup_source)):
+                    if not auto_exclude.find(self.backup_source):
                         excludes.append([auto_exclude[len(self.backup_source) + 1:], self.dirIcon, auto_exclude])
 
             book.set_current_page(2)
-        elif(sel == 2):
+        elif sel == 2:
             self.description = self.builder.get_object("entry_desc").get_text()
             # show overview
             model = Gtk.ListStore(str, str)
             model.append(["<b>" + _("Source") + "</b>", self.backup_source])
             model.append(["<b>" + _("Destination") + "</b>", self.backup_dest])
-            if (self.description != ""):
+            if self.description != "":
                 model.append(["<b>" + _("Description") + "</b>", self.description])
             # find compression format
             sel = self.builder.get_object("combobox_compress").get_active()
@@ -568,7 +568,7 @@ class MintBackup:
             book.set_current_page(3)
             self.builder.get_object("button_forward").hide()
             self.builder.get_object("button_apply").show()
-        elif(sel == 3):
+        elif sel == 3:
             # start copying :D
             book.set_current_page(4)
             self.builder.get_object("button_apply").set_sensitive(False)
@@ -576,24 +576,24 @@ class MintBackup:
             self.operating = True
             thread = threading.Thread(group=None, target=self.backup, name="mintBackup-copy", args=(), kwargs={})
             thread.start()
-        elif(sel == 4):
+        elif sel == 4:
             # show info page.
             self.builder.get_object("button_forward").hide()
             self.builder.get_object("button_back").hide()
             book.set_current_page(5)
-        elif(sel == 6):
+        elif sel == 6:
             # sanity check the files (file --mimetype)
             self.restore_source = self.builder.get_object("filechooserbutton_restore_source").get_filename()
             self.restore_dest = self.builder.get_object("filechooserbutton_restore_dest").get_filename()
-            if(not self.restore_source or self.restore_source == ""):
+            if not self.restore_source or self.restore_source == "":
                 MessageDialog(_("Backup Tool"), _("Please choose a file to restore from"), Gtk.MessageType.WARNING).show()
                 return
-            if (self.restore_dest is None):
+            if self.restore_dest is None:
                 MessageDialog(_("Backup Tool"), _("Please choose a destination directory"), Gtk.MessageType.ERROR).show()
                 return
             thread = threading.Thread(group=None, target=self.prepare_restore, name="mintBackup-prepare", args=(), kwargs={})
             thread.start()
-        elif(sel == 7):
+        elif sel == 7:
             # start restoring :D
             self.builder.get_object("button_apply").hide()
             self.builder.get_object("button_back").hide()
@@ -601,12 +601,12 @@ class MintBackup:
             self.operating = True
             thread = threading.Thread(group=None, target=self.restore, name="mintBackup-restore", args=(), kwargs={})
             thread.start()
-        elif(sel == 8):
+        elif sel == 8:
             # show last page(restore finished status)
             self.builder.get_object("button_forward").hide()
             self.builder.get_object("button_back").hide()
             book.set_current_page(9)
-        elif(sel == 10):
+        elif sel == 10:
             f = self.builder.get_object("filechooserbutton_package_dest").get_filename()
             if f is None:
                 MessageDialog(_("Backup Tool"), _("Please choose a destination directory"), Gtk.MessageType.ERROR).show()
@@ -617,7 +617,7 @@ class MintBackup:
             thr.start()
             self.builder.get_object("button_forward").hide()
             self.builder.get_object("button_apply").show()
-        elif(sel == 11):
+        elif sel == 11:
             # show progress of packages page
             self.builder.get_object("button_forward").set_sensitive(False)
             self.builder.get_object("button_back").set_sensitive(False)
@@ -625,20 +625,20 @@ class MintBackup:
             self.operating = True
             thr = threading.Thread(group=None, name="mintBackup-packages", target=self.backup_packages, args=(), kwargs={})
             thr.start()
-        elif(sel == 14):
+        elif sel == 14:
             thr = threading.Thread(group=None, name="mintBackup-packages", target=self.load_package_list, args=(), kwargs={})
             thr.start()
-        elif(sel == 15):
+        elif sel == 15:
             inst = False
             model = self.builder.get_object("treeview_package_list").get_model()
-            if(len(model) == 0):
+            if len(model) == 0:
                 MessageDialog(_("Backup Tool"), _("No packages need to be installed at this time"), Gtk.MessageType.INFO).show()
                 return
             for row in model:
-                if(row[0]):
+                if row[0]:
                     inst = True
                     break
-            if(not inst):
+            if not inst:
                 MessageDialog(_("Backup Tool"), _("Please select one or more packages to install"), Gtk.MessageType.ERROR).show()
                 return
             else:
@@ -653,19 +653,19 @@ class MintBackup:
         sel = book.get_current_page()
         self.builder.get_object("button_apply").hide()
         self.builder.get_object("button_forward").show()
-        if(sel == 7 and len(sys.argv) == 2):
+        if sel == 7 and len(sys.argv) == 2:
             self.builder.get_object("button_back").set_sensitive(False)
-        if(sel == 6 or sel == 10 or sel == 14):
+        if (sel == 6) or (sel == 10) or (sel == 14):
             book.set_current_page(0)
             self.builder.get_object("button_back").set_sensitive(False)
             self.builder.get_object("button_back").hide()
             self.builder.get_object("button_forward").hide()
-            if(self.tar is not None):
+            if self.tar is not None:
                 self.tar.close()
                 self.tar = None
         else:
             sel = sel - 1
-            if(sel == 0):
+            if sel == 0:
                 self.builder.get_object("button_back").hide()
                 self.builder.get_object("button_forward").hide()
             book.set_current_page(sel)
@@ -676,7 +676,7 @@ class MintBackup:
 
         self.description = "mintBackup"
         desc = self.builder.get_object("entry_desc").get_text()
-        if(desc != ""):
+        if desc != "":
             self.description = desc
         try:
             of = os.path.join(self.backup_dest, ".mintbackup")
@@ -712,9 +712,9 @@ class MintBackup:
             pbar.pulse()
             Gdk.threads_leave()
             for f in files:
-                if(not self.operating):
+                if not self.operating:
                     break
-                if(not self.is_excluded(os.path.join(top, f))):
+                if not self.is_excluded(os.path.join(top, f)):
                     total += 1
 
         sztotal = str(total)
@@ -730,7 +730,7 @@ class MintBackup:
         # find out compression format, if any
         sel = self.builder.get_object("combobox_compress").get_active()
         comp = self.builder.get_object("combobox_compress").get_model()[sel]
-        if(comp[1] is not None):
+        if comp[1] is not None:
             tar = None
             filetime = strftime("%Y-%m-%d-%H%M-backup", localtime())
             filename = os.path.join(self.backup_dest, filetime + comp[2] + ".part")
@@ -743,15 +743,15 @@ class MintBackup:
                 print detail
                 self.errors.append([str(detail), None])
             for top, dirs, files in os.walk(top=self.backup_source, onerror=None, followlinks=self.follow_links):
-                if(not self.operating or self.error is not None):
+                if not self.operating or self.error is not None:
                     break
                 for f in files:
                     rpath = os.path.join(top, f)
                     path = os.path.relpath(rpath)
-                    if(not self.is_excluded(rpath)):
-                        if(os.path.islink(rpath)):
-                            if(self.follow_links):
-                                if(not os.path.exists(rpath)):
+                    if not self.is_excluded(rpath):
+                        if os.path.islink(rpath):
+                            if self.follow_links:
+                                if not os.path.exists(rpath):
                                     self.update_restore_progress(0, 1, message=_("Skipping broken link"))
                                     self.errors.append([rpath, _("Broken link")])
                                     continue
@@ -782,16 +782,16 @@ class MintBackup:
         else:
             # Copy to other directory, possibly on another device
             for top, dirs, files in os.walk(top=self.backup_source, topdown=False, onerror=None, followlinks=self.follow_links):
-                if(not self.operating):
+                if not self.operating:
                     break
                 for f in files:
                     rpath = os.path.join(top, f)
                     path = os.path.relpath(rpath)
-                    if(not self.is_excluded(rpath)):
+                    if not self.is_excluded(rpath):
                         target = os.path.join(self.backup_dest, path)
-                        if(os.path.islink(rpath)):
-                            if(self.follow_links):
-                                if(not os.path.exists(rpath)):
+                        if os.path.islink(rpath):
+                            if self.follow_links:
+                                if not os.path.exists(rpath):
                                     self.update_restore_progress(0, 1, message=_("Skipping broken link"))
                                     current_file += 1
                                     continue
@@ -800,7 +800,7 @@ class MintBackup:
                                 current_file += 1
                                 continue
                         dir = os.path.split(target)
-                        if(not os.path.exists(dir[0])):
+                        if not os.path.exists(dir[0]):
                             try:
                                 os.makedirs(dir[0])
                             except Exception, detail:
@@ -811,35 +811,35 @@ class MintBackup:
                         self.builder.get_object("label_file_count").set_text(str(current_file) + " / " + sztotal)
                         Gdk.threads_leave()
                         try:
-                            if(os.path.exists(target)):
-                                if(del_policy == 1):
+                            if os.path.exists(target):
+                                if del_policy == 1:
                                     # source size != dest size
                                     file1 = os.path.getsize(rpath)
                                     file2 = os.path.getsize(target)
-                                    if(file1 != file2):
+                                    if file1 != file2:
                                         os.remove(target)
                                         self.copy_file(rpath, target, sourceChecksum=None)
                                     else:
                                         self.update_backup_progress(0, 1, message=_("Skipping identical file"))
-                                elif(del_policy == 2):
+                                elif del_policy == 2:
                                     # source time != dest time
                                     file1 = os.path.getmtime(rpath)
                                     file2 = os.path.getmtime(target)
-                                    if(file1 != file2):
+                                    if file1 != file2:
                                         os.remove(target)
                                         self.copy_file(rpath, target, sourceChecksum=None)
                                     else:
                                         self.update_backup_progress(0, 1, message=_("Skipping identical file"))
-                                elif(del_policy == 3):
+                                elif del_policy == 3:
                                     # checksums
                                     file1 = self.get_checksum(rpath)
                                     file2 = self.get_checksum(target)
-                                    if(file1 not in file2):
+                                    if file1 not in file2:
                                         os.remove(target)
                                         self.copy_file(rpath, target, sourceChecksum=file1)
                                     else:
                                         self.update_backup_progress(0, 1, message=_("Skipping identical file"))
-                                elif(del_policy == 4):
+                                elif del_policy == 4:
                                     # always delete
                                     os.remove(target)
                                     self.copy_file(rpath, target, sourceChecksum=None)
@@ -850,7 +850,7 @@ class MintBackup:
                             print detail
                             self.errors.append([rpath, str(detail)])
                     del f
-                    if(self.preserve_times or self.preserve_perms):
+                    if self.preserve_times or self.preserve_perms:
                         # loop back over the directories now to reset the a/m/time
                         for d in dirs:
                             rpath = os.path.join(top, d)
@@ -859,9 +859,9 @@ class MintBackup:
                             self.clone_dir(rpath, target)
                             del d
 
-        if(current_file < total):
+        if current_file < total:
             self.errors.append([_("Warning: Some files were not saved, copied: %(current_file)d files out of %(total)d total") % {'current_file': current_file, 'total': total}, None])
-        if(len(self.errors) > 0):
+        if len(self.errors) > 0:
             Gdk.threads_enter()
             img = self.iconTheme.load_icon("dialog-error", 48, 0)
             self.builder.get_object("label_finished_status").set_markup(_("An error occured during the backup"))
@@ -871,7 +871,7 @@ class MintBackup:
             self.builder.get_object("notebook1").next_page()
             Gdk.threads_leave()
         else:
-            if(not self.operating):
+            if not self.operating:
                 Gdk.threads_enter()
                 img = self.iconTheme.load_icon("dialog-warning", 48, 0)
                 self.builder.get_object("label_finished_status").set_label(_("The backup was aborted"))
@@ -893,7 +893,7 @@ class MintBackup:
         """
 
         for row in self.builder.get_object("treeview_excludes").get_model():
-            if(filename.startswith(row[2])):
+            if filename.startswith(row[2]):
                 return True
         return False
 
@@ -906,7 +906,7 @@ class MintBackup:
         fraction = float(current / total)
         Gdk.threads_enter()
         self.builder.get_object("progressbar1").set_fraction(fraction)
-        if(message is not None):
+        if message is not None:
             self.builder.get_object("progressbar1").set_text(message)
         else:
             self.builder.get_object("progressbar1").set_text(str(int(fraction * 100)) + "%")
@@ -925,28 +925,28 @@ class MintBackup:
             current = 0
             dst = open(dest, 'wb')
             while True:
-                if(not self.operating):
+                if not self.operating:
                     # Abort!
                     errfile = dest
                     break
                 read = src.read(BUF_MAX)
-                if(read):
+                if read:
                     dst.write(read)
                     current += len(read)
-                    if(restore):
+                    if restore:
                         self.update_restore_progress(current, total)
                     else:
                         self.update_backup_progress(current, total)
                 else:
                     break
             src.close()
-            if(errfile):
+            if errfile:
                 # Remove aborted file (avoid corruption)
                 dst.close()
                 os.remove(errfile)
             else:
                 fd = dst.fileno()
-                if(self.preserve_perms):
+                if self.preserve_perms:
                     # set permissions
                     finfo = os.stat(source)
                     owner = finfo[stat.ST_UID]
@@ -955,7 +955,7 @@ class MintBackup:
                     dst.flush()
                     os.fsync(fd)
                     dst.close()
-                if(self.preserve_times):
+                if self.preserve_times:
                     finfo = os.stat(source)
                     atime = finfo[stat.ST_ATIME]
                     mtime = finfo[stat.ST_MTIME]
@@ -965,17 +965,17 @@ class MintBackup:
                     os.fsync(fd)
                     dst.close()
 
-                if(self.postcheck):
-                    if (sourceChecksum is not None):
+                if self.postcheck:
+                    if sourceChecksum is not None:
                         file1 = sourceChecksum
                     else:
                         file1 = self.get_checksum(source, restore)
                     file2 = self.get_checksum(dest, restore)
-                    if(file1 not in file2):
+                    if file1 not in file2:
                         print _("Checksum Mismatch:") + " [" + file1 + "] [" + file1 + "]"
                         self.errors.append([source, _("Checksum Mismatch")])
         except OSError as bad:
-            if(len(bad.args) > 2):
+            if len(bad.args) > 2:
                 print "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + bad.args[2] + "]"
                 self.errors.append([bad.args[2], bad.args[1]])
             else:
@@ -987,20 +987,20 @@ class MintBackup:
         """
 
         try:
-            if(not os.path.exists(dest)):
+            if not os.path.exists(dest):
                 os.mkdir(dest)
-            if(self.preserve_perms):
+            if self.preserve_perms:
                 finfo = os.stat(source)
                 owner = finfo[stat.ST_UID]
                 group = finfo[stat.ST_GID]
                 os.chown(dest, owner, group)
-            if(self.preserve_times):
+            if self.preserve_times:
                 finfo = os.stat(source)
                 atime = finfo[stat.ST_ATIME]
                 mtime = finfo[stat.ST_MTIME]
                 os.utime(dest, (atime, mtime))
         except OSError as bad:
-            if(len(bad.args) > 2):
+            if len(bad.args) > 2:
                 print "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + bad.args[2] + "]"
                 self.errors.append([bad.args[2], bad.args[1]])
             else:
@@ -1017,21 +1017,21 @@ class MintBackup:
             input = open(source, "rb")
             total = os.path.getsize(source)
             while True:
-                if(not self.operating):
+                if not self.operating:
                     return None
                 read = input.read(MAX_BUF)
-                if(not read):
+                if not read:
                     break
                 check.update(read)
                 current += len(read)
-                if(restore):
+                if restore:
                     self.update_restore_progress(current, total, message=_("Calculating checksum"))
                 else:
                     self.update_backup_progress(current, total, message=_("Calculating checksum"))
             input.close()
             return check.hexdigest()
         except OSError as bad:
-            if(len(bad.args) > 2):
+            if len(bad.args) > 2:
                 print "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + bad.args[2] + "]"
                 self.errors.append([bad.args[2], bad.args[1]])
             else:
@@ -1049,10 +1049,10 @@ class MintBackup:
         try:
             check = hashlib.sha1()
             while True:
-                if(not self.operating):
+                if not self.operating:
                     return None
                 read = source.read(MAX_BUF)
-                if(not read):
+                if not read:
                     break
                 check.update(read)
                 current += len(read)
@@ -1073,7 +1073,7 @@ class MintBackup:
         fraction = float(current / total)
         Gdk.threads_enter()
         self.builder.get_object("progressbar_restore").set_fraction(fraction)
-        if(message is not None):
+        if message is not None:
             self.builder.get_object("progressbar_restore").set_text(message)
         else:
             self.builder.get_object("progressbar_restore").set_text(str(int(fraction * 100)) + "%")
@@ -1083,9 +1083,9 @@ class MintBackup:
         """ Prepare the restore, reads the .mintbackup file if present
         """
 
-        if(self.restore_archive):
+        if self.restore_archive:
             # restore archives.
-            if(self.tar is not None):
+            if self.tar is not None:
                 Gdk.threads_enter()
                 self.builder.get_object("notebook1").set_current_page(7)
                 self.builder.get_object("button_forward").hide()
@@ -1100,7 +1100,7 @@ class MintBackup:
             try:
                 self.tar = tarfile.open(self.restore_source, "r")
                 mintfile = self.tar.getmember(".mintbackup")
-                if(mintfile is None):
+                if mintfile is None:
                     print "Processing a backup not created with this tool"
                     self.conf.description = _("(Not created with the Backup Tool)")
                     self.conf.file_count = -1
@@ -1124,7 +1124,7 @@ class MintBackup:
             self.conf = mINIFile()
             try:
                 mfile = os.path.join(self.restore_source, ".mintbackup")
-                if(not os.path.exists(mfile)):
+                if not os.path.exists(mfile):
                     print "Processing a backup not created with this tool"
                     self.conf.description = _("(Not created with the Backup Tool)")
                     self.conf.file_count = -1
@@ -1157,17 +1157,17 @@ class MintBackup:
         total = record.size
         errflag = False
         while True:
-            if(not self.operating):
+            if not self.operating:
                 errflag = True
                 break
             read = source.read(MAX_BUF)
-            if(not read):
+            if not read:
                 break
             dest.write(read)
             current += len(read)
             self.update_restore_progress(current, total)
         source.close()
-        if(errflag):
+        if errflag:
             dest.close()
             os.remove(target)
         else:
@@ -1203,28 +1203,28 @@ class MintBackup:
 
         # restore from archive
         self.error = None
-        if(self.restore_archive):
+        if self.restore_archive:
             os.chdir(self.restore_dest)
             sztotal = self.conf.file_count
             total = float(sztotal)
-            if(total == -1):
+            if total == -1:
                 tmp = len(self.tar.getmembers())
                 szttotal = str(tmp)
                 total = float(tmp)
             current_file = 0
             MAX_BUF = 1024
             for record in self.tar.getmembers():
-                if(not self.operating):
+                if not self.operating:
                     break
-                if(record.name == ".mintbackup"):
+                if record.name == ".mintbackup":
                     # skip mintbackup file
                     continue
                 Gdk.threads_enter()
                 label.set_label(record.name)
                 Gdk.threads_leave()
-                if(record.isdir()):
+                if record.isdir():
                     target = os.path.join(self.restore_dest, record.name)
-                    if(not os.path.exists(target)):
+                    if not os.path.exists(target):
                         try:
                             os.mkdir(target)
                             os.chown(target, record.uid, record.gid)
@@ -1233,10 +1233,10 @@ class MintBackup:
                         except Exception, detail:
                             print detail
                             self.errors.append([target, str(detail)])
-                if(record.isreg()):
+                if record.isreg():
                     target = os.path.join(self.restore_dest, record.name)
                     dir = os.path.split(target)
-                    if(not os.path.exists(dir[0])):
+                    if not os.path.exists(dir[0]):
                         try:
                             os.makedirs(dir[0])
                         except Exception, detail:
@@ -1246,35 +1246,35 @@ class MintBackup:
                     self.builder.get_object("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
                     Gdk.threads_leave()
                     try:
-                        if(os.path.exists(target)):
-                            if(del_policy == 1):
+                        if os.path.exists(target):
+                            if del_policy == 1:
                                 # source size != dest size
                                 file1 = record.size
                                 file2 = os.path.getsize(target)
-                                if(file1 != file2):
+                                if file1 != file2:
                                     os.remove(target)
                                     gz = self.tar.extractfile(record)
                                     out = open(target, "wb")
                                     self.extract_file(gz, out, record)
                                 else:
                                     self.update_restore_progress(0, 1, message=_("Skipping identical file"))
-                            elif(del_policy == 2):
+                            elif del_policy == 2:
                                 # source time != dest time
                                 file1 = record.mtime
                                 file2 = os.path.getmtime(target)
-                                if(file1 != file2):
+                                if file1 != file2:
                                     os.remove(target)
                                     gz = self.tar.extractfile(record)
                                     out = open(target, "wb")
                                     self.extract_file(gz, out, record)
                                 else:
                                     self.update_restore_progress(0, 1, message=_("Skipping identical file"))
-                            elif(del_policy == 3):
+                            elif del_policy == 3:
                                 # checksums
                                 gz = self.tar.extractfile(record)
                                 file1 = self.get_checksum_for_file(gz)
                                 file2 = self.get_checksum(target)
-                                if(file1 not in file2):
+                                if file1 not in file2:
                                     os.remove(target)
                                     out = open(target, "wb")
                                     gz.close()
@@ -1282,7 +1282,7 @@ class MintBackup:
                                     self.extract_file(gz, out, record)
                                 else:
                                     self.update_restore_progress(0, 1, message=_("Skipping identical file"))
-                            elif(del_policy == 4):
+                            elif del_policy == 4:
                                 # always delete
                                 os.remove(target)
                                 gz = self.tar.extractfile(record)
@@ -1306,17 +1306,17 @@ class MintBackup:
             sztotal = self.conf.file_count
             total = float(sztotal)
             current_file = 0
-            if(total == -1):
+            if total == -1:
                 for top, dirs, files in os.walk(top=self.restore_source, onerror=None, followlinks=self.follow_links):
                     pbar.pulse()
                     for f in files:
-                        if(not self.operating):
+                        if not self.operating:
                             break
                         total += 1
                 sztotal = str(total)
                 total = float(total)
             for top, dirs, files in os.walk(top=self.restore_source, topdown=False, onerror=None, followlinks=self.follow_links):
-                if(not self.operating):
+                if not self.operating:
                     break
                 for f in files:
                     if ".mintbackup" in f:
@@ -1325,7 +1325,7 @@ class MintBackup:
                     path = os.path.relpath(rpath)
                     target = os.path.join(self.restore_dest, path)
                     dir = os.path.split(target)
-                    if(not os.path.exists(dir[0])):
+                    if not os.path.exists(dir[0]):
                         try:
                             os.makedirs(dir[0])
                         except Exception, detail:
@@ -1337,31 +1337,31 @@ class MintBackup:
                     Gdk.threads_leave()
                     self.builder.get_object("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
                     try:
-                        if(os.path.exists(target)):
-                            if(del_policy == 1):
+                        if os.path.exists(target):
+                            if del_policy == 1:
                                 # source size != dest size
                                 file1 = os.path.getsize(rpath)
                                 file2 = os.path.getsize(target)
-                                if(file1 != file2):
+                                if file1 != file2:
                                     os.remove(target)
                                     self.copy_file(rpath, target, restore=True, sourceChecksum=None)
                                 else:
                                     self.update_restore_progress(0, 1, message=_("Skipping identical file"))
-                            elif(del_policy == 2):
+                            elif del_policy == 2:
                                 # source time != dest time
                                 file1 = os.path.getmtime(rpath)
                                 file2 = os.path.getmtime(target)
-                                if(file1 != file2):
+                                if file1 != file2:
                                     os.remove(target)
                                     self.copy_file(rpath, target, restore=True, sourceChecksum=None)
                                 else:
                                     self.update_restore_progress(0, 1, message=_("Skipping identical file"))
-                            elif(del_policy == 3):
+                            elif del_policy == 3:
                                 # checksums (check size first)
-                                if(os.path.getsize(rpath) == os.path.getsize(target)):
+                                if os.path.getsize(rpath) == os.path.getsize(target):
                                     file1 = self.get_checksum(rpath)
                                     file2 = self.get_checksum(target)
-                                    if(file1 not in file2):
+                                    if file1 not in file2:
                                         os.remove(target)
                                         self.copy_file(rpath, target, restore=True, sourceChecksum=file1)
                                     else:
@@ -1369,7 +1369,7 @@ class MintBackup:
                                 else:
                                     os.remove(target)
                                     self.copy_file(rpath, target, restore=True, sourceChecksum=None)
-                            elif(del_policy == 4):
+                            elif del_policy == 4:
                                 # always delete
                                 os.remove(target)
                                 self.copy_file(rpath, target, restore=True, sourceChecksum=None)
@@ -1380,7 +1380,7 @@ class MintBackup:
                         print detail
                         self.errors.append([rpath, str(detail)])
                     del f
-                    if(self.preserve_times or self.preserve_perms):
+                    if self.preserve_times or self.preserve_perms:
                         # loop back over the directories now to reset the a/m/time
                         for d in dirs:
                             rpath = os.path.join(top, d)
@@ -1388,9 +1388,9 @@ class MintBackup:
                             target = os.path.join(self.restore_dest, path)
                             self.clone_dir(rpath, target)
                             del d
-        if(current_file < total):
+        if current_file < total:
             self.error = _("Warning: Some files were not restored, copied: %(current_file)d files out of %(total)d total") % {'current_file': current_file, 'total': total}
-        if(len(self.errors) > 0):
+        if len(self.errors) > 0:
             Gdk.threads_enter()
             self.builder.get_object("label_restore_finished_value").set_label(_("An error occured during the restoration"))
             img = self.iconTheme.load_icon("dialog-error", 48, 0)
@@ -1400,7 +1400,7 @@ class MintBackup:
             self.builder.get_object("notebook1").next_page()
             Gdk.threads_leave()
         else:
-            if(not self.operating):
+            if not self.operating:
                 Gdk.threads_enter()
                 img = self.iconTheme.load_icon("dialog-warning", 48, 0)
                 self.builder.get_object("label_restore_finished_value").set_label(_("The restoration was aborted"))
@@ -1438,7 +1438,7 @@ class MintBackup:
                 self.blacklist.append(l[2])
             bl = open("/usr/lib/linuxmint/mintBackup/software-selections.list", "r")
             for l in bl.readlines():
-                if(l.startswith("#")):
+                if l.startswith("#"):
                     # ignore comments
                     continue
                 l = l.rstrip("\r\n")
@@ -1448,8 +1448,8 @@ class MintBackup:
             print detail
         cache = apt.Cache()
         for pkg in cache:
-            if(pkg.installed):
-                if(self.is_manual_installed(pkg.name) == True):
+            if pkg.installed:
+                if self.is_manual_installed(pkg.name):
                     desc = "<big>" + pkg.name + "</big>\n<small>" + pkg.installed.summary.replace("&", "&amp;") + "</small>"
                     Gdk.threads_enter()
                     model.append([True, pkg.name, desc])
@@ -1464,7 +1464,7 @@ class MintBackup:
         """
 
         for b in self.blacklist:
-            if(pkgname == b):
+            if pkgname == b:
                 return False
         return True
 
@@ -1474,7 +1474,7 @@ class MintBackup:
 
         model = treeview.get_model()
         iter = model.get_iter(path)
-        if (iter != None):
+        if iter != None:
             checked = model.get_value(iter, 0)
             model.set_value(iter, 0, (not checked))
 
@@ -1511,9 +1511,10 @@ class MintBackup:
         total = 0
         count = 0
         for row in model:
-            if(not self.operating or self.error is not None):
+            if not self.operating or self.error is not None:
                 break
-            if(not row[0]):
+
+            if not row[0]:
                 continue
             total += 1
         pbar.set_text("%d / %d" % (count, total))
@@ -1522,9 +1523,9 @@ class MintBackup:
             filename = "software_selection_%s@%s" % (commands.getoutput("hostname"), filetime)
             out = open(os.path.join(self.package_dest, filename), "w")
             for row in model:
-                if(not self.operating or self.error is not None):
+                if not self.operating or self.error is not None:
                     break
-                if(row[0]):
+                if row[0]:
                     count += 1
                     out.write("%s\t%s\n" % (row[1], "install"))
                     Gdk.threads_enter()
@@ -1538,7 +1539,7 @@ class MintBackup:
         except Exception, detail:
             self.error = str(detail)
 
-        if(self.error is not None):
+        if self.error is not None:
             Gdk.threads_enter()
             self.builder.get_object("label_packages_done_value").set_label(_("An error occured during the backup:") + "\n" + self.error)
             img = self.iconTheme.load_icon("dialog-error", 48, 0)
@@ -1546,7 +1547,7 @@ class MintBackup:
             self.builder.get_object("notebook1").next_page()
             Gdk.threads_leave()
         else:
-            if(not self.operating):
+            if not self.operating:
                 Gdk.threads_enter()
                 img = self.iconTheme.load_icon("dialog-warning", 48, 0)
                 self.builder.get_object("label_packages_done_value").set_label(_("The backup was aborted"))
@@ -1580,12 +1581,12 @@ class MintBackup:
             error = False
             for line in re:
                 line = line.rstrip("\r\n")
-                if (line != ""):
-                    if(not line.endswith("\tinstall")):
+                if line != "":
+                    if not line.endswith("\tinstall"):
                         error = True
                         break
             source.close()
-            if(error):
+            if error:
                 MessageDialog(_("Backup Tool"), _("The specified file is not a valid software selection"), Gtk.MessageType.ERROR).show()
                 #self.builder.get_object("scroller_packages").hide()
                 self.builder.get_object("button_forward").set_sensitive(False)
@@ -1620,18 +1621,18 @@ class MintBackup:
             source = open(self.package_source, "r")
             cache = apt.Cache()
             for line in source.readlines():
-                if(line.startswith("#")):
+                if line.startswith("#"):
                     # ignore comments
                     continue
                 line = line.rstrip("\r\n")
-                if(line == ""):
+                if line == "":
                     # ignore empty lines
                     continue
                 line = line.split("\t")[0]
                 inst = True
-                if(cache.has_key(line)):
+                if cache.has_key(line):
                     pkg = cache[line]
-                    if(not pkg.is_installed):
+                    if not pkg.is_installed:
                         desc = pkg.candidate.summary.replace("&", "&amp;")
                         line = "<big>" + line + "</big>\n<small>" + desc + "</small>"
                         Gdk.threads_enter()
@@ -1650,7 +1651,7 @@ class MintBackup:
         Gdk.threads_enter()
         self.builder.get_object("main_window").set_sensitive(True)
         self.builder.get_object("main_window").get_window().set_cursor(None)
-        if(len(model) == 0):
+        if len(model) == 0:
             self.builder.get_object("button_forward").hide()
             self.builder.get_object("button_back").hide()
             self.builder.get_object("button_apply").hide()
@@ -1677,7 +1678,7 @@ class MintBackup:
         f = tempfile.NamedTemporaryFile()
         model = self.builder.get_object("treeview_package_list").get_model()
         for row in model:
-            if(row[0]):
+            if row[0]:
                 f.write("%s\tinstall\n" % row[3])
         cmd.append("--set-selections-file")
         cmd.append("%s" % f.name)
@@ -1701,7 +1702,7 @@ class MintBackup:
 
         model = treeview.get_model()
         for row in model:
-            if(check):
+            if check:
                 if row[2]:
                     row[0] = selection
             else:
