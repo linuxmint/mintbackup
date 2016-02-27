@@ -1,8 +1,7 @@
-#!/usr/bin/python2
+#!/usr/bin/python3
 
 import os
 import sys
-import commands
 import subprocess
 import gettext
 import threading
@@ -15,14 +14,14 @@ from time import strftime, localtime
 try:
     import gi
     gi.require_version("Gtk", "3.0")
-except Exception, detail:
-    print "You do not have a recent version of GTK"
+except Exception as detail:
+    print("You do not have a recent version of GTK")
 
 try:
     import apt
     from gi.repository import Gtk, Gdk, GdkPixbuf
-except Exception, detail:
-    print "You do not have the required dependencies"
+except Exception as detail:
+    print("You do not have the required dependencies")
 
 # i18n
 gettext.install("mintbackup", "/usr/share/linuxmint/locale")
@@ -132,7 +131,7 @@ class MintBackup:
                 self.builder.get_object("filechooserbutton_restore_source").set_filename(filebackup)
                 self.builder.get_object("notebook1").set_current_page(6)
             else:
-                print "usage: " + sys.argv[0] + " filename.backup"
+                print("usage: " + sys.argv[0] + " filename.backup")
                 sys.exit(1)
         else:
             self.builder.get_object("notebook1").set_current_page(0)
@@ -739,8 +738,8 @@ class MintBackup:
                 tar = tarfile.open(name=filename, dereference=self.follow_links, mode=comp[1], bufsize=1024)
                 mintfile = os.path.join(self.backup_dest, ".mintbackup")
                 tar.add(mintfile, arcname=".mintbackup", recursive=False, exclude=None)
-            except Exception, detail:
-                print detail
+            except Exception as detail:
+                print(detail)
                 self.errors.append([str(detail), None])
             for top, dirs, files in os.walk(top=self.backup_source, onerror=None, followlinks=self.follow_links):
                 if not self.operating or self.error is not None:
@@ -768,16 +767,16 @@ class MintBackup:
                             finfo = tar.gettarinfo(name=None, arcname=path, fileobj=underfile)
                             tar.addfile(fileobj=underfile, tarinfo=finfo)
                             underfile.close()
-                        except Exception, detail:
-                            print detail
+                        except Exception as detail:
+                            print(detail)
                             self.errors.append([rpath, str(detail)])
                         current_file = current_file + 1
             try:
                 tar.close()
                 os.remove(mintfile)
                 os.rename(filename, final_filename)
-            except Exception, detail:
-                print detail
+            except Exception as detail:
+                print(detail)
                 self.errors.append([str(detail), None])
         else:
             # Copy to other directory, possibly on another device
@@ -803,8 +802,8 @@ class MintBackup:
                         if not os.path.exists(dir[0]):
                             try:
                                 os.makedirs(dir[0])
-                            except Exception, detail:
-                                print detail
+                            except Exception as detail:
+                                print(detail)
                                 self.errors.append([dir[0], str(detail)])
                         Gdk.threads_enter()
                         label.set_label(path)
@@ -846,8 +845,8 @@ class MintBackup:
                             else:
                                 self.copy_file(rpath, target, sourceChecksum=None)
                             current_file = current_file + 1
-                        except Exception, detail:
-                            print detail
+                        except Exception as detail:
+                            print(detail)
                             self.errors.append([rpath, str(detail)])
                     del f
                     if self.preserve_times or self.preserve_perms:
@@ -972,14 +971,14 @@ class MintBackup:
                         file1 = self.get_checksum(source, restore)
                     file2 = self.get_checksum(dest, restore)
                     if file1 not in file2:
-                        print _("Checksum Mismatch:") + " [" + file1 + "] [" + file1 + "]"
+                        print(_("Checksum Mismatch:") + " [" + file1 + "] [" + file1 + "]")
                         self.errors.append([source, _("Checksum Mismatch")])
         except OSError as bad:
             if len(bad.args) > 2:
-                print "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + bad.args[2] + "]"
+                print("{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + bad.args[2] + "]")
                 self.errors.append([bad.args[2], bad.args[1]])
             else:
-                print "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + source + "]"
+                print("{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + source + "]")
                 self.errors.append([source, bad.args[1]])
 
     def clone_dir(self, source, dest):
@@ -1001,10 +1000,10 @@ class MintBackup:
                 os.utime(dest, (atime, mtime))
         except OSError as bad:
             if len(bad.args) > 2:
-                print "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + bad.args[2] + "]"
+                print("{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + bad.args[2] + "]")
                 self.errors.append([bad.args[2], bad.args[1]])
             else:
-                print "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + source + "]"
+                print("{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + source + "]")
                 self.errors.append([source, bad.args[1]])
 
     def get_checksum(self, source, restore=None):
@@ -1032,10 +1031,10 @@ class MintBackup:
             return check.hexdigest()
         except OSError as bad:
             if len(bad.args) > 2:
-                print "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + bad.args[2] + "]"
+                print("{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + bad.args[2] + "]")
                 self.errors.append([bad.args[2], bad.args[1]])
             else:
-                print "{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + source + "]"
+                print("{" + str(bad.args[0]) + "} " + bad.args[1] + " [" + source + "]")
                 self.errors.append([source, bad.args[1]])
         return None
 
@@ -1059,9 +1058,9 @@ class MintBackup:
                 self.update_restore_progress(current, total, message=_("Calculating checksum"))
             source.close()
             return check.hexdigest()
-        except Exception, detail:
+        except Exception as detail:
             self.errors.append([source, str(detail)])
-            print detail
+            print(detail)
         return None
 
     def update_restore_progress(self, current, total, message=None):
@@ -1101,7 +1100,7 @@ class MintBackup:
                 self.tar = tarfile.open(self.restore_source, "r")
                 mintfile = self.tar.getmember(".mintbackup")
                 if mintfile is None:
-                    print "Processing a backup not created with this tool"
+                    print("Processing a backup not created with this tool")
                     self.conf.description = _("(Not created with the Backup Tool)")
                     self.conf.file_count = -1
                 else:
@@ -1117,15 +1116,15 @@ class MintBackup:
                 self.builder.get_object("notebook1").set_current_page(7)
                 Gdk.threads_leave()
 
-            except Exception, detail:
-                print detail
+            except Exception as detail:
+                print(detail)
         else:
             # Restore from directory
             self.conf = mINIFile()
             try:
                 mfile = os.path.join(self.restore_source, ".mintbackup")
                 if not os.path.exists(mfile):
-                    print "Processing a backup not created with this tool"
+                    print("Processing a backup not created with this tool")
                     self.conf.description = _("(Not created with the Backup Tool)")
                     self.conf.file_count = -1
                 else:
@@ -1139,8 +1138,8 @@ class MintBackup:
                 self.builder.get_object("notebook1").set_current_page(7)
                 Gdk.threads_leave()
 
-            except Exception, detail:
-                print detail
+            except Exception as detail:
+                print(detail)
         Gdk.threads_enter()
         self.builder.get_object("label_overview_source_value").set_label(self.restore_source)
         self.builder.get_object("label_overview_dest_value").set_label(self.restore_dest)
@@ -1230,8 +1229,8 @@ class MintBackup:
                             os.chown(target, record.uid, record.gid)
                             os.chmod(target, record.mode)
                             os.utime(target, (record.mtime, record.mtime))
-                        except Exception, detail:
-                            print detail
+                        except Exception as detail:
+                            print(detail)
                             self.errors.append([target, str(detail)])
                 if record.isreg():
                     target = os.path.join(self.restore_dest, record.name)
@@ -1239,8 +1238,8 @@ class MintBackup:
                     if not os.path.exists(dir[0]):
                         try:
                             os.makedirs(dir[0])
-                        except Exception, detail:
-                            print detail
+                        except Exception as detail:
+                            print(detail)
                             self.errors.append([dir[0], str(detail)])
                     Gdk.threads_enter()
                     self.builder.get_object("label_restore_file_count").set_text(str(current_file) + " / " + sztotal)
@@ -1293,8 +1292,8 @@ class MintBackup:
                             out = open(target, "wb")
                             self.extract_file(gz, out, record)
                         current_file = current_file + 1
-                    except Exception, detail:
-                        print detail
+                    except Exception as detail:
+                        print(detail)
                         self.errors.append([record.name, str(detail)])
             try:
                 self.tar.close()
@@ -1328,8 +1327,8 @@ class MintBackup:
                     if not os.path.exists(dir[0]):
                         try:
                             os.makedirs(dir[0])
-                        except Exception, detail:
-                            print detail
+                        except Exception as detail:
+                            print(detail)
                             self.errors.append([dir[0], str(detail)])
                     current_file = current_file + 1
                     Gdk.threads_enter()
@@ -1376,8 +1375,8 @@ class MintBackup:
                         else:
                             self.copy_file(rpath, target, restore=True, sourceChecksum=None)
                         current_file += 1
-                    except Exception, detail:
-                        print detail
+                    except Exception as detail:
+                        print(detail)
                         self.errors.append([rpath, str(detail)])
                     del f
                     if self.preserve_times or self.preserve_perms:
@@ -1443,8 +1442,8 @@ class MintBackup:
                 l = l.rstrip("\r\n")
                 self.blacklist.append(l)
             bl.close()
-        except Exception, detail:
-            print detail
+        except Exception as detail:
+            print(detail)
         cache = apt.Cache()
         for pkg in cache:
             if pkg.installed:
@@ -1520,7 +1519,7 @@ class MintBackup:
         pbar.set_text("%d / %d" % (count, total))
         try:
             filetime = strftime("%Y-%m-%d-%H%M-package.list", localtime())
-            filename = "software_selection_%s@%s" % (commands.getoutput("hostname"), filetime)
+            filename = "software_selection_%s@%s" % (subprocess.getoutput("hostname"), filetime)
             out = open(os.path.join(self.package_dest, filename), "w")
             for row in model:
                 if not self.operating or self.error is not None:
@@ -1536,7 +1535,7 @@ class MintBackup:
             out.close()
             os.system("chmod a+rx " + self.package_dest)
             os.system("chmod a+rw " + os.path.join(self.package_dest, filename))
-        except Exception, detail:
+        except Exception as detail:
             self.error = str(detail)
 
         if self.error is not None:
@@ -1593,8 +1592,8 @@ class MintBackup:
                 return
             else:
                 self.builder.get_object("button_forward").set_sensitive(True)
-        except Exception, detail:
-            print detail
+        except Exception as detail:
+            print(detail)
             MessageDialog(_("Backup Tool"), _("An error occurred while accessing the file"), Gtk.MessageType.ERROR).show()
 
     def refresh(self, w):
@@ -1630,7 +1629,7 @@ class MintBackup:
                     continue
                 line = line.split("\t")[0]
                 inst = True
-                if cache.has_key(line):
+                if line in cache:
                     pkg = cache[line]
                     if not pkg.is_installed:
                         desc = pkg.candidate.summary.replace("&", "&amp;")
@@ -1645,8 +1644,8 @@ class MintBackup:
                     model.append([inst, line, inst, line])
                     Gdk.threads_leave()
             source.close()
-        except Exception, detail:
-            print detail
+        except Exception as detail:
+            print(detail)
             MessageDialog(_("Backup Tool"), _("An error occurred while accessing the file"), Gtk.MessageType.ERROR).show()
         Gdk.threads_enter()
         self.builder.get_object("main_window").set_sensitive(True)
