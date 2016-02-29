@@ -675,19 +675,24 @@ class MintBackup:
 
         self.description = "mintBackup"
         desc = self.builder.get_object("entry_desc").get_text()
+
         if desc != "":
             self.description = desc
+
         try:
             of = os.path.join(self.backup_dest, ".mintbackup")
-            out = open(of, "w")
+
             lines = ["source: %s\n" % (self.backup_dest),
                      "destination: %s\n" % (self.backup_source),
                      "file_count: %s\n" % (self.file_count),
                      "description: %s\n" % (self.description)]
-            out.writelines(lines)
-            out.close()
-        except:
+
+            with open(of, "w") as out:
+                out.writelines(lines)
+        except Exception as detail:
+            print(detail)
             return False
+
         return True
 
     def backup(self):
@@ -915,6 +920,7 @@ class MintBackup:
         """ Utility method - copy file, also provides a quick way of aborting a copy, which
         using modules doesn't allow me to do..
         """
+
         try:
             # represents max buffer size
             BUF_MAX = 16 * 1024  # so we don't get stuck on I/O ops
