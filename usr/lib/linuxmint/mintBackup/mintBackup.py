@@ -1437,6 +1437,7 @@ class MintBackup:
             p = subprocess.Popen("aptitude search ~M", shell=True, stdout=subprocess.PIPE)
             self.blacklist = list()
             for l in p.stdout:
+                l = l.decode('utf-8')
                 l = l.rstrip("\r\n")
                 l = l.split(" ")
                 self.blacklist.append(l[2])
