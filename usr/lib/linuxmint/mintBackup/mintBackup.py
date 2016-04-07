@@ -27,7 +27,7 @@ except Exception as detail:
 gettext.install("mintbackup", "/usr/share/linuxmint/locale")
 
 HOME = os.path.expanduser("~")
-UI_FILE = '/usr/lib/linuxmint/mintBackup/mintBackup.ui'
+UI_FILE = '/usr/share/linuxmint/mintBackup/mintBackup.ui'
 
 
 class TarFileMonitor():
