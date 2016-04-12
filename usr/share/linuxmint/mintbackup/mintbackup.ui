@@ -408,7 +408,7 @@ up packages</property>
                     <child>
                       <object class="GtkImage" id="image_backup_dirs">
                         <property name="visible">True</property>
-                        <property name="pixbuf">backup-data.svg</property>
+                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/backup-data.svg</property>
                         <property name="pixel_size">48</property>
                         <property name="icon-size">6</property>
                       </object>
@@ -774,7 +774,7 @@ up packages</property>
                     <child>
                       <object class="GtkImage" id="image1">
                         <property name="visible">True</property>
-                        <property name="pixbuf">backup-data.svg</property>
+                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/backup-data.svg</property>
                         <property name="pixel_size">48</property>
                       </object>
                       <packing>
@@ -1003,7 +1003,7 @@ up packages</property>
                     <child>
                       <object class="GtkImage" id="image5">
                         <property name="visible">True</property>
-                        <property name="pixbuf">backup-data.svg</property>
+                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/backup-data.svg</property>
                         <property name="pixel_size">48</property>
                       </object>
                       <packing>
@@ -1099,7 +1099,7 @@ up packages</property>
                     <child>
                       <object class="GtkImage" id="image6">
                         <property name="visible">True</property>
-                        <property name="pixbuf">backup-data.svg</property>
+                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/backup-data.svg</property>
                         <property name="pixel_size">48</property>
                       </object>
                       <packing>
@@ -1244,7 +1244,7 @@ up packages</property>
                     <child>
                       <object class="GtkImage" id="image_finished">
                         <property name="visible">True</property>
-                        <property name="pixbuf">backup-data.svg</property>
+                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/backup-data.svg</property>
                         <property name="pixel_size">48</property>
                       </object>
                       <packing>
@@ -1352,7 +1352,7 @@ up packages</property>
                     <child>
                       <object class="GtkImage" id="image7">
                         <property name="visible">True</property>
-                        <property name="pixbuf">restore-data.svg</property>
+                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/restore-data.svg</property>
                         <property name="pixel_size">48</property>
                       </object>
                       <packing>
@@ -1591,7 +1591,7 @@ up packages</property>
                     <child>
                       <object class="GtkImage" id="image8">
                         <property name="visible">True</property>
-                        <property name="pixbuf">restore-data.svg</property>
+                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/restore-data.svg</property>
                         <property name="pixel_size">48</property>
                       </object>
                       <packing>
@@ -1777,7 +1777,7 @@ up packages</property>
                     <child>
                       <object class="GtkImage" id="image10">
                         <property name="visible">True</property>
-                        <property name="pixbuf">restore-data.svg</property>
+                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/restore-data.svg</property>
                         <property name="pixel_size">48</property>
                       </object>
                       <packing>
@@ -1925,7 +1925,7 @@ up packages</property>
                     <child>
                       <object class="GtkImage" id="image_restore_finished">
                         <property name="visible">True</property>
-                        <property name="pixbuf">restore-data.svg</property>
+                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/restore-data.svg</property>
                         <property name="pixel_size">48</property>
                       </object>
                       <packing>
@@ -2033,7 +2033,7 @@ up packages</property>
                     <child>
                       <object class="GtkImage" id="image15">
                         <property name="visible">True</property>
-                        <property name="pixbuf">backup-software.svg</property>
+                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/backup-software.svg</property>
                         <property name="pixel_size">48</property>
                       </object>
                       <packing>
@@ -2137,7 +2137,7 @@ up packages</property>
                       <object class="GtkImage" id="image16">
                         <property name="visible">True</property>
                         <property name="xpad">6</property>
-                        <property name="pixbuf">backup-software.svg</property>
+                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/backup-software.svg</property>
                         <property name="pixel_size">48</property>
                       </object>
                       <packing>
@@ -2331,7 +2331,7 @@ up packages</property>
                       <object class="GtkImage" id="image17">
                         <property name="visible">True</property>
                         <property name="xpad">6</property>
-                        <property name="pixbuf">backup-software.svg</property>
+                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/backup-software.svg</property>
                         <property name="pixel_size">48</property>
                       </object>
                       <packing>
@@ -2546,7 +2546,7 @@ up packages</property>
                       <object class="GtkImage" id="image20">
                         <property name="visible">True</property>
                         <property name="xpad">6</property>
-                        <property name="pixbuf">restore-software.svg</property>
+                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/restore-software.svg</property>
                         <property name="pixel_size">48</property>
                       </object>
                       <packing>
@@ -2652,7 +2652,7 @@ up packages</property>
                       <object class="GtkImage" id="image21">
                         <property name="visible">True</property>
                         <property name="xpad">6</property>
-                        <property name="pixbuf">restore-software.svg</property>
+                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/restore-software.svg</property>
                         <property name="pixel_size">48</property>
                       </object>
                       <packing>
@@ -2884,7 +2884,7 @@ up packages</property>
                       <object class="GtkImage" id="image25">
                         <property name="visible">True</property>
                         <property name="xpad">6</property>
-                        <property name="pixbuf">restore-software.svg</property>
+                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/restore-software.svg</property>
                         <property name="pixel_size">48</property>
                       </object>
                       <packing>
