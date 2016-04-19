@@ -189,10 +189,11 @@
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <child>
-                          <object class="GtkHBox" id="hbox19">
+                          <object class="GtkBox" id="hbox19">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="spacing">6</property>
+                            <property name="orientation">horizontal</property>
                             <child>
                               <object class="GtkImage" id="image_backup_data">
                                 <property name="visible">True</property>
@@ -262,10 +263,11 @@ of your files</property>
                         <property name="receives_default">True</property>
                         <property name="xalign">0</property>
                         <child>
-                          <object class="GtkHBox" id="hbox21">
+                          <object class="GtkBox" id="hbox21">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="spacing">6</property>
+                            <property name="orientation">horizontal</property>
                             <child>
                               <object class="GtkImage" id="image_backup_software">
                                 <property name="visible">True</property>
@@ -334,10 +336,11 @@ of your package list</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <child>
-                          <object class="GtkHBox" id="hbox20">
+                          <object class="GtkBox" id="hbox20">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="spacing">6</property>
+                            <property name="orientation">horizontal</property>
                             <child>
                               <object class="GtkImage" id="image_restore_data">
                                 <property name="visible">True</property>
@@ -408,10 +411,11 @@ you have created</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <child>
-                          <object class="GtkHBox" id="hbox22">
+                          <object class="GtkBox" id="hbox22">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="spacing">6</property>
+                            <property name="orientation">horizontal</property>
                             <child>
                               <object class="GtkImage" id="image_restore_software">
                                 <property name="visible">True</property>
@@ -502,9 +506,10 @@ up packages</property>
                 <property name="can_focus">False</property>
                 <property name="spacing">6</property>
                 <child>
-                  <object class="GtkHBox" id="hbox4">
+                  <object class="GtkBox" id="hbox4">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkVBox" id="vbox25">
                         <property name="visible">True</property>
@@ -704,10 +709,11 @@ up packages</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkHBox" id="hbox18">
+                              <object class="GtkBox" id="hbox18">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="spacing">6</property>
+                                <property name="orientation">horizontal</property>
                                 <child>
                                   <object class="GtkVBox" id="vbox14">
                                     <property name="visible">True</property>
@@ -904,9 +910,10 @@ up packages</property>
                 <property name="can_focus">False</property>
                 <property name="spacing">6</property>
                 <child>
-                  <object class="GtkHBox" id="hbox5">
+                  <object class="GtkBox" id="hbox5">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkVBox" id="vbox26">
                         <property name="visible">True</property>
@@ -969,9 +976,10 @@ up packages</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkHBox" id="hbox9">
+                  <object class="GtkBox" id="hbox9">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkScrolledWindow" id="scrolledwindow_excludes">
                         <property name="visible">True</property>
@@ -1014,9 +1022,10 @@ up packages</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <child>
-                              <object class="GtkHBox" id="hbox6">
+                              <object class="GtkBox" id="hbox6">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <property name="orientation">horizontal</property>
                                 <child>
                                   <object class="GtkImage" id="image2">
                                     <property name="visible">True</property>
@@ -1056,9 +1065,10 @@ up packages</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <child>
-                              <object class="GtkHBox" id="hbox7">
+                              <object class="GtkBox" id="hbox7">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <property name="orientation">horizontal</property>
                                 <child>
                                   <object class="GtkImage" id="image3">
                                     <property name="visible">True</property>
@@ -1098,9 +1108,10 @@ up packages</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <child>
-                              <object class="GtkHBox" id="hbox8">
+                              <object class="GtkBox" id="hbox8">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <property name="orientation">horizontal</property>
                                 <child>
                                   <object class="GtkImage" id="image4">
                                     <property name="visible">True</property>
@@ -1171,9 +1182,10 @@ up packages</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkHBox" id="hbox17">
+                  <object class="GtkBox" id="hbox17">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkVBox" id="vbox27">
                         <property name="visible">True</property>
@@ -1286,9 +1298,10 @@ up packages</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkHBox" id="hbox11">
+                  <object class="GtkBox" id="hbox11">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkVBox" id="vbox28">
                         <property name="visible">True</property>
@@ -1383,10 +1396,11 @@ up packages</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkHBox" id="hbox1">
+                      <object class="GtkBox" id="hbox1">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="spacing">6</property>
+                        <property name="orientation">horizontal</property>
                         <child>
                           <object class="GtkLabel" id="label_current_file">
                             <property name="visible">True</property>
@@ -1453,9 +1467,10 @@ up packages</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkHBox" id="hbox12">
+                  <object class="GtkBox" id="hbox12">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkVBox" id="vbox29">
                         <property name="visible">True</property>
@@ -1581,9 +1596,10 @@ up packages</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkHBox" id="hbox13">
+                  <object class="GtkBox" id="hbox13">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkVBox" id="vbox37">
                         <property name="visible">True</property>
@@ -1856,9 +1872,10 @@ up packages</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkHBox" id="hbox14">
+                  <object class="GtkBox" id="hbox14">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkVBox" id="vbox38">
                         <property name="visible">True</property>
@@ -2063,9 +2080,10 @@ up packages</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkHBox" id="hbox15">
+                  <object class="GtkBox" id="hbox15">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkVBox" id="vbox39">
                         <property name="visible">True</property>
@@ -2159,10 +2177,11 @@ up packages</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkHBox" id="hbox3">
+                      <object class="GtkBox" id="hbox3">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="spacing">6</property>
+                        <property name="orientation">horizontal</property>
                         <child>
                           <object class="GtkLabel" id="label_restore_status">
                             <property name="visible">True</property>
@@ -2232,9 +2251,10 @@ up packages</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkHBox" id="hbox16">
+                  <object class="GtkBox" id="hbox16">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkVBox" id="vbox40">
                         <property name="visible">True</property>
@@ -2360,9 +2380,10 @@ up packages</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkHBox" id="hbox23">
+                  <object class="GtkBox" id="hbox23">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkVBox" id="vbox30">
                         <property name="visible">True</property>
@@ -2483,9 +2504,10 @@ up packages</property>
                 <property name="can_focus">False</property>
                 <property name="spacing">10</property>
                 <child>
-                  <object class="GtkHBox" id="hbox24">
+                  <object class="GtkBox" id="hbox24">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkVBox" id="vbox31">
                         <property name="visible">True</property>
@@ -2548,9 +2570,10 @@ up packages</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkHBox" id="hbox25">
+                  <object class="GtkBox" id="hbox25">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkScrolledWindow" id="scrolledwindow2">
                         <property name="visible">True</property>
@@ -2596,9 +2619,10 @@ up packages</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <child>
-                              <object class="GtkHBox" id="hbox29">
+                              <object class="GtkBox" id="hbox29">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <property name="orientation">horizontal</property>
                                 <child>
                                   <object class="GtkImage" id="image18">
                                     <property name="visible">True</property>
@@ -2638,9 +2662,10 @@ up packages</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <child>
-                              <object class="GtkHBox" id="hbox30">
+                              <object class="GtkBox" id="hbox30">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <property name="orientation">horizontal</property>
                                 <child>
                                   <object class="GtkImage" id="image19">
                                     <property name="visible">True</property>
@@ -2712,9 +2737,10 @@ up packages</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkHBox" id="hbox26">
+                  <object class="GtkBox" id="hbox26">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkVBox" id="vbox32">
                         <property name="visible">True</property>
@@ -2798,10 +2824,11 @@ up packages</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkHBox" id="hbox27">
+                      <object class="GtkBox" id="hbox27">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="spacing">6</property>
+                        <property name="orientation">horizontal</property>
                         <child>
                           <object class="GtkLabel" id="label_current_package">
                             <property name="visible">True</property>
@@ -2864,9 +2891,10 @@ up packages</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkHBox" id="hbox28">
+                  <object class="GtkBox" id="hbox28">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkVBox" id="vbox33">
                         <property name="visible">True</property>
@@ -2966,9 +2994,10 @@ up packages</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkHBox" id="hbox31">
+                  <object class="GtkBox" id="hbox31">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkVBox" id="vbox34">
                         <property name="visible">True</property>
@@ -3089,9 +3118,10 @@ up packages</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkHBox" id="hbox32">
+                  <object class="GtkBox" id="hbox32">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkVBox" id="vbox35">
                         <property name="visible">True</property>
@@ -3154,9 +3184,10 @@ up packages</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkHBox" id="hbox33">
+                  <object class="GtkBox" id="hbox33">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkScrolledWindow" id="scrolledwindow3">
                         <property name="visible">True</property>
@@ -3200,9 +3231,10 @@ up packages</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <child>
-                              <object class="GtkHBox" id="hbox34">
+                              <object class="GtkBox" id="hbox34">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <property name="orientation">horizontal</property>
                                 <child>
                                   <object class="GtkImage" id="image22">
                                     <property name="visible">True</property>
@@ -3242,9 +3274,10 @@ up packages</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <child>
-                              <object class="GtkHBox" id="hbox35">
+                              <object class="GtkBox" id="hbox35">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <property name="orientation">horizontal</property>
                                 <child>
                                   <object class="GtkImage" id="image23">
                                     <property name="visible">True</property>
@@ -3284,9 +3317,10 @@ up packages</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <child>
-                              <object class="GtkHBox" id="hbox36">
+                              <object class="GtkBox" id="hbox36">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <property name="orientation">horizontal</property>
                                 <child>
                                   <object class="GtkImage" id="image24">
                                     <property name="visible">True</property>
@@ -3358,9 +3392,10 @@ up packages</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkHBox" id="hbox37">
+                  <object class="GtkBox" id="hbox37">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkVBox" id="vbox36">
                         <property name="visible">True</property>
