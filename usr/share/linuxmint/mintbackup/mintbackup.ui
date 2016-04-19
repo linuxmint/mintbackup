@@ -133,16 +133,18 @@
             <property name="show_tabs">False</property>
             <property name="show_border">False</property>
             <child>
-              <object class="GtkVBox" id="vbox2">
+              <object class="GtkBox" id="vbox2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="spacing">3</property>
+                <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkVBox" id="vbox24">
+                  <object class="GtkBox" id="vbox24">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="border_width">6</property>
                     <property name="spacing">6</property>
+                    <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkLabel" id="label_wizard1">
                         <property name="visible">True</property>
@@ -209,9 +211,10 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkVBox" id="vbox41">
+                              <object class="GtkBox" id="vbox41">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <property name="orientation">vertical</property>
                                 <child>
                                   <object class="GtkLabel" id="label_create_backup">
                                     <property name="visible">True</property>
@@ -281,9 +284,10 @@ of your files</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkVBox" id="vbox43">
+                              <object class="GtkBox" id="vbox43">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <property name="orientation">vertical</property>
                                 <child>
                                   <object class="GtkLabel" id="label_create_packages">
                                     <property name="visible">True</property>
@@ -356,9 +360,10 @@ of your package list</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkVBox" id="vbox42">
+                              <object class="GtkBox" id="vbox42">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <property name="orientation">vertical</property>
                                 <child>
                                   <object class="GtkLabel" id="label_restore_backup">
                                     <property name="visible">True</property>
@@ -430,9 +435,10 @@ you have created</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkVBox" id="vbox44">
+                              <object class="GtkBox" id="vbox44">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <property name="orientation">vertical</property>
                                 <child>
                                   <object class="GtkLabel" id="label_restore_packages">
                                     <property name="visible">True</property>
@@ -501,21 +507,23 @@ up packages</property>
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox3">
+              <object class="GtkBox" id="vbox3">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="spacing">6</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkBox" id="hbox4">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="orientation">horizontal</property>
                     <child>
-                      <object class="GtkVBox" id="vbox25">
+                      <object class="GtkBox" id="vbox25">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
                         <property name="spacing">6</property>
+                        <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkLabel" id="label_title_destination">
                             <property name="visible">True</property>
@@ -594,10 +602,11 @@ up packages</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <child>
-                          <object class="GtkVBox" id="vbox13">
+                          <object class="GtkBox" id="vbox13">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="spacing">6</property>
+                            <property name="orientation">vertical</property>
                             <child>
                               <object class="GtkTable" id="table13">
                                 <property name="visible">True</property>
@@ -715,9 +724,10 @@ up packages</property>
                                 <property name="spacing">6</property>
                                 <property name="orientation">horizontal</property>
                                 <child>
-                                  <object class="GtkVBox" id="vbox14">
+                                  <object class="GtkBox" id="vbox14">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
+                                    <property name="orientation">vertical</property>
                                     <child>
                                       <object class="GtkCheckButton" id="checkbutton_integrity">
                                         <property name="label" translatable="yes">checkbutton</property>
@@ -756,9 +766,10 @@ up packages</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkVBox" id="vbox15">
+                                  <object class="GtkBox" id="vbox15">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
+                                    <property name="orientation">vertical</property>
                                     <child>
                                       <object class="GtkCheckButton" id="checkbutton_links">
                                         <property name="label" translatable="yes">checkbutton</property>
@@ -905,21 +916,23 @@ up packages</property>
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox5">
+              <object class="GtkBox" id="vbox5">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="spacing">6</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkBox" id="hbox5">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="orientation">horizontal</property>
                     <child>
-                      <object class="GtkVBox" id="vbox26">
+                      <object class="GtkBox" id="vbox26">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
                         <property name="spacing">6</property>
+                        <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkLabel" id="label_title_exclude">
                             <property name="visible">True</property>
@@ -1178,20 +1191,22 @@ up packages</property>
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox12">
+              <object class="GtkBox" id="vbox12">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkBox" id="hbox17">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="orientation">horizontal</property>
                     <child>
-                      <object class="GtkVBox" id="vbox27">
+                      <object class="GtkBox" id="vbox27">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
                         <property name="spacing">6</property>
+                        <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkLabel" id="label_title_review">
                             <property name="visible">True</property>
@@ -1294,20 +1309,22 @@ up packages</property>
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox1">
+              <object class="GtkBox" id="vbox1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkBox" id="hbox11">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="orientation">horizontal</property>
                     <child>
-                      <object class="GtkVBox" id="vbox28">
+                      <object class="GtkBox" id="vbox28">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
                         <property name="spacing">6</property>
+                        <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkLabel" id="label_title_copying">
                             <property name="visible">True</property>
@@ -1364,11 +1381,12 @@ up packages</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkVBox" id="vbox6">
+                  <object class="GtkBox" id="vbox6">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="border_width">6</property>
                     <property name="spacing">6</property>
+                    <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkLabel" id="label_file_count">
                         <property name="visible">True</property>
@@ -1463,20 +1481,23 @@ up packages</property>
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox7">
+              <object class="GtkBox" id="vbox7">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkBox" id="hbox12">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="orientation">horizontal</property>
                     <child>
-                      <object class="GtkVBox" id="vbox29">
+                      <object class="GtkBox" id="vbox29">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
                         <property name="spacing">6</property>
+                        <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkLabel" id="label_title_finished">
                             <property name="visible">True</property>
@@ -1592,20 +1613,22 @@ up packages</property>
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox8">
+              <object class="GtkBox" id="vbox8">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkBox" id="hbox13">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="orientation">horizontal</property>
                     <child>
-                      <object class="GtkVBox" id="vbox37">
+                      <object class="GtkBox" id="vbox37">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
                         <property name="spacing">6</property>
+                        <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkLabel" id="label_title_restore1">
                             <property name="visible">True</property>
@@ -1868,20 +1891,22 @@ up packages</property>
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox9">
+              <object class="GtkBox" id="vbox9">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkBox" id="hbox14">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="orientation">horizontal</property>
                     <child>
-                      <object class="GtkVBox" id="vbox38">
+                      <object class="GtkBox" id="vbox38">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
                         <property name="spacing">6</property>
+                        <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkLabel" id="label_title_restore2">
                             <property name="visible">True</property>
@@ -2076,20 +2101,22 @@ up packages</property>
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox4">
+              <object class="GtkBox" id="vbox4">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkBox" id="hbox15">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="orientation">horizontal</property>
                     <child>
-                      <object class="GtkVBox" id="vbox39">
+                      <object class="GtkBox" id="vbox39">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
                         <property name="spacing">6</property>
+                        <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkLabel" id="label_title_restore3">
                             <property name="visible">True</property>
@@ -2146,10 +2173,11 @@ up packages</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkVBox" id="vbox10">
+                  <object class="GtkBox" id="vbox10">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="border_width">6</property>
+                    <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkProgressBar" id="progressbar_restore">
                         <property name="visible">True</property>
@@ -2247,20 +2275,22 @@ up packages</property>
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox11">
+              <object class="GtkBox" id="vbox11">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkBox" id="hbox16">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="orientation">horizontal</property>
                     <child>
-                      <object class="GtkVBox" id="vbox40">
+                      <object class="GtkBox" id="vbox40">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
                         <property name="spacing">6</property>
+                        <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkLabel" id="label_title_restore4">
                             <property name="visible">True</property>
@@ -2376,20 +2406,22 @@ up packages</property>
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox16">
+              <object class="GtkBox" id="vbox16">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkBox" id="hbox23">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="orientation">horizontal</property>
                     <child>
-                      <object class="GtkVBox" id="vbox30">
+                      <object class="GtkBox" id="vbox30">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
                         <property name="spacing">6</property>
+                        <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkLabel" id="label_title_software_backup1">
                             <property name="visible">True</property>
@@ -2499,21 +2531,23 @@ up packages</property>
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox20">
+              <object class="GtkBox" id="vbox20">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="spacing">10</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkBox" id="hbox24">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="orientation">horizontal</property>
                     <child>
-                      <object class="GtkVBox" id="vbox31">
+                      <object class="GtkBox" id="vbox31">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
                         <property name="spacing">6</property>
+                        <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkLabel" id="label_title_software_backup2">
                             <property name="visible">True</property>
@@ -2733,20 +2767,22 @@ up packages</property>
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox17">
+              <object class="GtkBox" id="vbox17">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkBox" id="hbox26">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="orientation">horizontal</property>
                     <child>
-                      <object class="GtkVBox" id="vbox32">
+                      <object class="GtkBox" id="vbox32">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
                         <property name="spacing">6</property>
+                        <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkLabel" id="label_title_software_backup3">
                             <property name="visible">True</property>
@@ -2806,10 +2842,11 @@ up packages</property>
                   <placeholder/>
                 </child>
                 <child>
-                  <object class="GtkVBox" id="vbox18">
+                  <object class="GtkBox" id="vbox18">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="border_width">6</property>
+                    <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkProgressBar" id="progressbar_packages">
                         <property name="visible">True</property>
@@ -2887,20 +2924,22 @@ up packages</property>
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox19">
+              <object class="GtkBox" id="vbox19">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkBox" id="hbox28">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="orientation">horizontal</property>
                     <child>
-                      <object class="GtkVBox" id="vbox33">
+                      <object class="GtkBox" id="vbox33">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
                         <property name="spacing">6</property>
+                        <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkLabel" id="label_title_software_backup4">
                             <property name="visible">True</property>
@@ -2990,20 +3029,22 @@ up packages</property>
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox21">
+              <object class="GtkBox" id="vbox21">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkBox" id="hbox31">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="orientation">horizontal</property>
                     <child>
-                      <object class="GtkVBox" id="vbox34">
+                      <object class="GtkBox" id="vbox34">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
                         <property name="spacing">6</property>
+                        <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkLabel" id="label_title_software_restore1">
                             <property name="visible">True</property>
@@ -3114,20 +3155,22 @@ up packages</property>
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox22">
+              <object class="GtkBox" id="vbox22">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkBox" id="hbox32">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="orientation">horizontal</property>
                     <child>
-                      <object class="GtkVBox" id="vbox35">
+                      <object class="GtkBox" id="vbox35">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
                         <property name="spacing">6</property>
+                        <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkLabel" id="label_title_software_restore2">
                             <property name="visible">True</property>
@@ -3388,20 +3431,22 @@ up packages</property>
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox23">
+              <object class="GtkBox" id="vbox23">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkBox" id="hbox37">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="orientation">horizontal</property>
                     <child>
-                      <object class="GtkVBox" id="vbox36">
+                      <object class="GtkBox" id="vbox36">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
                         <property name="spacing">6</property>
+                        <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkLabel" id="label_title_software_restore3">
                             <property name="visible">True</property>
