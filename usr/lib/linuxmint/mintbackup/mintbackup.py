@@ -1540,8 +1540,8 @@ class MintBackup:
                     lab.set_label(row[1])
                     Gdk.threads_leave()
             out.close()
-            os.system("chmod a+rx " + self.package_dest)
-            os.system("chmod a+rw " + os.path.join(self.package_dest, filename))
+            subprocess.call(["chmod", "a+rx", self.package_dest])
+            subprocess.call(["chmod", "a+rw", os.path.join(self.package_dest, filename)])
         except Exception as detail:
             self.error = str(detail)
 
