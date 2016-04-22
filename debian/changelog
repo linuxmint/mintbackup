@@ -1,3 +1,34 @@
+mintbackup (2.1.9) sarah; urgency=medium
+
+  [ Daniel Alley ]
+  * pep8 formatting
+  * remove dh_python from build process
+  * pygi-convert.sh first pass
+  * added ui file
+  * removed deprecated properties from ui file
+  * removed glade file
+  * update debian/control
+  * lots of manual fixes, now hitting an X window system error
+  * rearrange imports
+  * reformatted docstrings
+  * PEP8 formatting on "if" statements
+  * mtwebster's fix for the 'X server BadAlloc' error
+  * Python3 conversion
+  * formatting
+  * fixed unicode string error
+  * added aptitude as a dependency
+  * Moved .ui file fom /usr/lib to /usr/share
+  * Moved icons to /usr/share, renamed folders from camelCase to lowercase
+  * Replaced GtkHBox's with GtkBox's
+  * Replaced GtkVBox's with GtkBox's
+  * Fix command injection issue
+
+  [ Clement Lefebvre ]
+  * Fixed padding and border issues in UI file
+  * Updated generated files
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 22 Apr 2016 13:59:43 +0100
+
 mintbackup (2.1.8) sarah; urgency=medium
 
   [ djcj ]
