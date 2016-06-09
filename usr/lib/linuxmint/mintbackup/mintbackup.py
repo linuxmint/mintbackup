@@ -1676,7 +1676,7 @@ class MintBackup:
         self.builder.get_object("main_window").set_sensitive(False)
         Gdk.threads_leave()
 
-        cmd = ["sudo", "/usr/sbin/synaptic", "--hide-main-window", "--non-interactive", "--parent-window-id", str(self.builder.get_object("main_window").get_window().xid)]
+        cmd = ["sudo", "/usr/sbin/synaptic", "--hide-main-window", "--non-interactive", "--parent-window-id", str(self.builder.get_object("main_window").get_window().get_xid())]
         cmd.append("--progress-str")
         cmd.append("\"" + _("Please wait, this can take some time") + "\"")
         cmd.append("--finish-str")
