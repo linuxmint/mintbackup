@@ -1,3 +1,10 @@
+mintbackup (2.2.0) sarah; urgency=medium
+
+  [ Michael Webster ]
+  * mintbackup.py: use gdk_x11_window_get_xid() - we can't get it via .xid
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 10 Jun 2016 15:09:13 +0100
+
 mintbackup (2.1.9) sarah; urgency=medium
 
   [ Daniel Alley ]
