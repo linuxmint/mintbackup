@@ -1,3 +1,10 @@
+mintbackup (2.2.1) sarah; urgency=medium
+
+  * Fixed software selection restoration
+  * Removed harcoded colors
+
+ -- Clement Lefebvre <root@linuxmint.com>  Sun, 19 Jun 2016 10:34:50 +0100
+
 mintbackup (2.2.0) sarah; urgency=medium
 
   [ Michael Webster ]
