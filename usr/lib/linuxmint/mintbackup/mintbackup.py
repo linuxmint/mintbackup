@@ -399,7 +399,7 @@ class MintBackup:
         # i18n - Page 16 (packages install done)
         self.builder.get_object("label_title_software_restore3").set_markup("<big><b>" + _("Restore software selection") + "</b></big>")
         self.builder.get_object("label_caption_software_restore3").set_markup("<i>" + _("The restoration is now finished") + "</i>")
-        self.builder.get_object("label_install_done_value").set_markup(_("Your package selection was restored succesfully"))
+        self.builder.get_object("label_install_done_value").set_markup(_("Your package selection was restored successfully"))
 
     def abt_resp(self, w, r):
         if r == Gtk.ResponseType.CANCEL:
@@ -868,7 +868,7 @@ class MintBackup:
         if len(self.errors) > 0:
             Gdk.threads_enter()
             img = self.iconTheme.load_icon("dialog-error", 48, 0)
-            self.builder.get_object("label_finished_status").set_markup(_("An error occured during the backup"))
+            self.builder.get_object("label_finished_status").set_markup(_("An error occurred during the backup"))
             self.builder.get_object("image_finished").set_from_pixbuf(img)
             self.builder.get_object("treeview_backup_errors").set_model(self.errors)
             self.builder.get_object("win_errors").show_all()
@@ -1397,7 +1397,7 @@ class MintBackup:
             self.error = _("Warning: Some files were not restored, copied: %(current_file)d files out of %(total)d total") % {'current_file': current_file, 'total': total}
         if len(self.errors) > 0:
             Gdk.threads_enter()
-            self.builder.get_object("label_restore_finished_value").set_label(_("An error occured during the restoration"))
+            self.builder.get_object("label_restore_finished_value").set_label(_("An error occurred during the restoration"))
             img = self.iconTheme.load_icon("dialog-error", 48, 0)
             self.builder.get_object("image_restore_finished").set_from_pixbuf(img)
             self.builder.get_object("treeview_restore_errors").set_model(self.errors)
@@ -1547,7 +1547,7 @@ class MintBackup:
 
         if self.error is not None:
             Gdk.threads_enter()
-            self.builder.get_object("label_packages_done_value").set_label(_("An error occured during the backup:") + "\n" + self.error)
+            self.builder.get_object("label_packages_done_value").set_label(_("An error occurred during the backup:") + "\n" + self.error)
             img = self.iconTheme.load_icon("dialog-error", 48, 0)
             self.builder.get_object("image_packages_done").set_from_pixbuf(img)
             self.builder.get_object("notebook1").next_page()
@@ -1564,7 +1564,7 @@ class MintBackup:
                 Gdk.threads_enter()
                 lab.set_label("Done")
                 pbar.set_text("Done")
-                self.builder.get_object("label_packages_done_value").set_label(_("Your software selection was backed up succesfully"))
+                self.builder.get_object("label_packages_done_value").set_label(_("Your software selection was backed up successfully"))
                 img = self.iconTheme.load_icon("dialog-information", 48, 0)
                 self.builder.get_object("image_packages_done").set_from_pixbuf(img)
                 self.builder.get_object("notebook1").next_page()
