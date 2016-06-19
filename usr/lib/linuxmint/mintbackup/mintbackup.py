@@ -1685,7 +1685,8 @@ class MintBackup:
         model = self.builder.get_object("treeview_package_list").get_model()
         for row in model:
             if row[0]:
-                f.write("%s\tinstall\n" % row[3])
+                line = ("%s\tinstall\n" % row[3]).encode("UTF-8")
+                f.write(line)
         cmd.append("--set-selections-file")
         cmd.append("%s" % f.name)
         f.flush()
