@@ -324,7 +324,7 @@ msgid "The restoration is now finished"
 msgstr ""
 
 #: usr/lib/linuxmint/mintbackup/mintbackup.py:402
-msgid "Your package selection was restored succesfully"
+msgid "Your package selection was restored successfully"
 msgstr ""
 
 #: usr/lib/linuxmint/mintbackup/mintbackup.py:458
@@ -426,7 +426,7 @@ msgid ""
 msgstr ""
 
 #: usr/lib/linuxmint/mintbackup/mintbackup.py:871
-msgid "An error occured during the backup"
+msgid "An error occurred during the backup"
 msgstr ""
 
 #: usr/lib/linuxmint/mintbackup/mintbackup.py:881
@@ -465,7 +465,7 @@ msgid ""
 msgstr ""
 
 #: usr/lib/linuxmint/mintbackup/mintbackup.py:1400
-msgid "An error occured during the restoration"
+msgid "An error occurred during the restoration"
 msgstr ""
 
 #: usr/lib/linuxmint/mintbackup/mintbackup.py:1411
@@ -477,11 +477,11 @@ msgid "The restoration completed successfully"
 msgstr ""
 
 #: usr/lib/linuxmint/mintbackup/mintbackup.py:1550
-msgid "An error occured during the backup:"
+msgid "An error occurred during the backup:"
 msgstr ""
 
 #: usr/lib/linuxmint/mintbackup/mintbackup.py:1567
-msgid "Your software selection was backed up succesfully"
+msgid "Your software selection was backed up successfully"
 msgstr ""
 
 #: usr/lib/linuxmint/mintbackup/mintbackup.py:1596
