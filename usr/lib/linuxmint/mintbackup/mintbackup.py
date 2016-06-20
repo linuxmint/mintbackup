@@ -1639,8 +1639,12 @@ class MintBackup:
                 if line in cache:
                     pkg = cache[line]
                     if not pkg.is_installed:
-                        desc = pkg.candidate.summary.replace("&", "&amp;")
-                        line = "<big>" + line + "</big>\n<small>" + desc + "</small>"
+                        if pkg.candidate is not None:
+                            desc = pkg.candidate.summary.replace("&", "&amp;")
+                            line = "<big>" + line + "</big>\n<small>" + desc + "</small>"
+                        else:
+                            inst = False
+                            line = "<big>" + line + "</big>\n<small>" + _("Could not locate the package") + "</small>"
                         Gdk.threads_enter()
                         model.append([inst, line, inst, pkg.name])
                         Gdk.threads_leave()
