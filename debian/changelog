@@ -1,3 +1,13 @@
+mintbackup (2.2.2) sarah; urgency=medium
+
+  [ leigh123linux ]
+  * fix spelling mistakes
+
+  [ Clement Lefebvre ]
+  * Fix for #26
+
+ -- Clement Lefebvre <root@linuxmint.com>  Mon, 20 Jun 2016 09:54:30 +0100
+
 mintbackup (2.2.1) sarah; urgency=medium
 
   * Fixed software selection restoration
