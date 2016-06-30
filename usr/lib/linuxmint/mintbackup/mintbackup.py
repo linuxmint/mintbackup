@@ -1336,7 +1336,6 @@ class MintBackup:
                         except Exception as detail:
                             print(detail)
                             self.errors.append([dir[0], str(detail)])
-                    current_file = current_file + 1
                     Gdk.threads_enter()
                     label.set_label(path)
                     Gdk.threads_leave()
