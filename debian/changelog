@@ -1,3 +1,10 @@
+mintbackup (2.2.4) sarah; urgency=medium
+
+  [ aiglebleu ]
+  * Fix restore counter incrementing twice per file
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 17 Aug 2016 12:26:22 +0200
+
 mintbackup (2.2.3) sarah; urgency=medium
 
   [ Anthony Li ]
