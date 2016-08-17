@@ -716,6 +716,14 @@ class MintBackup:
             pbar.pulse()
             Gdk.threads_leave()
             for f in files:
+                # Named pipes can cause program to hang. Find and add them to the exclude list.
+                file_full_path = top + "/" + f
+                excludes = self.builder.get_object("treeview_excludes").get_model()
+                if stat.S_ISFIFO(os.stat(file_full_path).st_mode):  # If file is a named pipe
+                    if not file_full_path.find(self.backup_source):
+                        excludes.append([file_full_path[len(self.backup_source) + 1:], self.fileIcon, file_full_path])
+                        self.errors.append([_("Skipping %(skipped_file)s because named pipes are not "
+                                              "supported.") % {'skipped_file': file_full_path}, None])
                 if not self.operating:
                     break
                 if not self.is_excluded(os.path.join(top, f)):
