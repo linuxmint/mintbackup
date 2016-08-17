@@ -1,3 +1,10 @@
+mintbackup (2.2.3) sarah; urgency=medium
+
+  [ Anthony Li ]
+  * Fix named pipe handling bug (#846262 on launchpad)
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 17 Aug 2016 12:22:37 +0200
+
 mintbackup (2.2.2) sarah; urgency=medium
 
   [ leigh123linux ]
