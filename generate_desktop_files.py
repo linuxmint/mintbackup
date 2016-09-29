@@ -29,21 +29,6 @@ additionalfiles.generate(DOMAIN, PATH, "usr/share/applications/mintbackup.deskto
 prefix = "[Desktop Entry]\n"
 
 suffix = """Exec=mintBackup
-Icon=/usr/share/pixmaps/mintbackup/icon.png
-Terminal=false
-Type=Application
-Encoding=UTF-8
-Categories=Application;System;Settings
-NoDisplay=true
-MimeType=application/x-backup;
-"""
-
-additionalfiles.generate(DOMAIN, PATH, "usr/share/applications/mintbackup_mime.desktop", prefix, _("Backup Tool"), _("Make a backup of your home directory"), suffix)
-
-
-prefix = "[Desktop Entry]\n"
-
-suffix = """Exec=mintBackup
 Icon=mintbackup
 Terminal=false
 Type=Application
