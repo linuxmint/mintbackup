@@ -47,6 +47,7 @@
     <property name="window_position">center</property>
     <property name="default_width">400</property>
     <property name="default_height">300</property>
+    <property name="icon_name">mintbackup</property>
     <property name="type_hint">normal</property>
     <child internal-child="vbox">
       <object class="GtkBox" id="dialog-vbox1">
@@ -136,15 +137,15 @@
               <object class="GtkBox" id="vbox2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="spacing">3</property>
                 <property name="orientation">vertical</property>
+                <property name="spacing">3</property>
                 <child>
                   <object class="GtkBox" id="vbox24">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="border_width">6</property>
-                    <property name="spacing">6</property>
                     <property name="orientation">vertical</property>
+                    <property name="spacing">6</property>
                     <child>
                       <object class="GtkLabel" id="label_wizard1">
                         <property name="visible">True</property>
@@ -195,13 +196,12 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="spacing">6</property>
-                            <property name="orientation">horizontal</property>
                             <child>
                               <object class="GtkImage" id="image_backup_data">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="stock">gtk-save</property>
                                 <property name="pixel_size">36</property>
+                                <property name="icon_name">mintbackup-data</property>
                                 <property name="icon_size">5</property>
                               </object>
                               <packing>
@@ -270,12 +270,13 @@ of your files</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="spacing">6</property>
-                            <property name="orientation">horizontal</property>
                             <child>
                               <object class="GtkImage" id="image_backup_software">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="pixel_size">36</property>
+                                <property name="icon_name">mintbackup-software</property>
+                                <property name="icon_size">5</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -344,13 +345,12 @@ of your package list</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="spacing">6</property>
-                            <property name="orientation">horizontal</property>
                             <child>
                               <object class="GtkImage" id="image_restore_data">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="stock">gtk-undo</property>
                                 <property name="pixel_size">36</property>
+                                <property name="icon_name">mintbackup-restore-data</property>
                                 <property name="icon_size">5</property>
                               </object>
                               <packing>
@@ -420,13 +420,13 @@ you have created</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="spacing">6</property>
-                            <property name="orientation">horizontal</property>
                             <child>
                               <object class="GtkImage" id="image_restore_software">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="pixel_size">36</property>
-                                <property name="icon_name">system-software-update</property>
+                                <property name="icon_name">mintbackup-restore-software</property>
+                                <property name="icon_size">5</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -510,20 +510,19 @@ up packages</property>
               <object class="GtkBox" id="vbox3">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="spacing">6</property>
                 <property name="orientation">vertical</property>
+                <property name="spacing">6</property>
                 <child>
                   <object class="GtkBox" id="hbox4">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkBox" id="vbox25">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
-                        <property name="spacing">6</property>
                         <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel" id="label_title_destination">
                             <property name="visible">True</property>
@@ -561,8 +560,8 @@ up packages</property>
                       <object class="GtkImage" id="image_backup_dirs">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/backup-data.svg</property>
                         <property name="pixel_size">48</property>
+                        <property name="icon_name">mintbackup-software</property>
                         <property name="icon_size">6</property>
                       </object>
                       <packing>
@@ -605,8 +604,8 @@ up packages</property>
                           <object class="GtkBox" id="vbox13">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="spacing">6</property>
                             <property name="orientation">vertical</property>
+                            <property name="spacing">6</property>
                             <child>
                               <object class="GtkTable" id="table13">
                                 <property name="visible">True</property>
@@ -722,7 +721,6 @@ up packages</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="spacing">6</property>
-                                <property name="orientation">horizontal</property>
                                 <child>
                                   <object class="GtkBox" id="vbox14">
                                     <property name="visible">True</property>
@@ -919,20 +917,19 @@ up packages</property>
               <object class="GtkBox" id="vbox5">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="spacing">6</property>
                 <property name="orientation">vertical</property>
+                <property name="spacing">6</property>
                 <child>
                   <object class="GtkBox" id="hbox5">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkBox" id="vbox26">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
-                        <property name="spacing">6</property>
                         <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel" id="label_title_exclude">
                             <property name="visible">True</property>
@@ -970,8 +967,8 @@ up packages</property>
                       <object class="GtkImage" id="image1">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/backup-data.svg</property>
                         <property name="pixel_size">48</property>
+                        <property name="icon_name">mintbackup-data</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -992,7 +989,6 @@ up packages</property>
                   <object class="GtkBox" id="hbox9">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkScrolledWindow" id="scrolledwindow_excludes">
                         <property name="visible">True</property>
@@ -1038,7 +1034,6 @@ up packages</property>
                               <object class="GtkBox" id="hbox6">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="orientation">horizontal</property>
                                 <child>
                                   <object class="GtkImage" id="image2">
                                     <property name="visible">True</property>
@@ -1081,7 +1076,6 @@ up packages</property>
                               <object class="GtkBox" id="hbox7">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="orientation">horizontal</property>
                                 <child>
                                   <object class="GtkImage" id="image3">
                                     <property name="visible">True</property>
@@ -1124,7 +1118,6 @@ up packages</property>
                               <object class="GtkBox" id="hbox8">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="orientation">horizontal</property>
                                 <child>
                                   <object class="GtkImage" id="image4">
                                     <property name="visible">True</property>
@@ -1199,14 +1192,13 @@ up packages</property>
                   <object class="GtkBox" id="hbox17">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkBox" id="vbox27">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
-                        <property name="spacing">6</property>
                         <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel" id="label_title_review">
                             <property name="visible">True</property>
@@ -1244,8 +1236,8 @@ up packages</property>
                       <object class="GtkImage" id="image5">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/backup-data.svg</property>
                         <property name="pixel_size">48</property>
+                        <property name="icon_name">mintbackup-data</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1317,14 +1309,13 @@ up packages</property>
                   <object class="GtkBox" id="hbox11">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkBox" id="vbox28">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
-                        <property name="spacing">6</property>
                         <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel" id="label_title_copying">
                             <property name="visible">True</property>
@@ -1362,8 +1353,8 @@ up packages</property>
                       <object class="GtkImage" id="image6">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/backup-data.svg</property>
                         <property name="pixel_size">48</property>
+                        <property name="icon_name">mintbackup-data</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1385,8 +1376,8 @@ up packages</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="border_width">6</property>
-                    <property name="spacing">6</property>
                     <property name="orientation">vertical</property>
+                    <property name="spacing">6</property>
                     <child>
                       <object class="GtkLabel" id="label_file_count">
                         <property name="visible">True</property>
@@ -1418,7 +1409,6 @@ up packages</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="spacing">6</property>
-                        <property name="orientation">horizontal</property>
                         <child>
                           <object class="GtkLabel" id="label_current_file">
                             <property name="visible">True</property>
@@ -1485,19 +1475,17 @@ up packages</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
-                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkBox" id="hbox12">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkBox" id="vbox29">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
-                        <property name="spacing">6</property>
                         <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel" id="label_title_finished">
                             <property name="visible">True</property>
@@ -1535,7 +1523,6 @@ up packages</property>
                       <object class="GtkImage" id="image_finished">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/backup-data.svg</property>
                         <property name="pixel_size">48</property>
                       </object>
                       <packing>
@@ -1621,14 +1608,13 @@ up packages</property>
                   <object class="GtkBox" id="hbox13">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkBox" id="vbox37">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
-                        <property name="spacing">6</property>
                         <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel" id="label_title_restore1">
                             <property name="visible">True</property>
@@ -1666,8 +1652,8 @@ up packages</property>
                       <object class="GtkImage" id="image7">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/restore-data.svg</property>
                         <property name="pixel_size">48</property>
+                        <property name="icon_name">mintbackup-restore-data</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1866,6 +1852,12 @@ up packages</property>
                     <child>
                       <placeholder/>
                     </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -1899,14 +1891,13 @@ up packages</property>
                   <object class="GtkBox" id="hbox14">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkBox" id="vbox38">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
-                        <property name="spacing">6</property>
                         <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel" id="label_title_restore2">
                             <property name="visible">True</property>
@@ -1944,8 +1935,8 @@ up packages</property>
                       <object class="GtkImage" id="image8">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/restore-data.svg</property>
                         <property name="pixel_size">48</property>
+                        <property name="icon_name">mintbackup-restore-data</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -2109,14 +2100,13 @@ up packages</property>
                   <object class="GtkBox" id="hbox15">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkBox" id="vbox39">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
-                        <property name="spacing">6</property>
                         <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel" id="label_title_restore3">
                             <property name="visible">True</property>
@@ -2154,8 +2144,8 @@ up packages</property>
                       <object class="GtkImage" id="image10">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/restore-data.svg</property>
                         <property name="pixel_size">48</property>
+                        <property name="icon_name">mintbackup-restore-data</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -2209,7 +2199,6 @@ up packages</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="spacing">6</property>
-                        <property name="orientation">horizontal</property>
                         <child>
                           <object class="GtkLabel" id="label_restore_status">
                             <property name="visible">True</property>
@@ -2283,14 +2272,13 @@ up packages</property>
                   <object class="GtkBox" id="hbox16">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkBox" id="vbox40">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
-                        <property name="spacing">6</property>
                         <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel" id="label_title_restore4">
                             <property name="visible">True</property>
@@ -2328,8 +2316,8 @@ up packages</property>
                       <object class="GtkImage" id="image_restore_finished">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/restore-data.svg</property>
                         <property name="pixel_size">48</property>
+                        <property name="icon_name">mintbackup-restore-data</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -2414,14 +2402,13 @@ up packages</property>
                   <object class="GtkBox" id="hbox23">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkBox" id="vbox30">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
-                        <property name="spacing">6</property>
                         <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel" id="label_title_software_backup1">
                             <property name="visible">True</property>
@@ -2459,8 +2446,8 @@ up packages</property>
                       <object class="GtkImage" id="image15">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/backup-software.svg</property>
                         <property name="pixel_size">48</property>
+                        <property name="icon_name">mintbackup-software</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -2534,20 +2521,19 @@ up packages</property>
               <object class="GtkBox" id="vbox20">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="spacing">10</property>
                 <property name="orientation">vertical</property>
+                <property name="spacing">10</property>
                 <child>
                   <object class="GtkBox" id="hbox24">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkBox" id="vbox31">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
-                        <property name="spacing">6</property>
                         <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel" id="label_title_software_backup2">
                             <property name="visible">True</property>
@@ -2586,8 +2572,8 @@ up packages</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="xpad">6</property>
-                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/backup-software.svg</property>
                         <property name="pixel_size">48</property>
+                        <property name="icon_name">mintbackup-software</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -2607,7 +2593,6 @@ up packages</property>
                   <object class="GtkBox" id="hbox25">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkScrolledWindow" id="scrolledwindow2">
                         <property name="visible">True</property>
@@ -2656,7 +2641,6 @@ up packages</property>
                               <object class="GtkBox" id="hbox29">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="orientation">horizontal</property>
                                 <child>
                                   <object class="GtkImage" id="image18">
                                     <property name="visible">True</property>
@@ -2699,7 +2683,6 @@ up packages</property>
                               <object class="GtkBox" id="hbox30">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="orientation">horizontal</property>
                                 <child>
                                   <object class="GtkImage" id="image19">
                                     <property name="visible">True</property>
@@ -2775,14 +2758,13 @@ up packages</property>
                   <object class="GtkBox" id="hbox26">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkBox" id="vbox32">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
-                        <property name="spacing">6</property>
                         <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel" id="label_title_software_backup3">
                             <property name="visible">True</property>
@@ -2821,8 +2803,8 @@ up packages</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="xpad">6</property>
-                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/backup-software.svg</property>
                         <property name="pixel_size">48</property>
+                        <property name="icon_name">mintbackup-software</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -2865,7 +2847,6 @@ up packages</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="spacing">6</property>
-                        <property name="orientation">horizontal</property>
                         <child>
                           <object class="GtkLabel" id="label_current_package">
                             <property name="visible">True</property>
@@ -2932,14 +2913,13 @@ up packages</property>
                   <object class="GtkBox" id="hbox28">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkBox" id="vbox33">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
-                        <property name="spacing">6</property>
                         <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel" id="label_title_software_backup4">
                             <property name="visible">True</property>
@@ -3037,14 +3017,13 @@ up packages</property>
                   <object class="GtkBox" id="hbox31">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkBox" id="vbox34">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
-                        <property name="spacing">6</property>
                         <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel" id="label_title_software_restore1">
                             <property name="visible">True</property>
@@ -3083,8 +3062,8 @@ up packages</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="xpad">6</property>
-                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/restore-software.svg</property>
                         <property name="pixel_size">48</property>
+                        <property name="icon_name">mintbackup-restore-software</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -3163,14 +3142,13 @@ up packages</property>
                   <object class="GtkBox" id="hbox32">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkBox" id="vbox35">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
-                        <property name="spacing">6</property>
                         <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel" id="label_title_software_restore2">
                             <property name="visible">True</property>
@@ -3209,8 +3187,8 @@ up packages</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="xpad">6</property>
-                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/restore-software.svg</property>
                         <property name="pixel_size">48</property>
+                        <property name="icon_name">mintbackup-restore-software</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -3230,7 +3208,6 @@ up packages</property>
                   <object class="GtkBox" id="hbox33">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkScrolledWindow" id="scrolledwindow3">
                         <property name="visible">True</property>
@@ -3277,7 +3254,6 @@ up packages</property>
                               <object class="GtkBox" id="hbox34">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="orientation">horizontal</property>
                                 <child>
                                   <object class="GtkImage" id="image22">
                                     <property name="visible">True</property>
@@ -3320,7 +3296,6 @@ up packages</property>
                               <object class="GtkBox" id="hbox35">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="orientation">horizontal</property>
                                 <child>
                                   <object class="GtkImage" id="image23">
                                     <property name="visible">True</property>
@@ -3363,7 +3338,6 @@ up packages</property>
                               <object class="GtkBox" id="hbox36">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="orientation">horizontal</property>
                                 <child>
                                   <object class="GtkImage" id="image24">
                                     <property name="visible">True</property>
@@ -3439,14 +3413,13 @@ up packages</property>
                   <object class="GtkBox" id="hbox37">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="orientation">horizontal</property>
                     <child>
                       <object class="GtkBox" id="vbox36">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="border_width">6</property>
-                        <property name="spacing">6</property>
                         <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel" id="label_title_software_restore3">
                             <property name="visible">True</property>
@@ -3485,8 +3458,8 @@ up packages</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="xpad">6</property>
-                        <property name="pixbuf">/usr/share/pixmaps/mintbackup/restore-software.svg</property>
                         <property name="pixel_size">48</property>
+                        <property name="icon_name">mintbackup-restore-software</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
