@@ -122,7 +122,6 @@ class MintBackup:
     def __init__(self):
         self.builder = Gtk.Builder()
         self.builder.add_from_file(UI_FILE)
-        self.builder.get_object("main_window").set_icon_from_file("/usr/share/pixmaps/mintbackup/icon.png")
 
         # handle command line filenames
         if len(sys.argv) > 1:
@@ -299,11 +298,6 @@ class MintBackup:
         self.builder.get_object("label_detail2").set_markup("<small>" + _("Save the list of installed applications") + "</small>")
         self.builder.get_object("label_detail3").set_markup("<small>" + _("Restore a previous backup") + "</small>")
         self.builder.get_object("label_detail4").set_markup("<small>" + _("Restore previously installed applications") + "</small>")
-
-        self.builder.get_object("image_backup_data").set_from_file("/usr/share/pixmaps/mintbackup/backup-data.svg")
-        self.builder.get_object("image_restore_data").set_from_file("/usr/share/pixmaps/mintbackup/restore-data.svg")
-        self.builder.get_object("image_backup_software").set_from_file("/usr/share/pixmaps/mintbackup/backup-software.svg")
-        self.builder.get_object("image_restore_software").set_from_file("/usr/share/pixmaps/mintbackup/restore-software.svg")
 
         # i18n - Page 1 (choose backup directories)
         self.builder.get_object("label_title_destination").set_markup("<big><b>" + _("Backup files") + "</b></big>")
