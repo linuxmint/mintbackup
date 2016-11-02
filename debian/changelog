@@ -1,3 +1,14 @@
+mintbackup (2.2.5) serena; urgency=medium
+
+  [ JosephMcc ]
+  * icons: Make all icons respect the users icon theme
+  * Remove the mime type handling
+
+  [ Clement Lefebvre ]
+  * Regenerate desktop files
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 02 Nov 2016 13:58:12 +0000
+
 mintbackup (2.2.4) sarah; urgency=medium
 
   [ aiglebleu ]
