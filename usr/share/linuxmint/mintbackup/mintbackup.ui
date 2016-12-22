@@ -1858,6 +1858,9 @@ up packages</property>
                     <child>
                       <placeholder/>
                     </child>
+                    <child>
+                      <placeholder/>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -2601,20 +2604,12 @@ up packages</property>
                         <property name="vexpand">True</property>
                         <property name="shadow_type">out</property>
                         <child>
-                          <object class="GtkViewport" id="viewport3">
+                          <object class="GtkTreeView" id="treeview_packages">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="resize_mode">queue</property>
-                            <child>
-                              <object class="GtkTreeView" id="treeview_packages">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="headers_visible">False</property>
-                                <property name="headers_clickable">False</property>
-                                <child internal-child="selection">
-                                  <object class="GtkTreeSelection" id="treeview-selection5"/>
-                                </child>
-                              </object>
+                            <property name="can_focus">True</property>
+                            <property name="headers_visible">False</property>
+                            <child internal-child="selection">
+                              <object class="GtkTreeSelection" id="treeview-selection"/>
                             </child>
                           </object>
                         </child>
