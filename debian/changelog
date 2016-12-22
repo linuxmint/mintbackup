@@ -1,3 +1,10 @@
+mintbackup (2.2.6) serena; urgency=medium
+
+  * Updated pot file
+  * Software selection backup: Fix crash in 32-bit
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu, 22 Dec 2016 16:13:41 +0000
+
 mintbackup (2.2.5) serena; urgency=medium
 
   [ JosephMcc ]
