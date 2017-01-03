@@ -13,6 +13,7 @@ from time import strftime, localtime
 import apt
 import gi
 gi.require_version("Gtk", "3.0")
+from gi.repository import GdkX11
 from gi.repository import Gtk, Gdk, GdkPixbuf
 
 # i18n
