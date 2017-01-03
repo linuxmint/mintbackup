@@ -10,18 +10,10 @@ import stat
 import tempfile
 import hashlib
 from time import strftime, localtime
-
-try:
-    import gi
-    gi.require_version("Gtk", "3.0")
-except Exception as detail:
-    print("You do not have a recent version of GTK")
-
-try:
-    import apt
-    from gi.repository import Gtk, Gdk, GdkPixbuf
-except Exception as detail:
-    print("You do not have the required dependencies")
+import apt
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk, Gdk, GdkPixbuf
 
 # i18n
 gettext.install("mintbackup", "/usr/share/linuxmint/locale")
