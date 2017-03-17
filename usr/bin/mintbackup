@@ -4,5 +4,5 @@ import os
 import subprocess
 
 launcher = subprocess.getoutput("/usr/lib/linuxmint/common/mint-which-launcher.py")
-command = "%s /usr/lib/linuxmint/mintbackup/mintbackup.py" % (launcher)
+command = '%s env PATH="$PATH" HOME="$HOME"  /usr/lib/linuxmint/mintbackup/mintbackup.py' % (launcher)
 os.system(command)
