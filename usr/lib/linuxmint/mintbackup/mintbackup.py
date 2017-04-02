@@ -780,9 +780,23 @@ class MintBackup:
                 self.errors.append([str(detail), None])
         else:
             # Copy to other directory, possibly on another device
-            for top, dirs, files in os.walk(top=self.backup_source, topdown=False, onerror=None, followlinks=self.follow_links):
+            for top, dirs, files in os.walk(top=self.backup_source, topdown=True, onerror=None, followlinks=self.follow_links):
                 if not self.operating:
                     break
+                for d in dirs:
+                    rpath = os.path.join(top, d)
+                    path = os.path.relpath(rpath)
+                    if not self.is_excluded(rpath):
+                        targetDir = os.path.join(self.backup_dest, path)
+                        if os.path.islink(rpath):
+                            if not self.follow_links:
+                                self.update_restore_progress(0, 1, message=_("Skipping link"))
+                                continue
+                            if not os.path.exists(rpath):
+                                self.update_restore_progress(0, 1, message=_("Skipping broken link"))
+                                continue                                
+                        self.clone_dir(path, targetDir)
+                    del d
                 for f in files:
                     rpath = os.path.join(top, f)
                     path = os.path.relpath(rpath)
@@ -798,13 +812,6 @@ class MintBackup:
                                 self.update_restore_progress(0, 1, message=_("Skipping link"))
                                 current_file += 1
                                 continue
-                        dir = os.path.split(target)
-                        if not os.path.exists(dir[0]):
-                            try:
-                                os.makedirs(dir[0])
-                            except Exception as detail:
-                                print(detail)
-                                self.errors.append([dir[0], str(detail)])
                         Gdk.threads_enter()
                         label.set_label(path)
                         self.builder.get_object("label_file_count").set_text(str(current_file) + " / " + sztotal)
@@ -849,14 +856,6 @@ class MintBackup:
                             print(detail)
                             self.errors.append([rpath, str(detail)])
                     del f
-                    if self.preserve_times or self.preserve_perms:
-                        # loop back over the directories now to reset the a/m/time
-                        for d in dirs:
-                            rpath = os.path.join(top, d)
-                            path = os.path.relpath(rpath)
-                            target = os.path.join(self.backup_dest, path)
-                            self.clone_dir(rpath, target)
-                            del d
 
         if current_file < total:
             self.errors.append([_("Warning: Some files were not saved, copied: %(current_file)d files out of %(total)d total") % {'current_file': current_file, 'total': total}, None])
@@ -983,7 +982,7 @@ class MintBackup:
                 self.errors.append([source, bad.args[1]])
 
     def clone_dir(self, source, dest):
-        """ mkdir and clone permissions
+        """ mkdir and clone permissions/times if necessary
         """
 
         try:
@@ -1315,22 +1314,29 @@ class MintBackup:
                         total += 1
                 sztotal = str(total)
                 total = float(total)
-            for top, dirs, files in os.walk(top=self.restore_source, topdown=False, onerror=None, followlinks=self.follow_links):
+            for top, dirs, files in os.walk(top=self.restore_source, topdown=True, onerror=None, followlinks=self.follow_links):
                 if not self.operating:
                     break
+                for d in dirs:
+                    rpath = os.path.join(top, d)
+                    path = os.path.relpath(rpath)
+                    if not self.is_excluded(rpath):
+                        targetDir = os.path.join(self.backup_dest, path)
+                        if os.path.islink(rpath):
+                            if not self.follow_links:
+                                self.update_restore_progress(0, 1, message=_("Skipping link"))
+                                continue
+                            if not os.path.exists(rpath):
+                                self.update_restore_progress(0, 1, message=_("Skipping broken link"))
+                                continue
+                        self.clone_dir(path, targetDir)
+                    del d
                 for f in files:
                     if ".mintbackup" in f:
                         continue
                     rpath = os.path.join(top, f)
                     path = os.path.relpath(rpath)
                     target = os.path.join(self.restore_dest, path)
-                    dir = os.path.split(target)
-                    if not os.path.exists(dir[0]):
-                        try:
-                            os.makedirs(dir[0])
-                        except Exception as detail:
-                            print(detail)
-                            self.errors.append([dir[0], str(detail)])
                     Gdk.threads_enter()
                     label.set_label(path)
                     Gdk.threads_leave()
@@ -1379,14 +1385,7 @@ class MintBackup:
                         print(detail)
                         self.errors.append([rpath, str(detail)])
                     del f
-                    if self.preserve_times or self.preserve_perms:
-                        # loop back over the directories now to reset the a/m/time
-                        for d in dirs:
-                            rpath = os.path.join(top, d)
-                            path = os.path.relpath(rpath)
-                            target = os.path.join(self.restore_dest, path)
-                            self.clone_dir(rpath, target)
-                            del d
+                    
         if current_file < total:
             self.error = _("Warning: Some files were not restored, copied: %(current_file)d files out of %(total)d total") % {'current_file': current_file, 'total': total}
         if len(self.errors) > 0:
