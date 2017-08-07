@@ -236,7 +236,6 @@ class MintBackup:
         self.builder.get_object("button_back").connect("clicked", self.back_callback)
         self.builder.get_object("button_forward").connect("clicked", self.forward_callback)
         self.builder.get_object("button_apply").connect("clicked", self.forward_callback)
-        self.builder.get_object("button_cancel").connect("clicked", self.cancel_callback)
 
         self.builder.get_object("button_back").hide()
         self.builder.get_object("button_forward").hide()
