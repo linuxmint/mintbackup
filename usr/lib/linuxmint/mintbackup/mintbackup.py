@@ -14,7 +14,13 @@ import apt
 import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import GdkX11
-from gi.repository import Gtk, Gdk, GdkPixbuf
+from gi.repository import Gtk, Gdk, GdkPixbuf, Gio, GLib
+import time
+
+import aptdaemon.client
+from aptdaemon.enums import *
+from aptdaemon.gtk3widgets import AptErrorDialog, AptConfirmDialog, AptProgressDialog, AptStatusIcon
+import aptdaemon.errors
 
 # i18n
 gettext.install("mintbackup", "/usr/share/linuxmint/locale")
@@ -22,6 +28,17 @@ gettext.install("mintbackup", "/usr/share/linuxmint/locale")
 HOME = os.path.expanduser("~")
 UI_FILE = '/usr/share/linuxmint/mintbackup/mintbackup.ui'
 
+(TAB_START, TAB_FILE_BACKUP_1, TAB_FILE_BACKUP_2, TAB_FILE_BACKUP_3, TAB_FILE_BACKUP_4, TAB_FILE_BACKUP_5, TAB_FILE_RESTORE_1, TAB_FILE_RESTORE_2, TAB_FILE_RESTORE_3, TAB_FILE_RESTORE_4,
+TAB_PKG_BACKUP_1, TAB_PKG_BACKUP_2, TAB_PKG_RESTORE_1, TAB_PKG_RESTORE_2, TAB_PKG_RESTORE_3) = range(15)
+
+def print_timing(func):
+    def wrapper(*arg):
+        t1 = time.time()
+        res = func(*arg)
+        t2 = time.time()
+        print ('%s took %0.3f ms' % (func.__name__, (t2 - t1) * 1000.0))
+        return res
+    return wrapper
 
 class TarFileMonitor():
 
@@ -115,18 +132,19 @@ class MintBackup:
     def __init__(self):
         self.builder = Gtk.Builder()
         self.builder.add_from_file(UI_FILE)
+        self.notebook = self.builder.get_object("notebook1")
 
         # handle command line filenames
         if len(sys.argv) > 1:
             if len(sys.argv) == 2:
                 filebackup = sys.argv[1]
                 self.builder.get_object("filechooserbutton_restore_source").set_filename(filebackup)
-                self.builder.get_object("notebook1").set_current_page(6)
+                self.notebook.set_current_page(TAB_FILE_RESTORE_1)
             else:
                 print("usage: " + sys.argv[0] + " filename.backup")
                 sys.exit(1)
         else:
-            self.builder.get_object("notebook1").set_current_page(0)
+            self.notebook.set_current_page(TAB_START)
 
         # inidicates whether an operation is taking place.
         self.operating = False
@@ -150,10 +168,10 @@ class MintBackup:
         self.restore_archive = True
 
         # page 0
-        self.builder.get_object("button_backup_files").connect("clicked", self.wizard_buttons_cb, 1)
-        self.builder.get_object("button_restore_files").connect("clicked", self.wizard_buttons_cb, 6)
-        self.builder.get_object("button_backup_packages").connect("clicked", self.wizard_buttons_cb, 10)
-        self.builder.get_object("button_restore_packages").connect("clicked", self.wizard_buttons_cb, 14)
+        self.builder.get_object("button_backup_files").connect("clicked", self.go_to_tab, TAB_FILE_BACKUP_1)
+        self.builder.get_object("button_restore_files").connect("clicked", self.go_to_tab, TAB_FILE_RESTORE_1)
+        self.builder.get_object("button_backup_packages").connect("clicked", self.backup_pkg_load_from_mintinstall)
+        self.builder.get_object("button_restore_packages").connect("clicked", self.go_to_tab, TAB_PKG_RESTORE_1)
 
         # set up backup page 1 (source/dest/options)
         # Displayname, [tarfile mode, file extension]
@@ -239,9 +257,10 @@ class MintBackup:
 
         self.builder.get_object("button_back").hide()
         self.builder.get_object("button_forward").hide()
-        self.builder.get_object("main_window").connect("destroy", self.cancel_callback)
-        self.builder.get_object("main_window").set_title(_("Backup Tool"))
-        self.builder.get_object("main_window").show()
+        self.main_window = self.builder.get_object("main_window")
+        self.main_window.connect("destroy", self.cancel_callback)
+        self.main_window.set_title(_("Backup Tool"))
+        self.main_window.show()
 
         # open archive button, opens an archive... :P
         self.builder.get_object("radiobutton_archive").connect("toggled", self.archive_switch)
@@ -267,7 +286,7 @@ class MintBackup:
         t = self.builder.get_object("treeview_package_list")
         self.builder.get_object("button_select_list").connect("clicked", self.set_selection, t, True, True)
         self.builder.get_object("button_deselect_list").connect("clicked", self.set_selection, t, False, True)
-        self.builder.get_object("button_refresh").connect("clicked", self.refresh)
+        self.builder.get_object("button_refresh").connect("clicked", self.restore_pkg_load_from_file)
         tog = Gtk.CellRendererToggle()
         tog.connect("toggled", self.toggled_cb, t)
         c1 = Gtk.TreeViewColumn(_("Install"), tog, active=0, activatable=2)
@@ -275,117 +294,12 @@ class MintBackup:
         t.append_column(c1)
         c2 = Gtk.TreeViewColumn(_("Name"), Gtk.CellRendererText(), markup=1)
         t.append_column(c2)
-        self.builder.get_object("filechooserbutton_package_source").connect("file-set", self.load_package_list_cb)
 
-        # i18n - Page 0 (choose backup or restore)
-        self.builder.get_object("label_wizard1").set_markup("<big><b>" + _("Backup or Restore") + "</b></big>")
-        self.builder.get_object("label_wizard2").set_markup("<i>" + _("Choose from the following options") + "</i>")
-
-        self.builder.get_object("label_create_backup").set_text(_("Backup files"))
-        self.builder.get_object("label_restore_backup").set_text(_("Restore files"))
-        self.builder.get_object("label_create_packages").set_text(_("Backup software selection"))
-        self.builder.get_object("label_restore_packages").set_text(_("Restore software selection"))
-
-        self.builder.get_object("label_detail1").set_markup("<small>" + _("Make a backup of your files") + "</small>")
-        self.builder.get_object("label_detail2").set_markup("<small>" + _("Save the list of installed applications") + "</small>")
-        self.builder.get_object("label_detail3").set_markup("<small>" + _("Restore a previous backup") + "</small>")
-        self.builder.get_object("label_detail4").set_markup("<small>" + _("Restore previously installed applications") + "</small>")
-
-        # i18n - Page 1 (choose backup directories)
-        self.builder.get_object("label_title_destination").set_markup("<big><b>" + _("Backup files") + "</b></big>")
-        self.builder.get_object("label_caption_destination").set_markup("<i>" + _("Please select a source and a destination for your backup") + "</i>")
-        self.builder.get_object("label_backup_source").set_label(_("Source:"))
-        self.builder.get_object("label_backup_dest").set_label(_("Destination:"))
-        self.builder.get_object("label_expander").set_label(_("Advanced options"))
-        self.builder.get_object("label_backup_desc").set_label(_("Description:"))
-        self.builder.get_object("label_compress").set_label(_("Output:"))
-        self.builder.get_object("label_overwrite_dest").set_label(_("Overwrite:"))
-        self.builder.get_object("checkbutton_integrity").set_label(_("Confirm integrity"))
-        self.builder.get_object("checkbutton_links").set_label(_("Follow symlinks"))
-        self.builder.get_object("checkbutton_perms").set_label(_("Preserve permissions"))
-        self.builder.get_object("checkbutton_times").set_label(_("Preserve timestamps"))
-
-        # i18n - Page 2 (choose files/directories to exclude)
-        self.builder.get_object("label_title_exclude").set_markup("<big><b>" + _("Backup files") + "</b></big>")
-        self.builder.get_object("label_caption_exclude").set_markup("<i>" + _("Please select any files or directories you want to exclude") + "</i>")
-        self.builder.get_object("label_add_file").set_label(_("Exclude files"))
-        self.builder.get_object("label_add_folder").set_label(_("Exclude directories"))
-        self.builder.get_object("label_remove").set_label(_("Remove"))
-
-        # i18n - Page 3 (backup overview)
-        self.builder.get_object("label_title_review").set_markup("<big><b>" + _("Backup files") + "</b></big>")
-        self.builder.get_object("label_caption_review").set_markup("<i>" + _("Please review the information below before starting the backup") + "</i>")
-
-        # i18n - Page 4 (backing up status)
-        self.builder.get_object("label_title_copying").set_markup("<big><b>" + _("Backup files") + "</b></big>")
-        self.builder.get_object("label_caption_copying").set_markup("<i>" + _("Please wait while your files are being backed up") + "</i>")
-        self.builder.get_object("label_current_file").set_label(_("Backing up:"))
-
-        # i18n - Page 5 (backup complete)
-        self.builder.get_object("label_title_finished").set_markup("<big><b>" + _("Backup files") + "</b></big>")
-        self.builder.get_object("label_caption_finished").set_markup("<i>" + _("The backup is now finished") + "</i>")
-
-        # i18n - Page 6 (Restore locations)
-        self.builder.get_object("label_title_restore1").set_markup("<big><b>" + _("Restore files") + "</b></big>")
-        self.builder.get_object("label_caption_restore1").set_markup("<i>" + _("Please choose the type of backup to restore, its location and a destination") + "</i>")
-        self.builder.get_object("radiobutton_archive").set_label(_("Archive"))
-        self.builder.get_object("radiobutton_dir").set_label(_("Directory"))
-        self.builder.get_object("label_restore_source").set_label(_("Source:"))
-        self.builder.get_object("label_restore_dest").set_label(_("Destination:"))
-        self.builder.get_object("label_restore_advanced").set_label(_("Advanced options"))
-        self.builder.get_object("label_restore_overwrite").set_label(_("Overwrite:"))
-
-        # i18n - Page 7 (Restore overview)
-        self.builder.get_object("label_title_restore2").set_markup("<big><b>" + _("Restore files") + "</b></big>")
-        self.builder.get_object("label_caption_restore2").set_markup("<i>" + _("Please review the information below") + "</i>")
-        self.builder.get_object("label_overview_source").set_markup("<b>" + _("Source:") + "</b>")
-        self.builder.get_object("label_overview_description").set_markup("<b>" + _("Description:") + "</b>")
-
-        # i18n - Page 8 (restore status)
-        self.builder.get_object("label_title_restore3").set_markup("<big><b>" + _("Restore files") + "</b></big>")
-        self.builder.get_object("label_caption_restore3").set_markup("<i>" + _("Please wait while your files are being restored") + "</i>")
-        self.builder.get_object("label_restore_status").set_label(_("Restoring:"))
-
-        # i18n - Page 9 (restore complete)
-        self.builder.get_object("label_title_restore4").set_markup("<big><b>" + _("Restore files") + "</b></big>")
-        self.builder.get_object("label_caption_restore4").set_markup("<i>" + _("The restoration of the files is now finished") + "</i>")
-
-        # i18n - Page 10 (packages)
-        self.builder.get_object("label_title_software_backup1").set_markup("<big><b>" + _("Backup software selection") + "</b></big>")
-        self.builder.get_object("label_caption_software_backup1").set_markup("<i>" + _("Please choose a destination") + "</i>")
-        self.builder.get_object("label_package_dest").set_label(_("Destination"))
-
-        # i18n - Page 11 (package list)
-        self.builder.get_object("label_title_software_backup2").set_markup("<big><b>" + _("Backup software selection") + "</b></big>")
-        self.builder.get_object("label_caption_software_backup2").set_markup("<i>" + _("The list below shows the packages you added to Linux Mint") + "</i>")
-        self.builder.get_object("label_select").set_label(_("Select all"))
-        self.builder.get_object("label_deselect").set_label(_("Deselect all"))
-
-        # i18n - Page 12 (backing up packages)
-        self.builder.get_object("label_title_software_backup3").set_markup("<big><b>" + _("Backup software selection") + "</b></big>")
-        self.builder.get_object("label_caption_software_backup3").set_markup("<i>" + _("Please wait while your software selection is being backed up") + "</i>")
-        self.builder.get_object("label_current_package").set_label(_("Backing up:"))
-
-        # i18n - Page 13 (packages done)
-        self.builder.get_object("label_title_software_backup4").set_markup("<big><b>" + _("Backup software selection") + "</b></big>")
-        self.builder.get_object("label_caption_software_backup4").set_markup("<i>" + _("The backup is now finished") + "</i>")
-
-        # i18n - Page 14 (package restore)
-        self.builder.get_object("label_title_software_restore1").set_markup("<big><b>" + _("Restore software selection") + "</b></big>")
-        self.builder.get_object("label_caption_software_restore1").set_markup("<i>" + _("Please select a saved software selection") + "</i>")
-        self.builder.get_object("label_package_source").set_markup(_("Software selection:"))
-
-        # i18n - Page 15 (packages list)
-        self.builder.get_object("label_title_software_restore2").set_markup("<big><b>" + _("Restore software selection") + "</b></big>")
-        self.builder.get_object("label_caption_software_restore2").set_markup("<i>" + _("Select the packages you want to install") + "</i>")
-        self.builder.get_object("label_select_list").set_label(_("Select all"))
-        self.builder.get_object("label_deselect_list").set_label(_("Deselect all"))
-        self.builder.get_object("label_refresh").set_label(_("Refresh"))
-
-        # i18n - Page 16 (packages install done)
-        self.builder.get_object("label_title_software_restore3").set_markup("<big><b>" + _("Restore software selection") + "</b></big>")
-        self.builder.get_object("label_caption_software_restore3").set_markup("<i>" + _("The restoration is now finished") + "</i>")
-        self.builder.get_object("label_install_done_value").set_markup(_("Your package selection was restored successfully"))
+        file_filter = Gtk.FileFilter()
+        file_filter.add_pattern ("*.list");
+        filechooser = self.builder.get_object("filechooserbutton_package_source")
+        filechooser.connect("file-set", self.restore_pkg_validate_file)
+        filechooser.set_filter(file_filter)
 
     def abt_resp(self, w, r):
         if r == Gtk.ResponseType.CANCEL:
@@ -488,18 +402,14 @@ class MintBackup:
             # handle the cancel
             self.operating = False
         else:
-            # just quit :)
-            Gtk.main_quit()
+            sys.exit(0)
 
-    def wizard_buttons_cb(self, widget, param):
-        """ First page buttons
-        """
-
-        self.builder.get_object("notebook1").set_current_page(param)
+    def go_to_tab(self, widget, tab):
+        self.notebook.set_current_page(tab)
         self.builder.get_object("button_back").show()
         self.builder.get_object("button_back").set_sensitive(True)
         self.builder.get_object("button_forward").show()
-        if param == 14:
+        if tab == TAB_PKG_RESTORE_1:
             self.builder.get_object("button_forward").set_sensitive(False)
         else:
             self.builder.get_object("button_forward").set_sensitive(True)
@@ -510,10 +420,9 @@ class MintBackup:
 
         self.backup_source = self.builder.get_object("filechooserbutton_backup_source").get_filename()
         self.backup_dest = self.builder.get_object("filechooserbutton_backup_dest").get_filename()
-        book = self.builder.get_object("notebook1")
-        sel = book.get_current_page()
+        sel = self.notebook.get_current_page()
         self.builder.get_object("button_back").set_sensitive(True)
-        if sel == 1:
+        if sel == TAB_FILE_BACKUP_1:
             # choose source/dest
             if self.backup_source is None or self.backup_dest is None:
                 MessageDialog(_("Backup Tool"), _("Please choose directories for the source and the destination"), Gtk.MessageType.WARNING).show()
@@ -529,8 +438,8 @@ class MintBackup:
                     if not auto_exclude.find(self.backup_source):
                         excludes.append([auto_exclude[len(self.backup_source) + 1:], self.dirIcon, auto_exclude])
 
-            book.set_current_page(2)
-        elif sel == 2:
+            self.notebook.set_current_page(TAB_FILE_BACKUP_2)
+        elif sel == TAB_FILE_BACKUP_2:
             self.description = self.builder.get_object("entry_desc").get_text()
             # show overview
             model = Gtk.ListStore(str, str)
@@ -550,23 +459,23 @@ class MintBackup:
             for row in excludes:
                 model.append(["<b>" + _("Exclude") + "</b>", row[2]])
             self.builder.get_object("treeview_overview").set_model(model)
-            book.set_current_page(3)
+            self.notebook.set_current_page(TAB_FILE_BACKUP_3)
             self.builder.get_object("button_forward").hide()
             self.builder.get_object("button_apply").show()
-        elif sel == 3:
+        elif sel == TAB_FILE_BACKUP_3:
             # start copying :D
-            book.set_current_page(4)
+            self.notebook.set_current_page(TAB_FILE_BACKUP_4)
             self.builder.get_object("button_apply").set_sensitive(False)
             self.builder.get_object("button_back").set_sensitive(False)
             self.operating = True
             thread = threading.Thread(group=None, target=self.backup, name="mintBackup-copy", args=(), kwargs={})
             thread.start()
-        elif sel == 4:
+        elif sel == TAB_FILE_BACKUP_4:
             # show info page.
             self.builder.get_object("button_forward").hide()
             self.builder.get_object("button_back").hide()
-            book.set_current_page(5)
-        elif sel == 6:
+            self.notebook.set_current_page(TAB_FILE_BACKUP_5)
+        elif sel == TAB_FILE_RESTORE_1:
             # sanity check the files (file --mimetype)
             self.restore_source = self.builder.get_object("filechooserbutton_restore_source").get_filename()
             self.restore_dest = self.builder.get_object("filechooserbutton_restore_dest").get_filename()
@@ -578,70 +487,57 @@ class MintBackup:
                 return
             thread = threading.Thread(group=None, target=self.prepare_restore, name="mintBackup-prepare", args=(), kwargs={})
             thread.start()
-        elif sel == 7:
+        elif sel == TAB_FILE_RESTORE_2:
             # start restoring :D
             self.builder.get_object("button_apply").hide()
             self.builder.get_object("button_back").hide()
-            book.set_current_page(8)
+            self.notebook.set_current_page(TAB_FILE_RESTORE_3)
             self.operating = True
             thread = threading.Thread(group=None, target=self.restore, name="mintBackup-restore", args=(), kwargs={})
             thread.start()
-        elif sel == 8:
+        elif sel == TAB_FILE_RESTORE_3:
             # show last page(restore finished status)
             self.builder.get_object("button_forward").hide()
             self.builder.get_object("button_back").hide()
-            book.set_current_page(9)
-        elif sel == 10:
-            f = self.builder.get_object("filechooserbutton_package_dest").get_filename()
-            if f is None:
-                MessageDialog(_("Backup Tool"), _("Please choose a destination directory"), Gtk.MessageType.ERROR).show()
-                return
-            self.package_dest = f
-            book.set_current_page(11)
-            thr = threading.Thread(group=None, name="mintBackup-packages", target=self.load_packages, args=(), kwargs={})
-            thr.start()
-            self.builder.get_object("button_forward").hide()
-            self.builder.get_object("button_apply").show()
-        elif sel == 11:
+            self.notebook.set_current_page(TAB_FILE_RESTORE_4)
+        elif sel == TAB_PKG_BACKUP_1:
             # show progress of packages page
             self.builder.get_object("button_forward").set_sensitive(False)
             self.builder.get_object("button_back").set_sensitive(False)
-            book.set_current_page(12)
-            self.operating = True
-            thr = threading.Thread(group=None, name="mintBackup-packages", target=self.backup_packages, args=(), kwargs={})
-            thr.start()
-        elif sel == 14:
-            thr = threading.Thread(group=None, name="mintBackup-packages", target=self.load_package_list, args=(), kwargs={})
-            thr.start()
-        elif sel == 15:
+            self.notebook.set_current_page(TAB_PKG_BACKUP_2)
+            self.backup_pkg_save_to_file()
+        elif sel == TAB_PKG_RESTORE_1:
+            self.restore_pkg_load_from_file()
+        elif sel == TAB_PKG_RESTORE_2:
             inst = False
             model = self.builder.get_object("treeview_package_list").get_model()
             if len(model) == 0:
                 MessageDialog(_("Backup Tool"), _("No packages need to be installed at this time"), Gtk.MessageType.INFO).show()
+                print("HERE1")
                 return
             for row in model:
                 if row[0]:
                     inst = True
                     break
             if not inst:
+                print("HERE2")
                 MessageDialog(_("Backup Tool"), _("Please select one or more packages to install"), Gtk.MessageType.ERROR).show()
                 return
             else:
-                thr = threading.Thread(group=None, name="mintBackup-packages", target=self.install_packages, args=(), kwargs={})
-                thr.start()
+                self.restore_pkg_install_packages()
 
     def back_callback(self, widget):
         """ Back button
         """
 
-        book = self.builder.get_object("notebook1")
+        book = self.notebook
         sel = book.get_current_page()
         self.builder.get_object("button_apply").hide()
         self.builder.get_object("button_forward").show()
         if sel == 7 and len(sys.argv) == 2:
             self.builder.get_object("button_back").set_sensitive(False)
-        if (sel == 6) or (sel == 10) or (sel == 14):
-            book.set_current_page(0)
+        if sel in [TAB_FILE_BACKUP_1, TAB_FILE_RESTORE_1, TAB_PKG_BACKUP_1, TAB_PKG_RESTORE_1]:
+            book.set_current_page(TAB_START)
             self.builder.get_object("button_back").set_sensitive(False)
             self.builder.get_object("button_back").hide()
             self.builder.get_object("button_forward").hide()
@@ -866,23 +762,23 @@ class MintBackup:
             self.builder.get_object("image_finished").set_from_pixbuf(img)
             self.builder.get_object("treeview_backup_errors").set_model(self.errors)
             self.builder.get_object("win_errors").show_all()
-            self.builder.get_object("notebook1").next_page()
+            self.notebook.next_page()
             Gdk.threads_leave()
         else:
             if not self.operating:
                 Gdk.threads_enter()
                 img = self.iconTheme.load_icon("dialog-warning", 48, 0)
-                self.builder.get_object("label_finished_status").set_label(_("The backup was aborted"))
+                self.builder.get_object("label_finished_status").set_markup(_("The backup was aborted"))
                 self.builder.get_object("image_finished").set_from_pixbuf(img)
-                self.builder.get_object("notebook1").next_page()
+                self.notebook.next_page()
                 Gdk.threads_leave()
             else:
                 Gdk.threads_enter()
                 label.set_label("Done")
                 img = self.iconTheme.load_icon("dialog-information", 48, 0)
-                self.builder.get_object("label_finished_status").set_label(_("The backup completed successfully"))
+                self.builder.get_object("label_finished_status").set_markup(_("The backup completed successfully"))
                 self.builder.get_object("image_finished").set_from_pixbuf(img)
-                self.builder.get_object("notebook1").next_page()
+                self.notebook.next_page()
                 Gdk.threads_leave()
         self.operating = False
 
@@ -1086,14 +982,14 @@ class MintBackup:
             # restore archives.
             if self.tar is not None:
                 Gdk.threads_enter()
-                self.builder.get_object("notebook1").set_current_page(7)
+                self.notebook.set_current_page(TAB_FILE_RESTORE_2)
                 self.builder.get_object("button_forward").hide()
                 self.builder.get_object("button_apply").show()
                 Gdk.threads_leave()
                 return
             Gdk.threads_enter()
-            self.builder.get_object("main_window").set_sensitive(False)
-            self.builder.get_object("main_window").get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
+            self.main_window.set_sensitive(False)
+            self.main_window.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
             Gdk.threads_leave()
             self.conf = mINIFile()
             try:
@@ -1113,7 +1009,7 @@ class MintBackup:
                 self.builder.get_object("button_back").set_sensitive(True)
                 self.builder.get_object("button_forward").hide()
                 self.builder.get_object("button_apply").show()
-                self.builder.get_object("notebook1").set_current_page(7)
+                self.notebook.set_current_page(TAB_FILE_RESTORE_2)
                 Gdk.threads_leave()
 
             except Exception as detail:
@@ -1135,7 +1031,7 @@ class MintBackup:
                 self.builder.get_object("button_back").set_sensitive(True)
                 self.builder.get_object("button_forward").hide()
                 self.builder.get_object("button_apply").show()
-                self.builder.get_object("notebook1").set_current_page(7)
+                self.notebook.set_current_page(TAB_FILE_RESTORE_2)
                 Gdk.threads_leave()
 
             except Exception as detail:
@@ -1143,8 +1039,8 @@ class MintBackup:
         Gdk.threads_enter()
         self.builder.get_object("label_overview_source_value").set_label(self.restore_source)
         self.builder.get_object("label_overview_dest_value").set_label(self.restore_dest)
-        self.builder.get_object("main_window").set_sensitive(True)
-        self.builder.get_object("main_window").get_window().set_cursor(None)
+        self.main_window.set_sensitive(True)
+        self.main_window.get_window().set_cursor(None)
         Gdk.threads_leave()
 
     def extract_file(self, source, dest, record):
@@ -1385,7 +1281,7 @@ class MintBackup:
                         print(detail)
                         self.errors.append([rpath, str(detail)])
                     del f
-                    
+
         if current_file < total:
             self.error = _("Warning: Some files were not restored, copied: %(current_file)d files out of %(total)d total") % {'current_file': current_file, 'total': total}
         if len(self.errors) > 0:
@@ -1395,7 +1291,7 @@ class MintBackup:
             self.builder.get_object("image_restore_finished").set_from_pixbuf(img)
             self.builder.get_object("treeview_restore_errors").set_model(self.errors)
             self.builder.get_object("win_restore_errors").show_all()
-            self.builder.get_object("notebook1").next_page()
+            self.notebook.next_page()
             Gdk.threads_leave()
         else:
             if not self.operating:
@@ -1403,7 +1299,7 @@ class MintBackup:
                 img = self.iconTheme.load_icon("dialog-warning", 48, 0)
                 self.builder.get_object("label_restore_finished_value").set_label(_("The restoration was aborted"))
                 self.builder.get_object("image_restore_finished").set_from_pixbuf(img)
-                self.builder.get_object("notebook1").next_page()
+                self.notebook.next_page()
                 Gdk.threads_leave()
             else:
                 Gdk.threads_enter()
@@ -1412,65 +1308,37 @@ class MintBackup:
                 self.builder.get_object("label_restore_finished_value").set_label(_("The restoration completed successfully"))
                 img = self.iconTheme.load_icon("dialog-information", 48, 0)
                 self.builder.get_object("image_restore_finished").set_from_pixbuf(img)
-                self.builder.get_object("notebook1").next_page()
+                self.notebook.next_page()
                 Gdk.threads_leave()
         self.operating = False
 
-    def load_packages(self):
-        """ Load the package list
-        """
+    @print_timing
+    def backup_pkg_load_from_mintinstall(self, button):
+        # Load the package list into the treeview
+        self.builder.get_object("button_back").show()
+        self.builder.get_object("button_back").set_sensitive(True)
+        self.builder.get_object("button_forward").show()
+        self.notebook.set_current_page(TAB_PKG_BACKUP_1)
 
-        Gdk.threads_enter()
         model = Gtk.ListStore(bool, str, str)
         model.set_sort_column_id(1, Gtk.SortType.ASCENDING)
-        self.builder.get_object("main_window").set_sensitive(False)
-        self.builder.get_object("main_window").get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
-        Gdk.threads_leave()
-        try:
-            p = subprocess.Popen("aptitude search ~M", shell=True, stdout=subprocess.PIPE)
-            self.blacklist = list()
-            for l in p.stdout:
-                l = l.decode('utf-8')
-                l = l.rstrip("\r\n")
-                l = l.split(" ")
-                self.blacklist.append(l[2])
-            bl = open("/usr/share/linuxmint/mintbackup/software-selections.list", "r")
-            for l in bl.readlines():
-                if l.startswith("#"):
-                    # ignore comments
-                    continue
-                l = l.rstrip("\r\n")
-                self.blacklist.append(l)
-            bl.close()
-        except Exception as detail:
-            print(detail)
+
         cache = apt.Cache()
-        for pkg in cache:
-            if pkg.installed:
-                if self.is_manual_installed(pkg.name):
-                    desc = "<big>" + pkg.name + "</big>\n<small>" + pkg.installed.summary.replace("&", "&amp;") + "</small>"
-                    Gdk.threads_enter()
+        settings = Gio.Settings("com.linuxmint.install")
+        for name in settings.get_strv("installed-apps"):
+            try:
+                if name in cache:
+                    pkg = cache[name]
+                    if pkg.is_installed:
+                        desc = pkg.name + "\n<small>" + pkg.installed.summary.replace("&", "&amp;") + "</small>"
+                    elif pkg.candidate is not None:
+                        desc = pkg.name + "\n<small>" + pkg.candidate.summary.replace("&", "&amp;") + "</small>"
                     model.append([True, pkg.name, desc])
-                    Gdk.threads_leave()
-        Gdk.threads_enter()
+            except Exception as e:
+                print(e)
         self.builder.get_object("treeview_packages").set_model(model)
-        self.builder.get_object("main_window").set_sensitive(True)
-        self.builder.get_object("main_window").get_window().set_cursor(None)
-        Gdk.threads_leave()
-
-    def is_manual_installed(self, pkgname):
-        """ Is the package manually installed?
-        """
-
-        for b in self.blacklist:
-            if pkgname == b:
-                return False
-        return True
 
     def toggled_cb(self, ren, path, treeview):
-        """ Toggled (update model)
-        """
-
         model = treeview.get_model()
         iter = model.get_iter(path)
         if iter != None:
@@ -1478,227 +1346,122 @@ class MintBackup:
             model.set_value(iter, 0, (not checked))
 
     def celldatamethod_checkbox(self, column, cell, model, iter, user_data):
-        """ For the packages treeview
-        """
-
         checked = model.get_value(iter, 0)
         cell.set_property("active", checked)
 
-    def show_package_choose(self, w):
-        """ Show filechooser for package backup
-        """
-
-        dialog = Gtk.FileChooserDialog(_("Backup Tool"), None, Gtk.FileChooserAction.SAVE, (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
-        dialog.set_current_folder(HOME)
-        dialog.set_select_multiple(False)
-        if dialog.run() == Gtk.ResponseType.OK:
-            self.package_dest = dialog.get_filename()
-            self.builder.get_object("entry_package_dest").set_text(self.package_dest)
-        dialog.destroy()
-
-    def backup_packages(self):
-        """ "backup" the package selection
-        """
-
-        pbar = self.builder.get_object("progressbar_packages")
-        lab = self.builder.get_object("label_current_package_value")
-        Gdk.threads_enter()
-        pbar.set_text(_("Calculating..."))
-        lab.set_label(_("Calculating..."))
-        Gdk.threads_leave()
-        model = self.builder.get_object("treeview_packages").get_model()
-        total = 0
-        count = 0
-        for row in model:
-            if not self.operating or self.error is not None:
-                break
-
-            if not row[0]:
-                continue
-            total += 1
-        pbar.set_text("%d / %d" % (count, total))
-        try:
-            filetime = strftime("%Y-%m-%d-%H%M-package.list", localtime())
-            filename = "software_selection_%s@%s" % (subprocess.getoutput("hostname"), filetime)
-            out = open(os.path.join(self.package_dest, filename), "w")
-            for row in model:
-                if not self.operating or self.error is not None:
-                    break
+    def backup_pkg_save_to_file(self):
+        # Save the package selection
+        filetime = strftime("%Y-%m-%d-%H%M-package.list", localtime())
+        filename = "~/software_selection_%s@%s" % (subprocess.getoutput("hostname"), filetime)
+        file_path = os.path.expanduser(filename)
+        with open(file_path, "w") as f:
+            for row in self.builder.get_object("treeview_packages").get_model():
                 if row[0]:
-                    count += 1
-                    out.write("%s\t%s\n" % (row[1], "install"))
-                    Gdk.threads_enter()
-                    pbar.set_text("%d / %d" % (count, total))
-                    pbar.set_fraction(float(count / total))
-                    lab.set_label(row[1])
-                    Gdk.threads_leave()
-            out.close()
-            subprocess.call(["chmod", "a+rx", self.package_dest])
-            subprocess.call(["chmod", "a+rw", os.path.join(self.package_dest, filename)])
-        except Exception as detail:
-            self.error = str(detail)
+                    f.write("%s\t%s\n" % (row[1], "install"))
 
-        if self.error is not None:
-            Gdk.threads_enter()
-            self.builder.get_object("label_packages_done_value").set_label(_("An error occurred during the backup:") + "\n" + self.error)
-            img = self.iconTheme.load_icon("dialog-error", 48, 0)
-            self.builder.get_object("image_packages_done").set_from_pixbuf(img)
-            self.builder.get_object("notebook1").next_page()
-            Gdk.threads_leave()
-        else:
-            if not self.operating:
-                Gdk.threads_enter()
-                img = self.iconTheme.load_icon("dialog-warning", 48, 0)
-                self.builder.get_object("label_packages_done_value").set_label(_("The backup was aborted"))
-                self.builder.get_object("image_packages_done").set_from_pixbuf(img)
-                self.builder.get_object("notebook1").next_page()
-                Gdk.threads_leave()
-            else:
-                Gdk.threads_enter()
-                lab.set_label("Done")
-                pbar.set_text("Done")
-                self.builder.get_object("label_packages_done_value").set_label(_("Your software selection was backed up successfully"))
-                img = self.iconTheme.load_icon("dialog-information", 48, 0)
-                self.builder.get_object("image_packages_done").set_from_pixbuf(img)
-                self.builder.get_object("notebook1").next_page()
-                Gdk.threads_leave()
-        Gdk.threads_enter()
+        self.builder.get_object("label_packages_done_value").set_label(_("Your software selection was saved in %s") % file_path)
+        self.notebook.set_current_page(TAB_PKG_BACKUP_2)
         self.builder.get_object("button_apply").hide()
         self.builder.get_object("button_back").hide()
-        Gdk.threads_leave()
-        self.operating = False
+        self.builder.get_object("button_forward").hide()
 
-    def load_package_list_cb(self, w):
-        """ Check validity of file
-        """
-
-        self.package_source = w.get_filename()
-        # magic info, i.e. we ignore files that don't have this.
+    def restore_pkg_validate_file(self, filechooser):
+        # Check the file validity
+        self.package_source = filechooser.get_filename()
         try:
-            source = open(self.package_source, "r")
-            re = source.readlines()
-            error = False
-            for line in re:
-                line = line.rstrip("\r\n")
-                if line != "":
-                    if not line.endswith("\tinstall"):
-                        error = True
-                        break
-            source.close()
-            if error:
-                MessageDialog(_("Backup Tool"), _("The specified file is not a valid software selection"), Gtk.MessageType.ERROR).show()
-                #self.builder.get_object("scroller_packages").hide()
-                self.builder.get_object("button_forward").set_sensitive(False)
-                return
-            else:
-                self.builder.get_object("button_forward").set_sensitive(True)
+            with open(self.package_source, "r") as source:
+                error = False
+                for line in source:
+                    line = line.rstrip("\r\n")
+                    if line != "":
+                        if not line.endswith("\tinstall"):
+                            MessageDialog(_("Backup Tool"), _("The specified file is not a valid software selection"), Gtk.MessageType.ERROR).show()
+                            self.builder.get_object("button_forward").set_sensitive(False)
+                            return
+            self.builder.get_object("button_forward").set_sensitive(True)
         except Exception as detail:
-            print(detail)
             MessageDialog(_("Backup Tool"), _("An error occurred while accessing the file"), Gtk.MessageType.ERROR).show()
 
-    def refresh(self, w):
-        """ Refresh package list
-        """
-
-        thr = threading.Thread(group=None, name="mintBackup-packages", target=self.load_package_list, args=(), kwargs={})
-        thr.start()
-
-    def load_package_list(self):
-        """ Load package list into treeview
-        """
-
-        Gdk.threads_enter()
+    def restore_pkg_load_from_file(self, widget=None):
+        # Load package list into treeview
         self.builder.get_object("button_forward").hide()
         self.builder.get_object("button_apply").show()
         self.builder.get_object("button_apply").set_sensitive(True)
-        self.builder.get_object("main_window").set_sensitive(False)
-        self.builder.get_object("main_window").get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
         model = Gtk.ListStore(bool, str, bool, str)
         self.builder.get_object("treeview_package_list").set_model(model)
-        Gdk.threads_leave()
         try:
-            source = open(self.package_source, "r")
-            cache = apt.Cache()
-            for line in source.readlines():
-                if line.startswith("#"):
-                    # ignore comments
-                    continue
-                line = line.rstrip("\r\n")
-                if line == "":
-                    # ignore empty lines
-                    continue
-                line = line.split("\t")[0]
-                inst = True
-                if line in cache:
-                    pkg = cache[line]
-                    if not pkg.is_installed:
-                        if pkg.candidate is not None:
-                            desc = pkg.candidate.summary.replace("&", "&amp;")
-                            line = "<big>" + line + "</big>\n<small>" + desc + "</small>"
-                        else:
-                            inst = False
-                            line = "<big>" + line + "</big>\n<small>" + _("Could not locate the package") + "</small>"
-                        Gdk.threads_enter()
-                        model.append([inst, line, inst, pkg.name])
-                        Gdk.threads_leave()
-                else:
-                    inst = False
-                    line = "<big>" + line + "</big>\n<small>" + _("Could not locate the package") + "</small>"
-                    Gdk.threads_enter()
-                    model.append([inst, line, inst, line])
-                    Gdk.threads_leave()
-            source.close()
+            with open(self.package_source, "r") as source:
+                cache = apt.Cache()
+                for line in source:
+                    line = line.rstrip("\r\n")
+                    if line.startswith("#") or line == "":
+                        continue
+                    name = line.split("\t")[0]
+                    error = "%s\n<small>%s</small>" % (name, _("Could not locate the package"))
+                    if name in cache:
+                        pkg = cache[name]
+                        if not pkg.is_installed:
+                            if pkg.candidate is not None:
+                                status = "%s\n<small>%s</small>" % (name, pkg.candidate.summary.replace("&", "&amp;"))
+                                model.append([True, status, True, pkg.name])
+                            else:
+                                model.append([False, error, False, pkg.name])
+                    else:
+                        model.append([False, error, False, error])
         except Exception as detail:
-            print(detail)
             MessageDialog(_("Backup Tool"), _("An error occurred while accessing the file"), Gtk.MessageType.ERROR).show()
-        Gdk.threads_enter()
-        self.builder.get_object("main_window").set_sensitive(True)
-        self.builder.get_object("main_window").get_window().set_cursor(None)
         if len(model) == 0:
             self.builder.get_object("button_forward").hide()
             self.builder.get_object("button_back").hide()
             self.builder.get_object("button_apply").hide()
-            self.builder.get_object("notebook1").set_current_page(16)
+            self.notebook.set_current_page(TAB_PKG_RESTORE_3)
         else:
-            self.builder.get_object("notebook1").set_current_page(15)
+            self.notebook.set_current_page(TAB_PKG_RESTORE_2)
             self.builder.get_object("button_forward").set_sensitive(True)
-        Gdk.threads_leave()
 
-    def install_packages(self):
-        """ Installs the package selection
-        """
-        # launch synaptic..
-        Gdk.threads_enter()
-        self.builder.get_object("main_window").get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
-        self.builder.get_object("main_window").set_sensitive(False)
-        Gdk.threads_leave()
+    def apt_run_transaction(self, transaction):
+        transaction.connect("finished", self.on_transaction_finish)
+        dia = AptProgressDialog(transaction, parent=self.main_window)
+        dia.run(close_on_finished=True, show_error=True, reply_handler=lambda: True, error_handler=self.apt_on_error)
 
-        cmd = ["sudo", "/usr/sbin/synaptic", "--hide-main-window", "--non-interactive", "--parent-window-id", str(self.builder.get_object("main_window").get_window().get_xid())]
-        cmd.append("--progress-str")
-        cmd.append("\"" + _("Please wait, this can take some time") + "\"")
-        cmd.append("--finish-str")
-        cmd.append("\"" + _("The installation is complete") + "\"")
-        f = tempfile.NamedTemporaryFile()
+    def apt_simulate_trans(self, trans):
+        trans.simulate(reply_handler=lambda: self.apt_confirm_deps(trans), error_handler=self.apt_on_error)
+
+    def apt_confirm_deps(self, trans):
+        try:
+            if [pkgs for pkgs in trans.dependencies if pkgs]:
+                dia = AptConfirmDialog(trans, parent=self.main_window)
+                res = dia.run()
+                dia.hide()
+                if res != Gtk.ResponseType.OK:
+                    return
+            self.apt_run_transaction(trans)
+        except Exception as e:
+            print(e)
+
+    def apt_on_error(self, error):
+        if isinstance(error, aptdaemon.errors.NotAuthorizedError):
+            # Silently ignore auth failures
+            return
+        elif not isinstance(error, aptdaemon.errors.TransactionFailed):
+            # Catch internal errors of the client
+            error = aptdaemon.errors.TransactionFailed(ERROR_UNKNOWN, str(error))
+        dia = AptErrorDialog(error)
+        dia.run()
+        dia.hide()
+
+    def on_transaction_finish(self, transaction, exit_state):
+        # Refresh
+        self.restore_pkg_load_from_file()
+
+    def restore_pkg_install_packages(self):
+        packages = []
         model = self.builder.get_object("treeview_package_list").get_model()
         for row in model:
             if row[0]:
-                line = ("%s\tinstall\n" % row[3]).encode("UTF-8")
-                f.write(line)
-        cmd.append("--set-selections-file")
-        cmd.append("%s" % f.name)
-        f.flush()
-        comnd = subprocess.Popen(' '.join(cmd), shell=True)
-        returnCode = comnd.wait()
-        f.close()
-
-        Gdk.threads_enter()
-        self.builder.get_object("main_window").get_window().set_cursor(None)
-        self.builder.get_object("main_window").set_sensitive(True)
-        self.builder.get_object("button_back").set_sensitive(True)
-        self.builder.get_object("button_forward").set_sensitive(True)
-        Gdk.threads_leave()
-
-        self.refresh(None)
+                packages.append(row[0])
+        ac = aptdaemon.client.AptClient()
+        ac.install_packages(['gnome-boxes'], reply_handler=self.apt_simulate_trans, error_handler=self.apt_on_error)
 
     def set_selection(self, w, treeview, selection, check):
         """ Select / deselect all
@@ -1713,8 +1476,5 @@ class MintBackup:
                 row[0] = selection
 
 if __name__ == "__main__":
-    Gdk.threads_init()
     MintBackup()
-    Gdk.threads_enter()
     Gtk.main()
-    Gdk.threads_leave()
