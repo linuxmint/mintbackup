@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="com.linuxmint.backup" path="/com/linuxmint/backup/">
+    <key type="b" name="backup-follow-symlink">
+      <default>false</default>
+      <summary></summary>
+      <description></description>
+    </key>
+    <key type="i" name="backup-compression-level">
+      <default>9</default>
+      <summary></summary>
+      <description></description>
+    </key>
+    <key type="s" name="backup-format">
+      <default>"tar"</default>
+      <summary>The format used for backups</summary>
+      <description>This can be tar, tar.gz, tar.bz2 or tar.xz</description>
+    </key>
+    <key type="as" name="excluded-paths">
+      <default>["~/Sandbox", "~/VirtualBox VMs"]</default>
+      <summary>Excluded paths</summary>
+      <description></description>
+    </key>
+    <key type="as" name="included-hidden-paths">
+      <default>[]</default>
+      <summary>Included hidden paths</summary>
+      <description>Hidden files and directories at the root of the home directory are excluded by default</description>
+    </key>
+  </schema>
+</schemalist>

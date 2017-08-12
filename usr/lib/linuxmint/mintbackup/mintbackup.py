@@ -41,9 +41,7 @@ def print_timing(func):
     return wrapper
 
 class TarFileMonitor():
-
-    """ Bit of a hack but I can figure out what tarfile is doing now.. (progress wise)
-    """
+    # Hack to figure out what tarfile is doing
 
     def __init__(self, target, callback):
         self.counter = 0
@@ -132,7 +130,11 @@ class MintBackup:
     def __init__(self):
         self.builder = Gtk.Builder()
         self.builder.add_from_file(UI_FILE)
+
+        self.settings = Gio.Settings("com.linuxmint.backup")
+
         self.notebook = self.builder.get_object("notebook1")
+        self.progressbar = self.builder.get_object("progressbar1")
 
         # handle command line filenames
         if len(sys.argv) > 1:
@@ -160,8 +162,8 @@ class MintBackup:
         # error?
         self.error = None
         # tarfile
-        self.tar = None
-        self.backup_source = None
+        self.tar_archive = None
+        self.home_directory = os.path.expanduser("~")
         self.backup_dest = None
 
         # by default we restore archives, not directories (unless user chooses otherwise)
@@ -173,62 +175,56 @@ class MintBackup:
         self.builder.get_object("button_backup_packages").connect("clicked", self.backup_pkg_load_from_mintinstall)
         self.builder.get_object("button_restore_packages").connect("clicked", self.go_to_tab, TAB_PKG_RESTORE_1)
 
-        # set up backup page 1 (source/dest/options)
-        # Displayname, [tarfile mode, file extension]
-        comps = Gtk.ListStore(str, str, str)
-        comps.append([_("Preserve structure"), None, None])
-        # file extensions mintBackup specific
-        comps.append([_(".tar file"), "w", ".tar"])
-        comps.append([_(".tar.bz2 file"), "w:bz2", ".tar.bz2"])
-        comps.append([_(".tar.gz file"), "w:gz", ".tar.gz"])
-        self.builder.get_object("combobox_compress").set_model(comps)
-        self.builder.get_object("combobox_compress").set_active(0)
-
-        # backup overwrite options
-        overs = Gtk.ListStore(str)
-        overs.append([_("Never")])
-        overs.append([_("Size mismatch")])
-        overs.append([_("Modification time mismatch")])
-        overs.append([_("Checksum mismatch")])
-        overs.append([_("Always")])
-        self.builder.get_object("combobox_delete_dest").set_model(overs)
-        self.builder.get_object("combobox_delete_dest").set_active(3)
-
-        # advanced options
-        self.builder.get_object("checkbutton_integrity").set_active(self.postcheck)
-        self.builder.get_object("checkbutton_integrity").connect("clicked", self.handle_checkbox)
-        self.builder.get_object("checkbutton_perms").set_active(self.preserve_perms)
-        self.builder.get_object("checkbutton_perms").connect("clicked", self.handle_checkbox)
-        self.builder.get_object("checkbutton_times").set_active(self.preserve_times)
-        self.builder.get_object("checkbutton_times").connect("clicked", self.handle_checkbox)
-        self.builder.get_object("checkbutton_links").set_active(self.follow_links)
-        self.builder.get_object("checkbutton_links").connect("clicked", self.handle_checkbox)
         # set up exclusions page
         self.iconTheme = Gtk.IconTheme.get_default()
-        self.dirIcon = self.iconTheme.load_icon("folder", 16, 0)
-        self.fileIcon = self.iconTheme.load_icon("document-new", 16, 0)
-        ren = Gtk.CellRendererPixbuf()
-        column = Gtk.TreeViewColumn("", ren)
-        column.add_attribute(ren, "pixbuf", 1)
-        self.builder.get_object("treeview_excludes").append_column(column)
-        ren = Gtk.CellRendererText()
-        column = Gtk.TreeViewColumn(_("Excluded paths"), ren)
-        column.add_attribute(ren, "text", 0)
-        self.builder.get_object("treeview_excludes").append_column(column)
-        self.builder.get_object("treeview_excludes").set_model(Gtk.ListStore(str, GdkPixbuf.Pixbuf, str))
-        self.builder.get_object("button_add_file").connect("clicked", self.add_file_exclude)
-        self.builder.get_object("button_add_folder").connect("clicked", self.add_folder_exclude)
-        self.builder.get_object("button_remove_exclude").connect("clicked", self.remove_exclude)
+        self.dir_icon = self.iconTheme.load_icon("folder-symbolic", 16, 0)
+        self.file_icon = self.iconTheme.load_icon("folder-documents-symbolic", 16, 0)
+        treeview = self.builder.get_object("treeview_excludes")
+        renderer = Gtk.CellRendererPixbuf()
+        column = Gtk.TreeViewColumn("", renderer)
+        column.add_attribute(renderer, "pixbuf", 1)
+        treeview.append_column(column)
+        renderer = Gtk.CellRendererText()
+        column = Gtk.TreeViewColumn('', renderer)
+        column.add_attribute(renderer, "text", 0)
+        treeview.append_column(column)
+        self.excludes_model = Gtk.ListStore(str, GdkPixbuf.Pixbuf, str)
+        self.excludes_model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
+        treeview.set_model(self.excludes_model)
+        for item in self.settings.get_strv("excluded-paths"):
+            item = os.path.expanduser(item)
+            if os.path.exists(item):
+                if os.path.isdir(item):
+                    self.excludes_model.append([item[len(self.home_directory) + 1:], self.dir_icon, item])
+                else:
+                    self.excludes_model.append([item[len(self.home_directory) + 1:], self.file_icon, item])
+        self.builder.get_object("button_add_file").connect("clicked", self.add_file_to_treeview, treeview, False)
+        self.builder.get_object("button_add_folder").connect("clicked", self.add_folder_to_treeview, treeview, False)
+        self.builder.get_object("button_remove_exclude").connect("clicked", self.remove_item_from_treeview, treeview)
 
-        # set up overview page
-        ren = Gtk.CellRendererText()
-        column = Gtk.TreeViewColumn(_("Type"), ren)
-        column.add_attribute(ren, "markup", 0)
-        self.builder.get_object("treeview_overview").append_column(column)
-        ren = Gtk.CellRendererText()
-        column = Gtk.TreeViewColumn(_("Detail"), ren)
-        column.add_attribute(ren, "text", 1)
-        self.builder.get_object("treeview_overview").append_column(column)
+        # set up inclusions page
+        treeview = self.builder.get_object("treeview_includes")
+        renderer = Gtk.CellRendererPixbuf()
+        column = Gtk.TreeViewColumn("", renderer)
+        column.add_attribute(renderer, "pixbuf", 1)
+        treeview.append_column(column)
+        renderer = Gtk.CellRendererText()
+        column = Gtk.TreeViewColumn('', renderer)
+        column.add_attribute(renderer, "text", 0)
+        treeview.append_column(column)
+        self.includes_model = Gtk.ListStore(str, GdkPixbuf.Pixbuf, str)
+        self.includes_model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
+        treeview.set_model(self.includes_model)
+        for item in self.settings.get_strv("included-hidden-paths"):
+            item = os.path.expanduser(item)
+            if os.path.exists(item):
+                if os.path.isdir(item):
+                    self.includes_model.append([item[len(self.home_directory) + 1:], self.dir_icon, item])
+                else:
+                    self.includes_model.append([item[len(self.home_directory) + 1:], self.file_icon, item])
+        self.builder.get_object("button_include_hidden_files").connect("clicked", self.add_file_to_treeview, treeview, True)
+        self.builder.get_object("button_include_hidden_dirs").connect("clicked", self.add_folder_to_treeview, treeview, True)
+        self.builder.get_object("button_remove_include").connect("clicked", self.remove_item_from_treeview, treeview)
 
         # Errors treeview for backup
         ren = Gtk.CellRendererText()
@@ -267,6 +263,12 @@ class MintBackup:
         self.builder.get_object("radiobutton_dir").connect("toggled", self.archive_switch)
         self.builder.get_object("filechooserbutton_restore_source").connect("file-set", self.check_reset_file)
 
+        overs = Gtk.ListStore(str)
+        overs.append([_("Never")])
+        overs.append([_("Size mismatch")])
+        overs.append([_("Modification time mismatch")])
+        overs.append([_("Checksum mismatch")])
+        overs.append([_("Always")])
         self.builder.get_object("combobox_restore_del").set_model(overs)
         self.builder.get_object("combobox_restore_del").set_active(3)
 
@@ -310,11 +312,11 @@ class MintBackup:
         """
 
         fileset = w.get_filename()
-        if fileset not in self.backup_source:
-            if self.tar is not None:
-                self.tar.close()
-                self.tar = None
-        self.backup_source = fileset
+        if fileset not in self.home_directory:
+            if self.tar_archive is not None:
+                self.tar_archive.close()
+                self.tar_archive = None
+        self.home_directory = fileset
 
     def archive_switch(self, w):
         """ Switch between archive and directory sources
@@ -341,51 +343,43 @@ class MintBackup:
         elif widget == self.builder.get_object("checkbutton_links"):
             self.follow_links = widget.get_active()
 
-    def add_file_exclude(self, widget):
-        """ Exclude file
-        """
-
-        model = self.builder.get_object("treeview_excludes").get_model()
+    def add_file_to_treeview(self, widget, treeview, show_hidden=False):
+        # Add files to treeview
         dialog = Gtk.FileChooserDialog(_("Backup Tool"), None, Gtk.FileChooserAction.OPEN, (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
-        dialog.set_current_folder(self.backup_source)
+        dialog.set_current_folder(self.home_directory)
         dialog.set_select_multiple(True)
+        dialog.set_show_hidden(show_hidden)
         if dialog.run() == Gtk.ResponseType.OK:
             filenames = dialog.get_filenames()
             for filename in filenames:
-                if not filename.find(self.backup_source):
-                    model.append([filename[len(self.backup_source) + 1:], self.fileIcon, filename])
+                if not filename.find(self.home_directory):
+                    treeview.get_model().append([filename[len(self.home_directory) + 1:], self.file_icon, filename])
                 else:
-                    message = MessageDialog(_("Invalid path"), _("%s is not located within your source directory. Not added.") % filename, Gtk.MessageType.WARNING)
+                    message = MessageDialog(_("Invalid path"), _("%s is not located in your home directory.") % filename, Gtk.MessageType.WARNING)
                     message.show()
         dialog.destroy()
 
-    def add_folder_exclude(self, widget):
-        """ Exclude directory
-        """
-
-        model = self.builder.get_object("treeview_excludes").get_model()
+    def add_folder_to_treeview(self, widget, treeview, show_hidden=False):
+        # Add folders to treeview
         dialog = Gtk.FileChooserDialog(_("Backup Tool"), None, Gtk.FileChooserAction.SELECT_FOLDER, (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
-        dialog.set_current_folder(self.backup_source)
+        dialog.set_current_folder(self.home_directory)
         dialog.set_select_multiple(True)
+        dialog.set_show_hidden(show_hidden)
         if dialog.run() == Gtk.ResponseType.OK:
             filenames = dialog.get_filenames()
             for filename in filenames:
-                if not filename.find(self.backup_source):
-                    model.append([filename[len(self.backup_source) + 1:], self.dirIcon, filename])
+                if not filename.find(self.home_directory):
+                    treeview.get_model().append([filename[len(self.home_directory) + 1:], self.dir_icon, filename])
                 else:
-                    message = MessageDialog(_("Invalid path"), _("%s is not located within your source directory. Not added.") % filename, Gtk.MessageType.WARNING)
+                    message = MessageDialog(_("Invalid path"), _("%s is not located in your home directory.") % filename, Gtk.MessageType.WARNING)
                     message.show()
         dialog.destroy()
 
-    def remove_exclude(self, widget):
-        """ Remove the exclude
-        """
-
-        model = self.builder.get_object("treeview_excludes").get_model()
-        selection = self.builder.get_object("treeview_excludes").get_selection()
+    def remove_item_from_treeview(self, button, treeview):
+        # Remove the item from the treeview
+        model = treeview.get_model()
+        selection = treeview.get_selection()
         selected_rows = selection.get_selected_rows()[1]
-        # don't you just hate python? :) Here's another hack for python not to get confused with its own paths while we're deleting multiple stuff.
-        # actually.. gtk is probably to blame here.
         args = [(model.get_iter(path)) for path in selected_rows]
         for iter in args:
             model.remove(iter)
@@ -393,13 +387,10 @@ class MintBackup:
     def cancel_callback(self, widget):
         """ Cancel clicked
         """
-
-        if self.tar is not None:
-            self.tar.close()
-            self.tar = None
+        if self.tar_archive is not None:
+            self.tar_archive.close()
+            self.tar_archive = None
         if self.operating:
-            # in the middle of a job, let the appropriate thread
-            # handle the cancel
             self.operating = False
         else:
             sys.exit(0)
@@ -415,60 +406,66 @@ class MintBackup:
             self.builder.get_object("button_forward").set_sensitive(True)
 
     def forward_callback(self, widget):
-        """ Forward / next buttons
-        """
-
-        self.backup_source = self.builder.get_object("filechooserbutton_backup_source").get_filename()
+        # Go forward
         self.backup_dest = self.builder.get_object("filechooserbutton_backup_dest").get_filename()
         sel = self.notebook.get_current_page()
         self.builder.get_object("button_back").set_sensitive(True)
         if sel == TAB_FILE_BACKUP_1:
-            # choose source/dest
-            if self.backup_source is None or self.backup_dest is None:
-                MessageDialog(_("Backup Tool"), _("Please choose directories for the source and the destination"), Gtk.MessageType.WARNING).show()
+            # Choose the destination for the backup
+            if self.backup_dest is None:
+                MessageDialog(_("Backup Tool"), _("Please choose a directory for the destination"), Gtk.MessageType.WARNING).show()
                 return
-            if self.backup_source == self.backup_dest:
-                MessageDialog(_("Backup Tool"), _("Please choose different directories for the source and the destination"), Gtk.MessageType.WARNING).show()
+            if not (os.path.exists(self.backup_dest) and os.access(self.backup_dest, os.W_OK)):
+                MessageDialog(_("Backup Tool"), _("You do not have the permission to write in the selected directory."), Gtk.MessageType.WARNING).show()
                 return
-
-            excludes = self.builder.get_object("treeview_excludes").get_model()
-            auto_excludes = [HOME + "/.Trash", HOME + "/.local/share/Trash", HOME + "/.thumbnails"]
-            for auto_exclude in auto_excludes:
-                if os.path.exists(auto_exclude):
-                    if not auto_exclude.find(self.backup_source):
-                        excludes.append([auto_exclude[len(self.backup_source) + 1:], self.dirIcon, auto_exclude])
-
             self.notebook.set_current_page(TAB_FILE_BACKUP_2)
         elif sel == TAB_FILE_BACKUP_2:
-            self.description = self.builder.get_object("entry_desc").get_text()
-            # show overview
-            model = Gtk.ListStore(str, str)
-            model.append(["<b>" + _("Source") + "</b>", self.backup_source])
-            model.append(["<b>" + _("Destination") + "</b>", self.backup_dest])
-            if self.description != "":
-                model.append(["<b>" + _("Description") + "</b>", self.description])
-            # find compression format
-            sel = self.builder.get_object("combobox_compress").get_active()
-            comp = self.builder.get_object("combobox_compress").get_model()
-            model.append(["<b>" + _("Compression") + "</b>", comp[sel][0]])
-            # find overwrite rules
-            sel = self.builder.get_object("combobox_delete_dest").get_active()
-            over = self.builder.get_object("combobox_delete_dest").get_model()
-            model.append(["<b>" + _("Overwrite destination files") + "</b>", over[sel][0]])
-            excludes = self.builder.get_object("treeview_excludes").get_model()
-            for row in excludes:
-                model.append(["<b>" + _("Exclude") + "</b>", row[2]])
-            self.builder.get_object("treeview_overview").set_model(model)
+            # Excludes page: Show includes page
             self.notebook.set_current_page(TAB_FILE_BACKUP_3)
             self.builder.get_object("button_forward").hide()
             self.builder.get_object("button_apply").show()
         elif sel == TAB_FILE_BACKUP_3:
-            # start copying :D
+            # Includes page: Show progress page and start the backup
             self.notebook.set_current_page(TAB_FILE_BACKUP_4)
             self.builder.get_object("button_apply").set_sensitive(False)
             self.builder.get_object("button_back").set_sensitive(False)
             self.operating = True
-            thread = threading.Thread(group=None, target=self.backup, name="mintBackup-copy", args=(), kwargs={})
+            # Calculate excludes
+            self.excluded_dirs = []
+            self.excluded_files = []
+            for row in self.excludes_model:
+                item = row[2]
+                if os.path.exists(item):
+                    if os.path.isdir(item):
+                        self.excluded_dirs.append(item)
+                    else:
+                        self.excluded_files.append(item)
+            # Save excludes in GSettings
+            excludes = []
+            for row in self.excludes_model:
+                path = row[2]
+                path = path.replace(self.home_directory, "~")
+                excludes.append(path)
+            self.settings.set_strv("excluded-paths", excludes)
+            # Calculate includes
+            self.included_dirs = []
+            self.included_files = []
+            for row in self.includes_model:
+                item = row[2]
+                if os.path.exists(item):
+                    if os.path.isdir(item):
+                        self.included_dirs.append(item)
+                    else:
+                        self.included_files.append(item)
+            # Save includes in GSettings
+            includes = []
+            for row in self.includes_model:
+                path = row[2]
+                path = path.replace(self.home_directory, "~")
+                includes.append(path)
+            self.settings.set_strv("included-hidden-paths", includes)
+            thread = threading.Thread(target=self.backup)
+            thread.daemon = True
             thread.start()
         elif sel == TAB_FILE_BACKUP_4:
             # show info page.
@@ -541,9 +538,9 @@ class MintBackup:
             self.builder.get_object("button_back").set_sensitive(False)
             self.builder.get_object("button_back").hide()
             self.builder.get_object("button_forward").hide()
-            if self.tar is not None:
-                self.tar.close()
-                self.tar = None
+            if self.tar_archive is not None:
+                self.tar_archive.close()
+                self.tar_archive = None
         else:
             sel = sel - 1
             if sel == 0:
@@ -551,260 +548,150 @@ class MintBackup:
                 self.builder.get_object("button_forward").hide()
             book.set_current_page(sel)
 
-    def create_backup_file(self):
-        """ Creates a .mintbackup file (for later restoration)
-        """
+    def scan_dirs(self, follow_links, callback):
+        for top, dirs, files in os.walk(top=self.home_directory, onerror=None, followlinks=follow_links):
+            if not self.operating or self.error is not None:
+                break
+            if top == self.home_directory:
+                # Remove hidden dirs in the root of the home directory
+                dirs[:] = [d for d in dirs if (not d.startswith(".") or os.path.join(top, d) in self.included_dirs)]
 
-        self.description = "mintBackup"
-        desc = self.builder.get_object("entry_desc").get_text()
+            # Remove excluded dirs in the home directory
+            dirs[:] = [d for d in dirs if (not os.path.join(top, d) in self.excluded_dirs)]
 
-        if desc != "":
-            self.description = desc
+            for f in files:
+                if not self.operating or self.error is not None:
+                    break
+                if top == self.home_directory:
+                    # Skip hidden files in the root of the home directory, unless included
+                    if f.startswith(".") and os.path.join(top, f) not in self.included_files:
+                        continue
+                path = os.path.join(top, f)
+                rel_path = os.path.relpath(path)
+                if os.path.exists(path):
+                    if os.path.islink(path) and not follow_links:
+                        # Skip links if appropriate
+                        continue
+                    if stat.S_ISFIFO(os.stat(path).st_mode):  # If file is a named pipe
+                        # Skip named pipes, they can cause program to hang.
+                        self.errors.append([_("Skipping %s because named pipes are not supported.") % path, None])
+                        continue
+                    if path not in self.excluded_files:
+                        callback(path)
 
+    def callback_count(self, path):
+        self.num_files += 1
+        if (self.num_files % 10000 == 0):
+            GLib.idle_add(self.progressbar.pulse)
+
+    def callback_add_to_tar(self, path):
         try:
-            of = os.path.join(self.backup_dest, ".mintbackup")
-
-            lines = ["source: %s\n" % (self.backup_dest),
-                     "destination: %s\n" % (self.backup_source),
-                     "file_count: %s\n" % (self.file_count),
-                     "description: %s\n" % (self.description)]
-
-            with open(of, "w") as out:
-                out.writelines(lines)
+            rel_path = os.path.relpath(path)
+            GLib.idle_add(self.set_progress, rel_path)
+            self.tar_archive.add(path, arcname=rel_path, recursive=False, exclude=None)
+            print(rel_path)
+            self.archived_files += 1
         except Exception as detail:
             print(detail)
-            return False
+            self.errors.append([path, str(detail)])
 
-        return True
+    def set_progress(self, path):
+        fraction = float(self.archived_files) / float(self.num_files)
+        self.progressbar.set_fraction(fraction)
+        self.progressbar.set_text(str(int(fraction * 100)) + "%")
+        self.builder.get_object("label_current_file").set_label(_("Backing up:"))
+        self.builder.get_object("label_current_file_value").set_label(path)
 
-    def backup(self):
-        """ Does the actual copying
-        """
-
-        label = self.builder.get_object("label_current_file_value")
-        os.chdir(self.backup_source)
-        pbar = self.builder.get_object("progressbar1")
-        Gdk.threads_enter()
+    def set_widgets_before_backup(self):
         self.builder.get_object("button_apply").hide()
         self.builder.get_object("button_forward").hide()
         self.builder.get_object("button_back").hide()
-        label.set_label(_("Calculating..."))
-        pbar.set_text(_("Calculating..."))
-        Gdk.threads_leave()
-        # get a count of all the files
-        total = 0
-        for top, dirs, files in os.walk(top=self.backup_source, onerror=None, followlinks=self.follow_links):
-            Gdk.threads_enter()
-            pbar.pulse()
-            Gdk.threads_leave()
-            for f in files:
-                file_full_path = top + "/" + f
-                if os.path.exists(file_full_path):
-                    # Named pipes can cause program to hang. Find and add them to the exclude list.
-                    excludes = self.builder.get_object("treeview_excludes").get_model()
-                    if stat.S_ISFIFO(os.stat(file_full_path).st_mode):  # If file is a named pipe
-                        if not file_full_path.find(self.backup_source):
-                            excludes.append([file_full_path[len(self.backup_source) + 1:], self.fileIcon, file_full_path])
-                            self.errors.append([_("Skipping %(skipped_file)s because named pipes are not "
-                                                  "supported.") % {'skipped_file': file_full_path}, None])
-                    if not self.operating:
-                        break
-                    if not self.is_excluded(os.path.join(top, f)):
-                        total += 1
+        self.progressbar.set_text(_("Calculating..."))
 
-        sztotal = str(total)
-        self.file_count = sztotal
-        total = float(total)
-
-        current_file = 0
-        self.create_backup_file()
-
-        # deletion policy
-        del_policy = self.builder.get_object("combobox_delete_dest").get_active()
-
-        # find out compression format, if any
-        sel = self.builder.get_object("combobox_compress").get_active()
-        comp = self.builder.get_object("combobox_compress").get_model()[sel]
-        if comp[1] is not None:
-            tar = None
-            filetime = strftime("%Y-%m-%d-%H%M-backup", localtime())
-            filename = os.path.join(self.backup_dest, filetime + comp[2] + ".part")
-            final_filename = os.path.join(self.backup_dest, filetime + comp[2])
-            try:
-                tar = tarfile.open(name=filename, dereference=self.follow_links, mode=comp[1], bufsize=1024)
-                mintfile = os.path.join(self.backup_dest, ".mintbackup")
-                tar.add(mintfile, arcname=".mintbackup", recursive=False, exclude=None)
-            except Exception as detail:
-                print(detail)
-                self.errors.append([str(detail), None])
-            for top, dirs, files in os.walk(top=self.backup_source, onerror=None, followlinks=self.follow_links):
-                if not self.operating or self.error is not None:
-                    break
-                for f in files:
-                    rpath = os.path.join(top, f)
-                    path = os.path.relpath(rpath)
-                    if not self.is_excluded(rpath):
-                        if os.path.islink(rpath):
-                            if self.follow_links:
-                                if not os.path.exists(rpath):
-                                    self.update_restore_progress(0, 1, message=_("Skipping broken link"))
-                                    self.errors.append([rpath, _("Broken link")])
-                                    continue
-                            else:
-                                self.update_restore_progress(0, 1, message=_("Skipping link"))
-                                current_file += 1
-                                continue
-                        Gdk.threads_enter()
-                        label.set_label(path)
-                        self.builder.get_object("label_file_count").set_text(str(current_file) + " / " + sztotal)
-                        Gdk.threads_leave()
-                        try:
-                            underfile = TarFileMonitor(rpath, self.update_backup_progress)
-                            finfo = tar.gettarinfo(name=None, arcname=path, fileobj=underfile)
-                            tar.addfile(fileobj=underfile, tarinfo=finfo)
-                            underfile.close()
-                        except Exception as detail:
-                            print(detail)
-                            self.errors.append([rpath, str(detail)])
-                        current_file = current_file + 1
-            try:
-                tar.close()
-                os.remove(mintfile)
-                os.rename(filename, final_filename)
-            except Exception as detail:
-                print(detail)
-                self.errors.append([str(detail), None])
-        else:
-            # Copy to other directory, possibly on another device
-            for top, dirs, files in os.walk(top=self.backup_source, topdown=True, onerror=None, followlinks=self.follow_links):
-                if not self.operating:
-                    break
-                for d in dirs:
-                    rpath = os.path.join(top, d)
-                    path = os.path.relpath(rpath)
-                    if not self.is_excluded(rpath):
-                        targetDir = os.path.join(self.backup_dest, path)
-                        if os.path.islink(rpath):
-                            if not self.follow_links:
-                                self.update_restore_progress(0, 1, message=_("Skipping link"))
-                                continue
-                            if not os.path.exists(rpath):
-                                self.update_restore_progress(0, 1, message=_("Skipping broken link"))
-                                continue                                
-                        self.clone_dir(path, targetDir)
-                    del d
-                for f in files:
-                    rpath = os.path.join(top, f)
-                    path = os.path.relpath(rpath)
-                    if not self.is_excluded(rpath):
-                        target = os.path.join(self.backup_dest, path)
-                        if os.path.islink(rpath):
-                            if self.follow_links:
-                                if not os.path.exists(rpath):
-                                    self.update_restore_progress(0, 1, message=_("Skipping broken link"))
-                                    current_file += 1
-                                    continue
-                            else:
-                                self.update_restore_progress(0, 1, message=_("Skipping link"))
-                                current_file += 1
-                                continue
-                        Gdk.threads_enter()
-                        label.set_label(path)
-                        self.builder.get_object("label_file_count").set_text(str(current_file) + " / " + sztotal)
-                        Gdk.threads_leave()
-                        try:
-                            if os.path.exists(target):
-                                if del_policy == 1:
-                                    # source size != dest size
-                                    file1 = os.path.getsize(rpath)
-                                    file2 = os.path.getsize(target)
-                                    if file1 != file2:
-                                        os.remove(target)
-                                        self.copy_file(rpath, target, sourceChecksum=None)
-                                    else:
-                                        self.update_backup_progress(0, 1, message=_("Skipping identical file"))
-                                elif del_policy == 2:
-                                    # source time != dest time
-                                    file1 = os.path.getmtime(rpath)
-                                    file2 = os.path.getmtime(target)
-                                    if file1 != file2:
-                                        os.remove(target)
-                                        self.copy_file(rpath, target, sourceChecksum=None)
-                                    else:
-                                        self.update_backup_progress(0, 1, message=_("Skipping identical file"))
-                                elif del_policy == 3:
-                                    # checksums
-                                    file1 = self.get_checksum(rpath)
-                                    file2 = self.get_checksum(target)
-                                    if file1 not in file2:
-                                        os.remove(target)
-                                        self.copy_file(rpath, target, sourceChecksum=file1)
-                                    else:
-                                        self.update_backup_progress(0, 1, message=_("Skipping identical file"))
-                                elif del_policy == 4:
-                                    # always delete
-                                    os.remove(target)
-                                    self.copy_file(rpath, target, sourceChecksum=None)
-                            else:
-                                self.copy_file(rpath, target, sourceChecksum=None)
-                            current_file = current_file + 1
-                        except Exception as detail:
-                            print(detail)
-                            self.errors.append([rpath, str(detail)])
-                    del f
-
-        if current_file < total:
-            self.errors.append([_("Warning: Some files were not saved, copied: %(current_file)d files out of %(total)d total") % {'current_file': current_file, 'total': total}, None])
+    def set_widgets_after_backup(self):
         if len(self.errors) > 0:
-            Gdk.threads_enter()
-            img = self.iconTheme.load_icon("dialog-error", 48, 0)
-            self.builder.get_object("label_finished_status").set_markup(_("An error occurred during the backup"))
-            self.builder.get_object("image_finished").set_from_pixbuf(img)
+            self.builder.get_object("label_finished_status").set_markup(_("The following errors occurred during the backup:"))
+            self.builder.get_object("image_finished").set_from_icon_name("dialog-error-symbolic", Gtk.IconSize.DIALOG)
             self.builder.get_object("treeview_backup_errors").set_model(self.errors)
             self.builder.get_object("win_errors").show_all()
-            self.notebook.next_page()
-            Gdk.threads_leave()
         else:
             if not self.operating:
-                Gdk.threads_enter()
-                img = self.iconTheme.load_icon("dialog-warning", 48, 0)
-                self.builder.get_object("label_finished_status").set_markup(_("The backup was aborted"))
-                self.builder.get_object("image_finished").set_from_pixbuf(img)
-                self.notebook.next_page()
-                Gdk.threads_leave()
+                self.builder.get_object("label_finished_status").set_markup(_("The backup was aborted."))
+                self.builder.get_object("image_finished").set_from_icon_name("dialog-warning-symbolic", Gtk.IconSize.DIALOG)
             else:
-                Gdk.threads_enter()
-                label.set_label("Done")
-                img = self.iconTheme.load_icon("dialog-information", 48, 0)
-                self.builder.get_object("label_finished_status").set_markup(_("The backup completed successfully"))
-                self.builder.get_object("image_finished").set_from_pixbuf(img)
-                self.notebook.next_page()
-                Gdk.threads_leave()
+                self.builder.get_object("image_finished").set_from_icon_name("mintbackup-success-symbolic", Gtk.IconSize.DIALOG)
+                self.builder.get_object("label_finished_status").set_markup(_("Your files were successfully saved in %s.") % self.filename)
+        self.notebook.next_page()
         self.operating = False
 
-    def is_excluded(self, filename):
-        """ Returns true if the file/directory is on the exclude list
-        """
+    @print_timing
+    def backup(self):
+        # Does the actual copying
+        try:
+            follow_links = self.settings.get_boolean("backup-follow-symlink")
+            backup_format = self.settings.get_string("backup-format")
+            if backup_format == "tar":
+                backup_mode = "w"
+            elif backup_format == "tar.gz":
+                backup_mode = "w:gz"
+            elif backup_format == "tar.bz2":
+                backup_mode = "w:bz2"
+            elif backup_format == "tar.xz":
+                backup_mode = "w:xz"
+            else:
+                print("Invalid format %s. Please choose between tar, tar.gz, tar.bz2 or tar.xz." % backup_format)
+                self.operating = False
+                sys.exit(1)
 
-        for row in self.builder.get_object("treeview_excludes").get_model():
-            if filename.startswith(row[2]):
-                return True
-        return False
+            GLib.idle_add(self.set_widgets_before_backup)
 
-    def update_backup_progress(self, current, total, message=None):
-        """ Update the backup progress bar
-        """
+            os.chdir(self.home_directory)
 
-        current = float(current)
-        total = float(total)
-        fraction = float(current / total)
-        Gdk.threads_enter()
-        self.builder.get_object("progressbar1").set_fraction(fraction)
-        if message is not None:
-            self.builder.get_object("progressbar1").set_text(message)
-        else:
-            self.builder.get_object("progressbar1").set_text(str(int(fraction * 100)) + "%")
-        Gdk.threads_leave()
+            # get a count of all the files
+            self.num_files = 0
+            self.scan_dirs(follow_links, self.callback_count)
+
+            # Create META file
+            try:
+                of = os.path.join(self.backup_dest, ".mintbackup2")
+                lines = ["file_count: %s\n" % (self.num_files)]
+                with open(of, "w") as out:
+                    out.writelines(lines)
+            except Exception as detail:
+                print(detail)
+                self.errors.append([_("Warning: The .mintbackup2 file could not be saved. This backup will not be accepted for restoration."), None])
+
+            self.tar_archive = None
+            timestamp = strftime("%Y-%m-%d-%H%M-backup", localtime())
+            self.temp_filename = os.path.join(self.backup_dest, "%s.%s.part" % (timestamp, backup_format))
+            self.filename = os.path.join(self.backup_dest, "%s.%s" % (timestamp, backup_format))
+
+            try:
+                self.tar_archive = tarfile.open(name=self.temp_filename, dereference=follow_links, mode=backup_mode, bufsize=1024)
+                mintfile = os.path.join(self.backup_dest, ".mintbackup2")
+                self.tar_archive.add(mintfile, arcname=".mintbackup2", recursive=False, exclude=None)
+            except Exception as detail:
+                print(detail)
+                self.errors.append([str(detail), None])
+
+            self.archived_files = 0
+            self.scan_dirs(follow_links, self.callback_add_to_tar)
+
+            try:
+                self.tar_archive.close()
+                os.remove(mintfile)
+                os.rename(self.temp_filename, self.filename)
+            except Exception as detail:
+                print(detail)
+                self.errors.append([str(detail), None])
+
+            if self.archived_files < self.num_files:
+                self.errors.append([_("Warning: Some files were not saved. Only %(archived)d files were backed up out of %(total)d.") % {'archived': self.archived_files, 'total': self.num_files}, None])
+
+            GLib.idle_add(self.set_widgets_after_backup)
+
+        except Exception as e:
+            print(e)
 
     def copy_file(self, source, dest, restore=None, sourceChecksum=None):
         """ Utility method - copy file, also provides a quick way of aborting a copy, which
@@ -828,10 +715,7 @@ class MintBackup:
                 if read:
                     dst.write(read)
                     current += len(read)
-                    if restore:
-                        self.update_restore_progress(current, total)
-                    else:
-                        self.update_backup_progress(current, total)
+                    self.update_restore_progress(current, total)
                 else:
                     break
             src.close()
@@ -919,10 +803,7 @@ class MintBackup:
                     break
                 check.update(read)
                 current += len(read)
-                if restore:
-                    self.update_restore_progress(current, total, message=_("Calculating checksum"))
-                else:
-                    self.update_backup_progress(current, total, message=_("Calculating checksum"))
+                self.update_restore_progress(current, total, message=_("Calculating checksum"))
             input.close()
             return check.hexdigest()
         except OSError as bad:
@@ -980,7 +861,7 @@ class MintBackup:
 
         if self.restore_archive:
             # restore archives.
-            if self.tar is not None:
+            if self.tar_archive is not None:
                 Gdk.threads_enter()
                 self.notebook.set_current_page(TAB_FILE_RESTORE_2)
                 self.builder.get_object("button_forward").hide()
@@ -993,14 +874,14 @@ class MintBackup:
             Gdk.threads_leave()
             self.conf = mINIFile()
             try:
-                self.tar = tarfile.open(self.restore_source, "r")
-                mintfile = self.tar.getmember(".mintbackup")
+                self.tar_archive = tarfile.open(self.restore_source, "r")
+                mintfile = self.tar_archive.getmember(".mintbackup")
                 if mintfile is None:
                     print("Processing a backup not created with this tool")
                     self.conf.description = _("(Not created with the Backup Tool)")
                     self.conf.file_count = -1
                 else:
-                    mfile = self.tar.extractfile(mintfile)
+                    mfile = self.tar_archive.extractfile(mintfile)
                     self.conf.load_from_list(mfile.readlines())
                     mfile.close()
 
@@ -1103,12 +984,12 @@ class MintBackup:
             sztotal = self.conf.file_count
             total = float(sztotal)
             if total == -1:
-                tmp = len(self.tar.getmembers())
+                tmp = len(self.tar_archive.getmembers())
                 szttotal = str(tmp)
                 total = float(tmp)
             current_file = 0
             MAX_BUF = 1024
-            for record in self.tar.getmembers():
+            for record in self.tar_archive.getmembers():
                 if not self.operating:
                     break
                 if record.name == ".mintbackup":
@@ -1148,7 +1029,7 @@ class MintBackup:
                                 file2 = os.path.getsize(target)
                                 if file1 != file2:
                                     os.remove(target)
-                                    gz = self.tar.extractfile(record)
+                                    gz = self.tar_archive.extractfile(record)
                                     out = open(target, "wb")
                                     self.extract_file(gz, out, record)
                                 else:
@@ -1159,32 +1040,32 @@ class MintBackup:
                                 file2 = os.path.getmtime(target)
                                 if file1 != file2:
                                     os.remove(target)
-                                    gz = self.tar.extractfile(record)
+                                    gz = self.tar_archive.extractfile(record)
                                     out = open(target, "wb")
                                     self.extract_file(gz, out, record)
                                 else:
                                     self.update_restore_progress(0, 1, message=_("Skipping identical file"))
                             elif del_policy == 3:
                                 # checksums
-                                gz = self.tar.extractfile(record)
+                                gz = self.tar_archive.extractfile(record)
                                 file1 = self.get_checksum_for_file(gz)
                                 file2 = self.get_checksum(target)
                                 if file1 not in file2:
                                     os.remove(target)
                                     out = open(target, "wb")
                                     gz.close()
-                                    gz = self.tar.extractfile(record)
+                                    gz = self.tar_archive.extractfile(record)
                                     self.extract_file(gz, out, record)
                                 else:
                                     self.update_restore_progress(0, 1, message=_("Skipping identical file"))
                             elif del_policy == 4:
                                 # always delete
                                 os.remove(target)
-                                gz = self.tar.extractfile(record)
+                                gz = self.tar_archive.extractfile(record)
                                 out = open(target, "wb")
                                 self.extract_file(gz, out, record)
                         else:
-                            gz = self.tar.extractfile(record)
+                            gz = self.tar_archive.extractfile(record)
                             out = open(target, "wb")
                             self.extract_file(gz, out, record)
                         current_file = current_file + 1
@@ -1192,7 +1073,7 @@ class MintBackup:
                         print(detail)
                         self.errors.append([record.name, str(detail)])
             try:
-                self.tar.close()
+                self.tar_archive.close()
             except:
                 pass
         else:
