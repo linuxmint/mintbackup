@@ -1,3 +1,5 @@
 #!/bin/bash
 
-xgettext --language=Python --keyword=_ --output=mintbackup.pot usr/lib/linuxmint/mintbackup/mintbackup.py generate_desktop_files.py
+intltool-extract --type=gettext/glade usr/share/linuxmint/mintbackup/mintbackup.ui
+xgettext --language=Python --keyword=_ --keyword=N_ --output=mintbackup.pot usr/lib/linuxmint/mintbackup/mintbackup.py generate_desktop_files usr/share/linuxmint/mintbackup/mintbackup.ui.h
+rm -f usr/share/linuxmint/mintbackup/mintbackup.ui.h
