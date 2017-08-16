@@ -682,8 +682,7 @@ class MintBackup:
 
     def backup_pkg_save_to_file(self):
         # Save the package selection
-        filetime = time.strftime("%Y-%m-%d-%H%M-package.list", time.localtime())
-        filename = "~/software_selection_%s@%s" % (subprocess.getoutput("hostname"), filetime)
+        filename = time.strftime("~/%Y-%m-%d-%H%M-packages.list", time.localtime())
         file_path = os.path.expanduser(filename)
         with open(file_path, "w") as f:
             for row in self.builder.get_object("treeview_packages").get_model():
@@ -728,7 +727,7 @@ class MintBackup:
                     if line.startswith("#") or line == "":
                         continue
                     name = line.split("\t")[0]
-                    error = "%s\n<small>%s</small>" % (name, _("Could not locate the package"))
+                    error = "%s\n<small>%s</small>" % (name, _("Could not locate the package."))
                     if name in cache:
                         pkg = cache[name]
                         if not pkg.is_installed:
