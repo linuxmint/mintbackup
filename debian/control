@@ -11,6 +11,7 @@ Depends: python3 (>= 3),
          python3-gi,
          python3-apt,
          aptitude,
+         gir1.2-xapp-1.0,
          ${misc:Depends}
 Description: Home Directory Backup Tool
  Easily backup and restore your personal data and your software selection.

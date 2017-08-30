@@ -11,7 +11,8 @@ import tarfile
 import threading
 import time
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, GdkPixbuf, Gio, GLib
+gi.require_version("XApp", "1.0")
+from gi.repository import Gtk, GdkPixbuf, Gio, GLib, XApp
 
 import aptdaemon.client
 from aptdaemon.enums import *
@@ -430,10 +431,12 @@ class MintBackup:
 
     def set_progress(self, path):
         fraction = float(self.archived_files) / float(self.num_files)
+        int_fraction = int(fraction * 100)
         self.progressbar.set_fraction(fraction)
-        self.progressbar.set_text(str(int(fraction * 100)) + "%")
+        self.progressbar.set_text(str(int_fraction) + "%")
         self.builder.get_object("label_current_file").set_label(_("Backing up:"))
         self.builder.get_object("label_current_file_value").set_label(path)
+        XApp.set_window_progress(self.main_window, int_fraction)
 
     def set_widgets_before_backup(self):
         self.builder.get_object("button_apply").hide()
@@ -456,6 +459,7 @@ class MintBackup:
                 self.builder.get_object("label_finished_status").set_markup(_("Your files were successfully saved in %s.") % self.filename)
         self.notebook.next_page()
         self.operating = False
+        XApp.set_window_progress(self.main_window, 0)
 
     @print_timing
     def backup(self):
@@ -532,10 +536,12 @@ class MintBackup:
 
     def set_restore_progress(self, path):
         fraction = float(self.restored_files) / float(self.num_files)
+        int_fraction = int(fraction * 100)
         self.restore_progressbar.set_fraction(fraction)
-        self.restore_progressbar.set_text(str(int(fraction * 100)) + "%")
+        self.restore_progressbar.set_text(str(int_fraction) + "%")
         self.builder.get_object("label_current_file1").set_label(_("Restoring:"))
         self.builder.get_object("label_current_file_value1").set_label(path)
+        XApp.set_window_progress(self.main_window, int_fraction)
 
     def set_widgets_before_restore(self):
         self.builder.get_object("button_apply").hide()
@@ -557,6 +563,7 @@ class MintBackup:
                 self.builder.get_object("label_finished_status1").set_markup(_("Your files were successfully restored."))
         self.notebook.next_page()
         self.operating = False
+        XApp.set_window_progress(self.main_window, 0)
 
     def get_checksum_for_path(self, path):
         # Return the checksum of the file
