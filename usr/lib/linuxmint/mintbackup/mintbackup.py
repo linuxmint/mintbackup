@@ -319,6 +319,7 @@ class MintBackup:
         elif sel == TAB_FILE_RESTORE_1:
             # sanity check the files (file --mimetype)
             self.restore_source = self.builder.get_object("filechooserbutton_restore_source").get_filename()
+            self.overwrite_existing_files = self.builder.get_object("radiobutton_restore_all").get_active()
             if not self.restore_source or self.restore_source == "":
                 self.show_message(_("Please choose a backup file."))
                 return
@@ -624,6 +625,12 @@ class MintBackup:
                     try:
                         GLib.idle_add(self.set_restore_progress, member.name)
                         if os.path.exists(target):
+                            # Skip unless we're overwriting existing files
+                            if not self.overwrite_existing_files:
+                                self.restored_files += 1
+                                print("Skipping existing file: %s" % target)
+                                continue
+
                             # Skip if the files are identical
                             if member.size == os.path.getsize(target) and member.mtime == os.path.getmtime(target):
                                 gz = self.tar_archive.extractfile(member)
