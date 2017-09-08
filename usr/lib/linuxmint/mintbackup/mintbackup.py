@@ -806,10 +806,10 @@ class MintBackup:
         packages = []
         model = self.builder.get_object("treeview_package_list").get_model()
         for row in model:
-            if row[0]:
-                packages.append(row[0])
+            if row[3]:
+                packages.append(row[3])
         ac = aptdaemon.client.AptClient()
-        ac.install_packages(['gnome-boxes'], reply_handler=self.apt_simulate_trans, error_handler=self.apt_on_error)
+        ac.install_packages(packages, reply_handler=self.apt_simulate_trans, error_handler=self.apt_on_error)
 
     def set_selection(self, w, treeview, selection, check):
         # Select / deselect all
