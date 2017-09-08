@@ -29,6 +29,11 @@ HOME = os.path.expanduser("~")
 UI_FILE = '/usr/share/linuxmint/mintbackup/mintbackup.ui'
 META_FILE = ".meta.mint"
 
+BACKUP_DIR = os.path.join(GLib.get_user_special_dir(GLib.USER_DIRECTORY_DOCUMENTS), _("Backups"))
+if not os.path.exists(BACKUP_DIR):
+    print("Creating backup directory in %s" % BACKUP_DIR)
+    os.makedirs(BACKUP_DIR)
+
 (TAB_START, TAB_FILE_BACKUP_1, TAB_FILE_BACKUP_2, TAB_FILE_BACKUP_3, TAB_FILE_BACKUP_4, TAB_FILE_BACKUP_5, TAB_FILE_RESTORE_1, TAB_FILE_RESTORE_3, TAB_FILE_RESTORE_4,
 TAB_PKG_BACKUP_1, TAB_PKG_BACKUP_2, TAB_PKG_RESTORE_1, TAB_PKG_RESTORE_2, TAB_PKG_RESTORE_3) = range(14)
 
@@ -86,6 +91,7 @@ class MintBackup:
         self.excludes_model = Gtk.ListStore(str, GdkPixbuf.Pixbuf, str)
         self.excludes_model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         treeview.set_model(self.excludes_model)
+        self.excludes_model.append([BACKUP_DIR[len(self.home_directory) + 1:], self.dir_icon, BACKUP_DIR])
         for item in self.settings.get_strv("excluded-paths"):
             item = os.path.expanduser(item)
             if os.path.exists(item):
@@ -183,6 +189,10 @@ class MintBackup:
         filechooser = self.builder.get_object("filechooserbutton_package_source")
         filechooser.connect("file-set", self.restore_pkg_validate_file)
         filechooser.set_filter(file_filter)
+
+        self.builder.get_object("filechooserbutton_restore_source").set_current_folder(BACKUP_DIR)
+        self.builder.get_object("filechooserbutton_backup_dest").set_current_folder(BACKUP_DIR)
+        self.builder.get_object("filechooserbutton_package_source").set_current_folder(BACKUP_DIR)
 
     def show_message(self, message, message_type=Gtk.MessageType.WARNING):
         dialog = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT, message_type, Gtk.ButtonsType.OK, message)
@@ -699,8 +709,8 @@ class MintBackup:
 
     def backup_pkg_save_to_file(self):
         # Save the package selection
-        filename = time.strftime("~/%Y-%m-%d-%H%M-packages.list", time.localtime())
-        file_path = os.path.expanduser(filename)
+        filename = time.strftime("%Y-%m-%d-%H%M-packages.list", time.localtime())
+        file_path = os.path.join(BACKUP_DIR, filename)
         with open(file_path, "w") as f:
             for row in self.builder.get_object("treeview_packages").get_model():
                 if row[0]:
