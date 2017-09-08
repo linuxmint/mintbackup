@@ -99,8 +99,8 @@ class MintBackup:
                     self.excludes_model.append([item[len(self.home_directory) + 1:], self.dir_icon, item])
                 else:
                     self.excludes_model.append([item[len(self.home_directory) + 1:], self.file_icon, item])
-        self.builder.get_object("button_add_file").connect("clicked", self.add_file_to_treeview, treeview, False)
-        self.builder.get_object("button_add_folder").connect("clicked", self.add_folder_to_treeview, treeview, False)
+        self.builder.get_object("button_add_file").connect("clicked", self.add_item_to_treeview, treeview, self.file_icon, Gtk.FileChooserAction.OPEN, False)
+        self.builder.get_object("button_add_folder").connect("clicked", self.add_item_to_treeview, treeview, self.dir_icon, Gtk.FileChooserAction.SELECT_FOLDER, False)
         self.builder.get_object("button_remove_exclude").connect("clicked", self.remove_item_from_treeview, treeview)
 
         # set up inclusions page
@@ -123,8 +123,8 @@ class MintBackup:
                     self.includes_model.append([item[len(self.home_directory) + 1:], self.dir_icon, item])
                 else:
                     self.includes_model.append([item[len(self.home_directory) + 1:], self.file_icon, item])
-        self.builder.get_object("button_include_hidden_files").connect("clicked", self.add_file_to_treeview, treeview, True)
-        self.builder.get_object("button_include_hidden_dirs").connect("clicked", self.add_folder_to_treeview, treeview, True)
+        self.builder.get_object("button_include_hidden_files").connect("clicked", self.add_item_to_treeview, treeview, self.file_icon, Gtk.FileChooserAction.OPEN, True)
+        self.builder.get_object("button_include_hidden_dirs").connect("clicked", self.add_item_to_treeview, treeview, self.dir_icon, Gtk.FileChooserAction.SELECT_FOLDER, True)
         self.builder.get_object("button_remove_include").connect("clicked", self.remove_item_from_treeview, treeview)
 
         # Errors treeview for backup
@@ -201,9 +201,9 @@ class MintBackup:
         dialog.run()
         dialog.destroy()
 
-    def add_file_to_treeview(self, widget, treeview, show_hidden=False):
-        # Add files to treeview
-        dialog = Gtk.FileChooserDialog(_("Backup Tool"), None, Gtk.FileChooserAction.OPEN, (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+    def add_item_to_treeview(self, widget, treeview, icon, mode, show_hidden=False):
+        # Add a file or directory to treeview
+        dialog = Gtk.FileChooserDialog(_("Backup Tool"), None, mode, (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
         dialog.set_current_folder(self.home_directory)
         dialog.set_select_multiple(True)
         dialog.set_show_hidden(show_hidden)
@@ -211,22 +211,13 @@ class MintBackup:
             filenames = dialog.get_filenames()
             for filename in filenames:
                 if not filename.find(self.home_directory):
-                    treeview.get_model().append([filename[len(self.home_directory) + 1:], self.file_icon, filename])
-                else:
-                    self.show_message(_("%s is not located in your home directory.") % filename)
-        dialog.destroy()
-
-    def add_folder_to_treeview(self, widget, treeview, show_hidden=False):
-        # Add folders to treeview
-        dialog = Gtk.FileChooserDialog(_("Backup Tool"), None, Gtk.FileChooserAction.SELECT_FOLDER, (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
-        dialog.set_current_folder(self.home_directory)
-        dialog.set_select_multiple(True)
-        dialog.set_show_hidden(show_hidden)
-        if dialog.run() == Gtk.ResponseType.OK:
-            filenames = dialog.get_filenames()
-            for filename in filenames:
-                if not filename.find(self.home_directory):
-                    treeview.get_model().append([filename[len(self.home_directory) + 1:], self.dir_icon, filename])
+                    found = False
+                    model = treeview.get_model()
+                    for row in model:
+                        if row[2] == filename:
+                            found = True
+                    if not found:
+                        treeview.get_model().append([filename[len(self.home_directory) + 1:], icon, filename])
                 else:
                     self.show_message(_("%s is not located in your home directory.") % filename)
         dialog.destroy()
