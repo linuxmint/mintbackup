@@ -19,6 +19,9 @@ from aptdaemon.enums import *
 from aptdaemon.gtk3widgets import AptErrorDialog, AptConfirmDialog, AptProgressDialog, AptStatusIcon
 import aptdaemon.errors
 
+import setproctitle
+setproctitle.setproctitle("mintbackup")
+
 # i18n
 gettext.install("mintbackup", "/usr/share/linuxmint/locale")
 
