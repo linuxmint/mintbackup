@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-08 11:49+0100\n"
+"POT-Creation-Date: 2017-10-27 13:03+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -255,11 +255,11 @@ msgid "Please select the applications you want to save."
 msgstr ""
 
 #: usr/share/linuxmint/mintbackup/mintbackup.ui.h:27
-msgid "Select All"
+msgid "Select all"
 msgstr ""
 
 #: usr/share/linuxmint/mintbackup/mintbackup.ui.h:28
-msgid "Deselect All"
+msgid "Deselect all"
 msgstr ""
 
 #: usr/share/linuxmint/mintbackup/mintbackup.ui.h:29
