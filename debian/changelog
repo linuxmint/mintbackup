@@ -1,3 +1,25 @@
+mintbackup (2.2.9) sylvia; urgency=medium
+
+  [ Clement Lefebvre ]
+  * Remove Close button
+  * Complete Revamp (#42)
+  * Rename software selections filename
+  * Implement support for window progress
+  * Set process title
+  * Restoration: Add an option to overwrite existing files.
+  * Create a use a backup directory
+  * Don't allow duplicates in include/exclude lists
+  * Fix software restoration
+  * l10n: Update POT file
+
+  [ JosephMcc ]
+  * ui: Use consistent button styling (#46)
+
+  [ Clement Lefebvre ]
+  * l10n: Update POT file
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 27 Oct 2017 13:03:54 +0100
+
 mintbackup (2.2.8) sonya; urgency=medium
 
   [ aiglebleu ]
