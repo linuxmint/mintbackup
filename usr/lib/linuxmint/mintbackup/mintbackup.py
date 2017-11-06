@@ -3,6 +3,7 @@ import apt
 import gettext
 import gi
 import hashlib
+import locale
 import os
 import stat
 import subprocess
@@ -23,7 +24,12 @@ import setproctitle
 setproctitle.setproctitle("mintbackup")
 
 # i18n
-gettext.install("mintbackup", "/usr/share/linuxmint/locale")
+APP = 'mintbackup'
+LOCALE_DIR = "/usr/share/linuxmint/locale"
+locale.bindtextdomain(APP, LOCALE_DIR)
+gettext.bindtextdomain(APP, LOCALE_DIR)
+gettext.textdomain(APP)
+_ = gettext.gettext
 
 HOME = os.path.expanduser("~")
 UI_FILE = '/usr/share/linuxmint/mintbackup/mintbackup.ui'
@@ -50,6 +56,7 @@ class MintBackup:
 
     def __init__(self):
         self.builder = Gtk.Builder()
+        self.builder.set_translation_domain(APP)
         self.builder.add_from_file(UI_FILE)
 
         self.settings = Gio.Settings("com.linuxmint.backup")
