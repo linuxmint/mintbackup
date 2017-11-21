@@ -1,3 +1,9 @@
+mintbackup (2.3.1) sylvia; urgency=medium
+
+  * Main screen: Change icon for personal data to folder-home.
+
+ -- Clement Lefebvre <root@linuxmint.com>  Tue, 21 Nov 2017 12:38:44 +0000
+
 mintbackup (2.3.0) sylvia; urgency=medium
 
   * l10n: Fix locale not set in UI
