@@ -1,3 +1,9 @@
+mintbackup (2.3.2) sylvia; urgency=medium
+
+  * UI: Fix folder-home icon -> user-home
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 29 Nov 2017 12:27:49 +0000
+
 mintbackup (2.3.1) sylvia; urgency=medium
 
   * Main screen: Change icon for personal data to folder-home.
