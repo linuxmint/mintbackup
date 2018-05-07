@@ -1,3 +1,13 @@
+mintbackup (2.3.3) tara; urgency=medium
+
+  [ Clement Lefebvre ]
+  * Remove manifests
+
+  [ PaulXiCao ]
+  * added the create folder option (issue #50) (#53)
+
+ -- Clement Lefebvre <root@linuxmint.com>  Mon, 07 May 2018 12:28:36 +0100
+
 mintbackup (2.3.2) sylvia; urgency=medium
 
   * UI: Fix folder-home icon -> user-home
