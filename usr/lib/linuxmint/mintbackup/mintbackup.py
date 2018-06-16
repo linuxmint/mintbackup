@@ -813,7 +813,7 @@ class MintBackup:
         packages = []
         model = self.builder.get_object("treeview_package_list").get_model()
         for row in model:
-            if row[3]:
+            if row[0]:
                 packages.append(row[3])
         ac = aptdaemon.client.AptClient()
         ac.install_packages(packages, reply_handler=self.apt_simulate_trans, error_handler=self.apt_on_error)
