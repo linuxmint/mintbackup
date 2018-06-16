@@ -1,3 +1,9 @@
+mintbackup (2.3.4) tara; urgency=medium
+
+  * Fix package restoration
+
+ -- Clement Lefebvre <root@linuxmint.com>  Sat, 16 Jun 2018 11:16:53 +0200
+
 mintbackup (2.3.3) tara; urgency=medium
 
   [ Clement Lefebvre ]
