@@ -681,9 +681,16 @@ class MintBackup:
 
         cache = apt.Cache()
         settings = Gio.Settings("com.linuxmint.install")
-        for name in settings.get_strv("installed-apps"):
+        for item in settings.get_strv("installed-apps"):
             try:
-                if name in cache:
+                if item.startswith(("apt:", "fp:")):
+                    # Split package hash at first ':' since some packages have ':i386' suffixes
+                    (prefix, name) = item.split(':', 1)
+                else:
+                    # Assume packages are from APT if not specified
+                    prefix = "apt"
+                    name = item
+                if prefix == "apt" and name in cache:
                     pkg = cache[name]
                     if pkg.is_installed:
                         desc = pkg.name + "\n<small>" + pkg.installed.summary.replace("&", "&amp;") + "</small>"
