@@ -1,24 +1,27 @@
 #!/usr/bin/python3
-import apt
 import gettext
-import gi
 import hashlib
 import locale
 import os
 import stat
-import subprocess
 import sys
 import tarfile
 import threading
 import time
+
+import gi
 gi.require_version("Gtk", "3.0")
 gi.require_version("XApp", "1.0")
 from gi.repository import Gtk, GdkPixbuf, Gio, GLib, XApp
 
+import apt
 import aptdaemon.client
-from aptdaemon.enums import *
-from aptdaemon.gtk3widgets import AptErrorDialog, AptConfirmDialog, AptProgressDialog, AptStatusIcon
 import aptdaemon.errors
+from aptdaemon.enums import *
+from aptdaemon.gtk3widgets import (AptConfirmDialog, AptErrorDialog,
+                                   AptProgressDialog, AptStatusIcon)
+
+from mintcommon.installer.cache import PkgCache
 
 import setproctitle
 setproctitle.setproctitle("mintbackup")
@@ -679,9 +682,17 @@ class MintBackup:
         model = Gtk.ListStore(bool, str, str)
         model.set_sort_column_id(1, Gtk.SortType.ASCENDING)
 
+        pkgcache = PkgCache()
+        installed_packages = pkgcache.get_manually_installed_packages()
+        if not installed_packages:
+            settings = Gio.Settings("com.linuxmint.install")
+            installed_packages = settings.get_strv("installed-apps")
+        else:
+            self.builder.get_object("label_caption_software_backup2").set_text(_("The list below shows the applications you installed."))
+
         cache = apt.Cache()
-        settings = Gio.Settings("com.linuxmint.install")
-        for item in settings.get_strv("installed-apps"):
+
+        for item in installed_packages:
             try:
                 if item.startswith(("apt:", "fp:")):
                     # Split package hash at first ':' since some packages have ':i386' suffixes
