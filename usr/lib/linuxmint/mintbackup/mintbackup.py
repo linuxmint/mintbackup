@@ -693,9 +693,9 @@ class MintBackup:
                 if prefix == "apt" and name in cache:
                     pkg = cache[name]
                     if pkg.is_installed:
-                        desc = pkg.name + "\n<small>" + pkg.installed.summary.replace("&", "&amp;") + "</small>"
+                        desc = pkg.name + "\n<small>" + GLib.markup_escape_text(pkg.installed.summary) + "</small>"
                     elif pkg.candidate is not None:
-                        desc = pkg.name + "\n<small>" + pkg.candidate.summary.replace("&", "&amp;") + "</small>"
+                        desc = pkg.name + "\n<small>" + GLib.markup_escape_text(pkg.candidate.summary) + "</small>"
                     model.append([True, pkg.name, desc])
             except Exception as e:
                 print(e)
@@ -764,7 +764,7 @@ class MintBackup:
                         pkg = cache[name]
                         if not pkg.is_installed:
                             if pkg.candidate is not None:
-                                status = "%s\n<small>%s</small>" % (name, pkg.candidate.summary.replace("&", "&amp;"))
+                                status = "%s\n<small>%s</small>" % (name, GLib.markup_escape_text(pkg.candidate.summary))
                                 model.append([True, status, True, pkg.name])
                             else:
                                 model.append([False, error, False, pkg.name])
