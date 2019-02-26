@@ -202,7 +202,7 @@ class MintBackup:
         self.builder.get_object("filechooserbutton_package_source").set_current_folder(BACKUP_DIR)
 
     def show_message(self, message, message_type=Gtk.MessageType.WARNING):
-        dialog = Gtk.MessageDialog(None, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT, message_type, Gtk.ButtonsType.OK, message)
+        dialog = Gtk.MessageDialog(self.main_window, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT, message_type, Gtk.ButtonsType.OK, message)
         dialog.set_title(_("Backup Tool"))
         dialog.set_position(Gtk.WindowPosition.CENTER)
         dialog.run()
@@ -210,7 +210,7 @@ class MintBackup:
 
     def add_item_to_treeview(self, widget, treeview, icon, mode, show_hidden=False):
         # Add a file or directory to treeview
-        dialog = Gtk.FileChooserDialog(_("Backup Tool"), None, mode, (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+        dialog = Gtk.FileChooserDialog(_("Backup Tool"), self.main_window, mode, (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
         dialog.set_current_folder(self.home_directory)
         dialog.set_select_multiple(True)
         dialog.set_show_hidden(show_hidden)
