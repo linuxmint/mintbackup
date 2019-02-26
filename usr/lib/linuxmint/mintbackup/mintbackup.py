@@ -192,7 +192,7 @@ class MintBackup:
         t.append_column(c2)
 
         file_filter = Gtk.FileFilter()
-        file_filter.add_pattern ("*.list");
+        file_filter.add_pattern ("*.list")
         filechooser = self.builder.get_object("filechooserbutton_package_source")
         filechooser.connect("file-set", self.restore_pkg_validate_file)
         filechooser.set_filter(file_filter)
