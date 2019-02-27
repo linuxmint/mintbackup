@@ -14,7 +14,7 @@ gi.require_version("Gtk", "3.0")
 gi.require_version("XApp", "1.0")
 from gi.repository import Gtk, GdkPixbuf, Gio, GLib, XApp
 
-import apt
+import apt_pkg
 import aptdaemon.client
 import aptdaemon.errors
 from aptdaemon.enums import *
@@ -182,17 +182,17 @@ class MintBackup:
         t.append_column(c2)
 
         # choose a package list
-        t = self.builder.get_object("treeview_package_list")
-        self.builder.get_object("button_select_list").connect("clicked", self.set_selection, t, True, True)
-        self.builder.get_object("button_deselect_list").connect("clicked", self.set_selection, t, False, True)
+        self.treeview_package_list = self.builder.get_object("treeview_package_list")
+        self.builder.get_object("button_select_list").connect("clicked", self.set_selection, self.treeview_package_list, True, True)
+        self.builder.get_object("button_deselect_list").connect("clicked", self.set_selection, self.treeview_package_list, False, True)
         self.builder.get_object("button_refresh").connect("clicked", self.restore_pkg_load_from_file)
         tog = Gtk.CellRendererToggle()
-        tog.connect("toggled", self.toggled_cb, t)
+        tog.connect("toggled", self.toggled_cb, self.treeview_package_list)
         c1 = Gtk.TreeViewColumn("", tog, active=0, activatable=2)
         c1.set_cell_data_func(tog, self.celldatamethod_checkbox)
-        t.append_column(c1)
+        self.treeview_package_list.append_column(c1)
         c2 = Gtk.TreeViewColumn("", Gtk.CellRendererText(), markup=1)
-        t.append_column(c2)
+        self.treeview_package_list.append_column(c2)
 
         file_filter = Gtk.FileFilter()
         file_filter.add_pattern ("*.list")
@@ -690,8 +690,9 @@ class MintBackup:
         else:
             self.builder.get_object("label_caption_software_backup2").set_text(_("The list below shows the applications you installed."))
 
-        cache = apt.Cache()
-
+        apt_pkg.init()
+        cache = apt_pkg.Cache()
+        package_records = apt_pkg.PackageRecords(cache)
         for item in installed_packages:
             try:
                 if item.startswith(("apt:", "fp:")):
@@ -703,11 +704,10 @@ class MintBackup:
                     name = item
                 if prefix == "apt" and name in cache:
                     pkg = cache[name]
-                    if pkg.is_installed:
-                        desc = pkg.name + "\n<small>" + GLib.markup_escape_text(pkg.installed.summary) + "</small>"
-                    elif pkg.candidate is not None:
-                        desc = pkg.name + "\n<small>" + GLib.markup_escape_text(pkg.candidate.summary) + "</small>"
-                    model.append([True, pkg.name, desc])
+                    if pkg.current_ver:
+                        package_records.lookup(pkg.version_list[0].translated_description.file_list[0])
+                        desc = f"{pkg.name}\n<small>{GLib.markup_escape_text(package_records.short_desc)}</small>"
+                        model.append([True, pkg.name, desc])
             except Exception as e:
                 print(e)
         self.builder.get_object("treeview_packages").set_model(model)
@@ -755,33 +755,42 @@ class MintBackup:
         except Exception as detail:
             self.show_message(_("An error occurred while reading the file."))
 
+    @print_timing
     def restore_pkg_load_from_file(self, widget=None):
         # Load package list into treeview
         self.builder.get_object("button_forward").hide()
         self.builder.get_object("button_apply").show()
         self.builder.get_object("button_apply").set_sensitive(True)
         model = Gtk.ListStore(bool, str, bool, str)
-        self.builder.get_object("treeview_package_list").set_model(model)
+        self.treeview_package_list.set_model(model)
         try:
-            with open(self.package_source, "r") as source:
-                cache = apt.Cache()
-                for line in source:
-                    line = line.rstrip("\r\n")
-                    if line.startswith("#") or line == "":
-                        continue
-                    name = line.split("\t")[0]
-                    error = "%s\n<small>%s</small>" % (name, _("Could not locate the package."))
-                    if name in cache:
-                        pkg = cache[name]
-                        if not pkg.is_installed:
-                            if pkg.candidate is not None:
-                                status = "%s\n<small>%s</small>" % (name, GLib.markup_escape_text(pkg.candidate.summary))
-                                model.append([True, status, True, pkg.name])
-                            else:
-                                model.append([False, error, False, pkg.name])
-                    else:
-                        model.append([False, error, False, error])
-        except Exception as detail:
+            with open(self.package_source, "r") as f:
+                source = f.readlines()
+            apt_pkg.init()
+            cache = apt_pkg.Cache()
+            package_records = apt_pkg.PackageRecords(cache)
+            depcache = apt_pkg.DepCache(cache)
+            for line in source:
+                if not line.strip() or line.startswith("#"):
+                    continue
+                name = line.split("\t")[0].strip()
+                if not name:
+                    continue
+                error = "%s\n<small>%s</small>" % (name, _("Could not locate the package."))
+                if name in cache:
+                    pkg = cache[name]
+                    if not pkg.current_ver:
+                        candidate = depcache.get_candidate_ver(pkg)
+                        if candidate.downloadable:
+                            package_records.lookup(candidate.translated_description.file_list[0])
+                            summary = package_records.short_desc
+                            status = f"{name}\n<small>{GLib.markup_escape_text(summary)}</small>"
+                            model.append([True, status, True, pkg.name])
+                        else:
+                            model.append([False, error, False, pkg.name])
+                else:
+                    model.append([False, error, False, error])
+        except:
             self.show_message(_("An error occurred while reading the file."))
         if len(model) == 0:
             self.builder.get_object("button_forward").hide()
