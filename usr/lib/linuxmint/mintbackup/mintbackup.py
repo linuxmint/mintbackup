@@ -101,7 +101,6 @@ class MintBackup:
         self.excludes_model = Gtk.ListStore(str, GdkPixbuf.Pixbuf, str)
         self.excludes_model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         treeview.set_model(self.excludes_model)
-        self.excludes_model.append([BACKUP_DIR[len(self.home_directory) + 1:], self.dir_icon, BACKUP_DIR])
         for item in self.settings.get_strv("excluded-paths"):
             item = os.path.expanduser(item)
             if os.path.exists(item):
@@ -109,6 +108,9 @@ class MintBackup:
                     self.excludes_model.append([item[len(self.home_directory) + 1:], self.dir_icon, item])
                 else:
                     self.excludes_model.append([item[len(self.home_directory) + 1:], self.file_icon, item])
+        if not [True for x in self.excludes_model if x[2] == BACKUP_DIR]:
+            self.excludes_model.append([BACKUP_DIR[len(self.home_directory) + 1:],
+                                        self.dir_icon, BACKUP_DIR])
         self.builder.get_object("button_add_file").connect("clicked", self.add_item_to_treeview, treeview, self.file_icon, Gtk.FileChooserAction.OPEN, False)
         self.builder.get_object("button_add_folder").connect("clicked", self.add_item_to_treeview, treeview, self.dir_icon, Gtk.FileChooserAction.SELECT_FOLDER, False)
         self.builder.get_object("button_remove_exclude").connect("clicked", self.remove_item_from_treeview, treeview)
