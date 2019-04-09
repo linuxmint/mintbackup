@@ -111,7 +111,12 @@ class MintBackup:
                     self.excludes_model.append([item[len(self.home_directory) + 1:], self.file_icon, item])
         self.builder.get_object("button_add_file").connect("clicked", self.add_item_to_treeview, treeview, self.file_icon, Gtk.FileChooserAction.OPEN, False)
         self.builder.get_object("button_add_folder").connect("clicked", self.add_item_to_treeview, treeview, self.dir_icon, Gtk.FileChooserAction.SELECT_FOLDER, False)
-        self.builder.get_object("button_remove_exclude").connect("clicked", self.remove_item_from_treeview, treeview)
+        button_remove_exclude = self.builder.get_object("button_remove_exclude")
+        button_remove_exclude.connect("clicked", self.remove_item_from_treeview, treeview)
+        treeview_excludes_selection = self.builder.get_object("treeview_excludes_selection")
+        treeview_excludes_selection.connect("changed",
+                                            self.on_treeview_excludes_selection_changed,
+                                            button_remove_exclude)
 
         # set up inclusions page
         treeview = self.builder.get_object("treeview_includes")
@@ -203,6 +208,11 @@ class MintBackup:
         self.builder.get_object("filechooserbutton_restore_source").set_current_folder(BACKUP_DIR)
         self.builder.get_object("filechooserbutton_backup_dest").set_current_folder(BACKUP_DIR)
         self.builder.get_object("filechooserbutton_package_source").set_current_folder(BACKUP_DIR)
+
+    @staticmethod
+    def on_treeview_excludes_selection_changed(selection, button):
+        liststore, treeiter = selection.get_selected()
+        button.set_sensitive((treeiter and liststore.get_value(treeiter, 2) != BACKUP_DIR))
 
     def show_message(self, message, message_type=Gtk.MessageType.WARNING):
         dialog = Gtk.MessageDialog(self.main_window, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT, message_type, Gtk.ButtonsType.OK, message)

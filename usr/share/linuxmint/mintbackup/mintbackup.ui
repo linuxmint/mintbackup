@@ -357,7 +357,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="headers_visible">False</property>
                                 <child internal-child="selection">
-                                  <object class="GtkTreeSelection"/>
+                                  <object class="GtkTreeSelection" id="treeview_excludes_selection"/>
                                 </child>
                               </object>
                             </child>
@@ -407,6 +407,7 @@
                           <object class="GtkButton" id="button_remove_exclude">
                             <property name="label" translatable="yes">Remove</property>
                             <property name="visible">True</property>
+                            <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                           </object>
