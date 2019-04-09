@@ -50,7 +50,7 @@
                       <object class="GtkImage" id="image_restore_data">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="yalign">0</property>
+                        <property name="valign">start</property>
                         <property name="pixel_size">48</property>
                         <property name="icon_name">user-home</property>
                         <property name="icon_size">5</property>
@@ -159,7 +159,7 @@
                       <object class="GtkImage" id="image_restore_data2">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="yalign">0</property>
+                        <property name="valign">start</property>
                         <property name="pixel_size">48</property>
                         <property name="icon_name">system-software-install</property>
                         <property name="icon_size">5</property>
@@ -372,9 +372,10 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkVButtonBox" id="vbuttonbox1">
+                      <object class="GtkButtonBox" id="vbuttonbox1">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
                         <property name="spacing">6</property>
                         <property name="layout_style">start</property>
                         <child>
@@ -508,9 +509,10 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkVButtonBox" id="vbuttonbox2">
+                      <object class="GtkButtonBox" id="vbuttonbox2">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
                         <property name="spacing">6</property>
                         <property name="layout_style">start</property>
                         <child>
@@ -692,7 +694,6 @@
                   <object class="GtkLabel" id="label_finished_status">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="xpad">6</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -806,7 +807,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="xalign">0</property>
+                        <property name="halign">start</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                         <child>
@@ -833,7 +834,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="xalign">0</property>
+                        <property name="halign">start</property>
                         <property name="draw_indicator">True</property>
                         <property name="group">radiobutton_restore_lost</property>
                         <child>
@@ -973,7 +974,6 @@
                   <object class="GtkLabel" id="label_finished_status1">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="xpad">6</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1166,7 +1166,6 @@
                   <object class="GtkImage" id="image_packages_done">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="xpad">6</property>
                     <property name="icon_name">mintbackup-success-symbolic</property>
                     <property name="icon_size">6</property>
                   </object>
@@ -1180,7 +1179,6 @@
                   <object class="GtkLabel" id="label_packages_done_value">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="xpad">6</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1297,9 +1295,10 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkVButtonBox" id="vbuttonbox3">
+                      <object class="GtkButtonBox" id="vbuttonbox3">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
                         <property name="spacing">2</property>
                         <property name="layout_style">start</property>
                         <child>
@@ -1390,7 +1389,6 @@
                   <object class="GtkLabel" id="label_install_done_value">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="xpad">6</property>
                     <property name="label" translatable="yes">All the packages in your software selection are installed.</property>
                   </object>
                   <packing>
@@ -1424,12 +1422,11 @@
             <property name="layout_style">start</property>
             <child>
               <object class="GtkButton" id="button_back">
-                <property name="label">gtk-go-back</property>
+                <property name="label">Back</property>
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1439,11 +1436,10 @@
             </child>
             <child>
               <object class="GtkButton" id="button_forward">
-                <property name="label">gtk-go-forward</property>
+                <property name="label">Next</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1453,10 +1449,9 @@
             </child>
             <child>
               <object class="GtkButton" id="button_apply">
-                <property name="label">gtk-apply</property>
+                <property name="label">Apply</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
