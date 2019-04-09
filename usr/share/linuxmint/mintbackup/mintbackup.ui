@@ -367,7 +367,6 @@
                       <packing>
                         <property name="expand">True</property>
                         <property name="fill">True</property>
-                        <property name="padding">6</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
@@ -504,7 +503,6 @@
                       <packing>
                         <property name="expand">True</property>
                         <property name="fill">True</property>
-                        <property name="padding">6</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
@@ -681,6 +679,7 @@
                   <object class="GtkImage" id="image_finished">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="pixel_size">32</property>
                     <property name="icon_name">mintbackup-success-symbolic</property>
                     <property name="icon_size">6</property>
                   </object>
@@ -961,6 +960,7 @@
                   <object class="GtkImage" id="image_finished1">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="pixel_size">32</property>
                     <property name="icon_name">mintbackup-success-symbolic</property>
                     <property name="icon_size">6</property>
                   </object>
@@ -1078,7 +1078,6 @@
                       <packing>
                         <property name="expand">True</property>
                         <property name="fill">True</property>
-                        <property name="padding">6</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
@@ -1120,6 +1119,7 @@
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
+                        <property name="padding">6</property>
                         <property name="position">2</property>
                       </packing>
                     </child>
@@ -1159,6 +1159,7 @@
               <object class="GtkBox" id="vbox19">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="valign">center</property>
                 <property name="border_width">12</property>
                 <property name="orientation">vertical</property>
                 <property name="spacing">12</property>
@@ -1166,6 +1167,7 @@
                   <object class="GtkImage" id="image_packages_done">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="pixel_size">48</property>
                     <property name="icon_name">mintbackup-success-symbolic</property>
                     <property name="icon_size">6</property>
                   </object>
@@ -1290,7 +1292,6 @@
                       <packing>
                         <property name="expand">True</property>
                         <property name="fill">True</property>
-                        <property name="padding">6</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
@@ -1369,6 +1370,7 @@
               <object class="GtkBox" id="vbox23">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="valign">center</property>
                 <property name="border_width">12</property>
                 <property name="orientation">vertical</property>
                 <property name="spacing">12</property>
@@ -1376,6 +1378,7 @@
                   <object class="GtkImage" id="image11">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="pixel_size">48</property>
                     <property name="icon_name">mintbackup-success-symbolic</property>
                     <property name="icon_size">6</property>
                   </object>
