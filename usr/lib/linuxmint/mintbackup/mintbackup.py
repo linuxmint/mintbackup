@@ -101,10 +101,13 @@ class MintBackup:
         self.excludes_model = Gtk.ListStore(str, GdkPixbuf.Pixbuf, str)
         self.excludes_model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         treeview.set_model(self.excludes_model)
+        excluded_paths = []
         self.excludes_model.append([BACKUP_DIR[len(self.home_directory) + 1:], self.dir_icon, BACKUP_DIR])
+        excluded_paths.append(BACKUP_DIR)
         for item in self.settings.get_strv("excluded-paths"):
             item = os.path.expanduser(item)
-            if os.path.exists(item):
+            if os.path.exists(item) and item not in excluded_paths:
+                excluded_paths.append(item)
                 if os.path.isdir(item):
                     self.excludes_model.append([item[len(self.home_directory) + 1:], self.dir_icon, item])
                 else:
