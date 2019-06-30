@@ -1,3 +1,25 @@
+mintbackup (2.3.6) tina; urgency=medium
+
+  [ gm10 ]
+  * Remove trailing semi-colon (#61)
+  * Fix markup escaping (#62)
+  * Fix transient parent warnings, toplevel changed to GtkWindow class (#63)
+
+  [ Clement Lefebvre ]
+  * UI: Fix spacing in button box
+
+  [ gm10 ]
+  * Fix high memory usage and eventual crash when restoring a .list (#64)
+  * Automatically generate list of manually installed packages if possible (#60)
+  * Use apt_pkg directly instead of python-apt for performance improvement (#65)
+
+  [ Clement Lefebvre ]
+  * l10n: Update POT
+  * Fix duplicates in excluded paths
+  * Don't let users remove the backup directory from the list of excluded paths
+
+ -- Clement Lefebvre <root@linuxmint.com>  Sun, 30 Jun 2019 15:42:59 +0200
+
 mintbackup (2.3.5) tessa; urgency=medium
 
   [ Sipho Mateke ]
