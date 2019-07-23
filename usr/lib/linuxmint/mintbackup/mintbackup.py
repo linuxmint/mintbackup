@@ -762,6 +762,7 @@ class MintBackup:
             self.builder.get_object("button_forward").set_sensitive(True)
         except Exception as detail:
             self.show_message(_("An error occurred while reading the file."))
+            print (detail)
 
     @print_timing
     def restore_pkg_load_from_file(self, widget=None):
@@ -779,27 +780,32 @@ class MintBackup:
             package_records = apt_pkg.PackageRecords(cache)
             depcache = apt_pkg.DepCache(cache)
             for line in source:
-                if not line.strip() or line.startswith("#"):
-                    continue
-                name = line.strip().replace(" install", "").replace("\tinstall", "")
-                if not name:
-                    continue
-                error = "%s\n<small>%s</small>" % (name, _("Could not locate the package."))
-                if name in cache:
-                    pkg = cache[name]
-                    if not pkg.current_ver:
-                        candidate = depcache.get_candidate_ver(pkg)
-                        if candidate.downloadable:
-                            package_records.lookup(candidate.translated_description.file_list[0])
-                            summary = package_records.short_desc
-                            status = f"{name}\n<small>{GLib.markup_escape_text(summary)}</small>"
-                            model.append([True, status, True, pkg.name])
-                        else:
-                            model.append([False, error, False, pkg.name])
-                else:
-                    model.append([False, error, False, error])
-        except:
+                try:
+                    if not line.strip() or line.startswith("#"):
+                        continue
+                    name = line.strip().replace(" install", "").replace("\tinstall", "")
+                    if not name:
+                        continue
+                    error = "%s\n<small>%s</small>" % (name, _("Could not locate the package."))
+                    if name in cache:
+                        pkg = cache[name]
+                        if not pkg.current_ver:
+                            candidate = depcache.get_candidate_ver(pkg)
+                            if candidate.downloadable:
+                                package_records.lookup(candidate.translated_description.file_list[0])
+                                summary = package_records.short_desc
+                                status = f"{name}\n<small>{GLib.markup_escape_text(summary)}</small>"
+                                model.append([True, status, True, pkg.name])
+                            else:
+                                model.append([False, error, False, pkg.name])
+                    else:
+                        model.append([False, error, False, error])
+                except Exception as inner_detail:
+                    print("Error while reading '%s'." % line.strip())
+                    print(inner_detail)
+        except Exception as detail:
             self.show_message(_("An error occurred while reading the file."))
+            print (detail)
         if len(model) == 0:
             self.builder.get_object("button_forward").hide()
             self.builder.get_object("button_back").hide()
