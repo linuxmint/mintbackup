@@ -755,7 +755,7 @@ class MintBackup:
                 for line in source:
                     line = line.rstrip("\r\n")
                     if line != "":
-                        if not line.endswith("\tinstall"):
+                        if not line.endswith("\tinstall") and not line.endswith(" install"):
                             self.show_message(_("The selected file is not a valid software selection."))
                             self.builder.get_object("button_forward").set_sensitive(False)
                             return
@@ -781,7 +781,7 @@ class MintBackup:
             for line in source:
                 if not line.strip() or line.startswith("#"):
                     continue
-                name = line.split("\t")[0].strip()
+                name = line.strip().replace(" install", "").replace("\tinstall", "")
                 if not name:
                     continue
                 error = "%s\n<small>%s</small>" % (name, _("Could not locate the package."))
