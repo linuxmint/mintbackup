@@ -1,3 +1,11 @@
+mintbackup (2.3.7) tina; urgency=medium
+
+  * Pkg restore: Support space delimiters
+  * Package restore: Skip line on error
+  * Package restore: Fix case when package is in the cache but has no candidate
+
+ -- Clement Lefebvre <root@linuxmint.com>  Tue, 23 Jul 2019 11:21:06 +0200
+
 mintbackup (2.3.6) tina; urgency=medium
 
   [ gm10 ]
