@@ -791,7 +791,7 @@ class MintBackup:
                         pkg = cache[name]
                         if not pkg.current_ver:
                             candidate = depcache.get_candidate_ver(pkg)
-                            if candidate.downloadable:
+                            if candidate and candidate.downloadable:
                                 package_records.lookup(candidate.translated_description.file_list[0])
                                 summary = package_records.short_desc
                                 status = f"{name}\n<small>{GLib.markup_escape_text(summary)}</small>"
