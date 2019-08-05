@@ -714,7 +714,7 @@ class MintBackup:
                     pkg = cache[name]
                     if pkg.current_ver:
                         package_records.lookup(pkg.version_list[0].translated_description.file_list[0])
-                        desc = f"{pkg.name}\n<small>{GLib.markup_escape_text(package_records.short_desc)}</small>"
+                        desc = "%s\n<small>%s</small>" % (pkg.name, GLib.markup_escape_text(package_records.short_desc))
                         model.append([True, pkg.name, desc])
             except Exception as e:
                 print(e)
@@ -794,7 +794,7 @@ class MintBackup:
                             if candidate and candidate.downloadable:
                                 package_records.lookup(candidate.translated_description.file_list[0])
                                 summary = package_records.short_desc
-                                status = f"{name}\n<small>{GLib.markup_escape_text(summary)}</small>"
+                                status = "%s\n<small>%s</small>" % (name, GLib.markup_escape_text(summary))
                                 model.append([True, status, True, pkg.name])
                             else:
                                 model.append([False, error, False, pkg.name])
