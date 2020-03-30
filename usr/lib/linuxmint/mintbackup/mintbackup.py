@@ -446,7 +446,7 @@ class MintBackup:
         try:
             rel_path = os.path.relpath(path)
             GLib.idle_add(self.set_progress, rel_path)
-            self.tar_archive.add(path, arcname=rel_path, recursive=False, exclude=None)
+            self.tar_archive.add(path, arcname=rel_path, recursive=False)
             self.archived_files += 1
         except Exception as detail:
             print(detail)
@@ -530,7 +530,7 @@ class MintBackup:
             try:
                 self.tar_archive = tarfile.open(name=self.temp_filename, dereference=self.follow_links, mode=backup_mode, bufsize=1024)
                 mintfile = os.path.join(self.backup_dest, META_FILE)
-                self.tar_archive.add(mintfile, arcname=META_FILE, recursive=False, exclude=None)
+                self.tar_archive.add(mintfile, arcname=META_FILE, recursive=False)
             except Exception as detail:
                 print(detail)
                 self.errors.append([str(detail), None])
