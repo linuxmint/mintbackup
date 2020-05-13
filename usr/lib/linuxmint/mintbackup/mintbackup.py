@@ -38,7 +38,7 @@ HOME = os.path.expanduser("~")
 UI_FILE = '/usr/share/linuxmint/mintbackup/mintbackup.ui'
 META_FILE = ".meta.mint"
 
-BACKUP_DIR = os.path.join(GLib.get_user_special_dir(GLib.USER_DIRECTORY_DOCUMENTS), _("Backups"))
+BACKUP_DIR = os.path.join(GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_DOCUMENTS), _("Backups"))
 if not os.path.exists(BACKUP_DIR):
     print("Creating backup directory in %s" % BACKUP_DIR)
     os.makedirs(BACKUP_DIR)
@@ -62,7 +62,7 @@ class MintBackup:
         self.builder.set_translation_domain(APP)
         self.builder.add_from_file(UI_FILE)
 
-        self.settings = Gio.Settings("com.linuxmint.backup")
+        self.settings = Gio.Settings(schema="com.linuxmint.backup")
         self.follow_links = self.settings.get_boolean("backup-follow-symlink")
 
         self.notebook = self.builder.get_object("notebook1")
