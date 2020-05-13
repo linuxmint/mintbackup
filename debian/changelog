@@ -1,3 +1,9 @@
+mintbackup (2.4.0) ulyana; urgency=medium
+
+  * l10n: Generate files
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 13 May 2020 16:13:58 +0100
+
 mintbackup (2.3.9) ulyana; urgency=medium
 
   * Fix wrong tarfile.add call argument
