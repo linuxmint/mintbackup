@@ -221,7 +221,8 @@ class MintBackup:
 
     def add_item_to_treeview(self, widget, treeview, icon, mode, show_hidden=False):
         # Add a file or directory to treeview
-        dialog = Gtk.FileChooserDialog(_("Backup Tool"), self.main_window, mode, (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+        dialog = Gtk.FileChooserDialog(title=("Backup Tool"), parent=self.main_window, action=mode)
+        dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
         dialog.set_current_folder(self.home_directory)
         dialog.set_select_multiple(True)
         dialog.set_show_hidden(show_hidden)
