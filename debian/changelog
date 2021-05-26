@@ -1,3 +1,10 @@
+mintbackup (2.4.2) uma; urgency=medium
+
+  [ Eric ]
+  * Fixed depreciation warnings when excluding a file
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 26 May 2021 12:40:54 +0100
+
 mintbackup (2.4.1) ulyana; urgency=medium
 
   [ JosephMcc ]
