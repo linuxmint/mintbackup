@@ -2,13 +2,18 @@
 
 The Backup Tool, mintbackup, makes it easy to save and restore backups of files within the home directory.
 
-![](https://repository-images.githubusercontent.com/378609911/d3148800-d1c6-11eb-89f6-22b5e2d8e170)
+![Mintbackup](https://user-images.githubusercontent.com/19881231/123512269-33a43900-d68f-11eb-8060-013d03489718.png)
 
 ## Build
 Get source code
 ```
 git clone https://github.com/linuxmint/mintbackup
 cd mintbackup
+```
+Install dependencies
+```
+dpkg-checkbuilddeps
+# Install these dependencies
 ```
 Build
 ```
