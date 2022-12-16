@@ -691,7 +691,7 @@ class MintBackup:
         model = Gtk.ListStore(bool, str, str)
         model.set_sort_column_id(1, Gtk.SortType.ASCENDING)
 
-        pkgcache = PkgCache()
+        pkgcache = PkgCache(None)
         installed_packages = pkgcache.get_manually_installed_packages()
         if not installed_packages:
             settings = Gio.Settings("com.linuxmint.install")
