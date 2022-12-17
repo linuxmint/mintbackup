@@ -1,3 +1,13 @@
+mintbackup (2.4.3) vera; urgency=medium
+
+  [ Musa Ünal ]
+  * Update README (#73)
+
+  [ Michael Webster ]
+  * Fix package listing from mintcommon.
+
+ -- Clement Lefebvre <root@linuxmint.com>  Sat, 17 Dec 2022 12:02:35 +0000
+
 mintbackup (2.4.2) uma; urgency=medium
 
   [ Eric ]
