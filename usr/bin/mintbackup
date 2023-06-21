@@ -1,5 +1,10 @@
 #!/usr/bin/python3
 
 import os
+import sys
+from pathlib import Path
 
-os.system("/usr/lib/linuxmint/mintbackup/mintbackup.py")
+bin_path = Path(sys.argv[0]).absolute()
+lib_path = bin_path.joinpath(bin_path.parents[1], "lib/linuxmint/mintbackup/mintbackup.py")
+
+os.system(lib_path)
