@@ -910,8 +910,8 @@ class MintBackup:
             print (e)
 
         dlg.set_version("__DEB_VERSION__")
-        dlg.set_icon_name("bulky")
-        dlg.set_logo_icon_name("bulky")
+        dlg.set_icon_name("mintbackup")
+        dlg.set_logo_icon_name("mintbackup")
         dlg.set_website("https://www.github.com/linuxmint/mintbackup")
         def close(w, res):
             if res == Gtk.ResponseType.CANCEL or res == Gtk.ResponseType.DELETE_EVENT:
