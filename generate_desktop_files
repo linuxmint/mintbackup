@@ -21,7 +21,7 @@ Categories=Application;System;Settings
 NotShowIn=KDE;
 """
 
-additionalfiles.generate(DOMAIN, PATH, "usr/share/applications/mintbackup.desktop", prefix, _("Backup Tool"), _("Make a backup of your home directory"), suffix)
+additionalfiles.generate(DOMAIN, PATH, "usr/share/applications/mintbackup.desktop", prefix, _("Backup Tool"), _("Backup apps and files"), suffix)
 
 
 prefix = "[Desktop Entry]\n"
@@ -36,4 +36,4 @@ X-KDE-StartupNotify=false
 OnlyShowIn=KDE;
 """
 
-additionalfiles.generate(DOMAIN, PATH, "usr/share/applications/kde4/mintbackup.desktop", prefix, _("Backup Tool"), _("Make a backup of your home directory"), suffix, genericName=_("Make a backup of your home directory"))
+additionalfiles.generate(DOMAIN, PATH, "usr/share/applications/kde4/mintbackup.desktop", prefix, _("Backup Tool"), _("Backup apps and files"), suffix, genericName=_("Backup apps and files"))
