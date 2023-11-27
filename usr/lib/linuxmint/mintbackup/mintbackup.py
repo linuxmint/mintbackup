@@ -208,6 +208,28 @@ class MintBackup:
         self.builder.get_object("filechooserbutton_backup_dest").set_current_folder(BACKUP_DIR)
         self.builder.get_object("filechooserbutton_package_source").set_current_folder(BACKUP_DIR)
 
+        # Menubar
+        accel_group = Gtk.AccelGroup()
+        self.main_window.add_accel_group(accel_group)
+        menu = self.builder.get_object("main_menu")
+        item = Gtk.ImageMenuItem()
+        item.set_image(Gtk.Image.new_from_icon_name("help-about-symbolic", Gtk.IconSize.MENU))
+        item.set_label(_("About"))
+        item.connect("activate", self.open_about)
+        key, mod = Gtk.accelerator_parse("F1")
+        item.add_accelerator("activate", accel_group, key, mod, Gtk.AccelFlags.VISIBLE)
+        menu.append(item)
+        item = Gtk.ImageMenuItem(label=_("Quit"))
+        image = Gtk.Image.new_from_icon_name("application-exit-symbolic", Gtk.IconSize.MENU)
+        item.set_image(image)
+        item.connect('activate', lambda widget: self.main_window.destroy())
+        key, mod = Gtk.accelerator_parse("<Control>Q")
+        item.add_accelerator("activate", accel_group, key, mod, Gtk.AccelFlags.VISIBLE)
+        key, mod = Gtk.accelerator_parse("<Control>W")
+        item.add_accelerator("activate", accel_group, key, mod, Gtk.AccelFlags.VISIBLE)
+        menu.append(item)
+        menu.show_all()
+
     def on_treeview_excludes_selection_changed(self, selection):
         liststore, treeiter = selection.get_selected()
         self.builder.get_object("button_remove_exclude").set_sensitive((treeiter and liststore.get_value(treeiter, 2) != BACKUP_DIR))
@@ -869,6 +891,33 @@ class MintBackup:
                     row[0] = selection
             else:
                 row[0] = selection
+
+    def open_about(self, widget):
+        dlg = Gtk.AboutDialog()
+        dlg.set_transient_for(self.main_window)
+        dlg.set_title(_("About"))
+        dlg.set_program_name("Backup Tool")
+        dlg.set_comments(_("Backup apps and files"))
+        try:
+            h = open('/usr/share/common-licenses/GPL', encoding="utf-8")
+            s = h.readlines()
+            gpl = ""
+            for line in s:
+                gpl += line
+            h.close()
+            dlg.set_license(gpl)
+        except Exception as e:
+            print (e)
+
+        dlg.set_version("__DEB_VERSION__")
+        dlg.set_icon_name("mintbackup")
+        dlg.set_logo_icon_name("mintbackup")
+        dlg.set_website("https://www.github.com/linuxmint/mintbackup")
+        def close(w, res):
+            if res == Gtk.ResponseType.CANCEL or res == Gtk.ResponseType.DELETE_EVENT:
+                w.destroy()
+        dlg.connect("response", close)
+        dlg.show()
 
 if __name__ == "__main__":
     MintBackup()
