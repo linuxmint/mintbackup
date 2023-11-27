@@ -1,3 +1,16 @@
+mintbackup (2.4.4) virginia; urgency=medium
+
+  [ Michael Webster ]
+  * Add workflow for actions.
+
+  [ Axel ]
+  * Headerbar and about window (#84)
+
+  [ Clement Lefebvre ]
+  * l10n: Update POT
+
+ -- Clement Lefebvre <root@linuxmint.com>  Mon, 27 Nov 2023 14:28:24 +0000
+
 mintbackup (2.4.3) vera; urgency=medium
 
   [ Musa Ünal ]
