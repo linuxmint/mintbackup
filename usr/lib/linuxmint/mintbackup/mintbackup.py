@@ -15,11 +15,7 @@ gi.require_version("XApp", "1.0")
 from gi.repository import Gtk, GdkPixbuf, Gio, GLib, XApp
 
 import apt_pkg
-import aptdaemon.client
-import aptdaemon.errors
-from aptdaemon.enums import *
-from aptdaemon.gtk3widgets import (AptConfirmDialog, AptErrorDialog,
-                                   AptProgressDialog, AptStatusIcon)
+import aptkit.simpleclient
 
 from mintcommon.installer.cache import PkgCache
 
@@ -838,38 +834,7 @@ class MintBackup:
             self.notebook.set_current_page(TAB_PKG_RESTORE_2)
             self.builder.get_object("button_forward").set_sensitive(True)
 
-    def apt_run_transaction(self, transaction):
-        transaction.connect("finished", self.on_transaction_finish)
-        dia = AptProgressDialog(transaction, parent=self.main_window)
-        dia.run(close_on_finished=True, show_error=True, reply_handler=lambda: True, error_handler=self.apt_on_error)
-
-    def apt_simulate_trans(self, trans):
-        trans.simulate(reply_handler=lambda: self.apt_confirm_deps(trans), error_handler=self.apt_on_error)
-
-    def apt_confirm_deps(self, trans):
-        try:
-            if [pkgs for pkgs in trans.dependencies if pkgs]:
-                dia = AptConfirmDialog(trans, parent=self.main_window)
-                res = dia.run()
-                dia.hide()
-                if res != Gtk.ResponseType.OK:
-                    return
-            self.apt_run_transaction(trans)
-        except Exception as e:
-            print(e)
-
-    def apt_on_error(self, error):
-        if isinstance(error, aptdaemon.errors.NotAuthorizedError):
-            # Silently ignore auth failures
-            return
-        elif not isinstance(error, aptdaemon.errors.TransactionFailed):
-            # Catch internal errors of the client
-            error = aptdaemon.errors.TransactionFailed(ERROR_UNKNOWN, str(error))
-        dia = AptErrorDialog(error)
-        dia.run()
-        dia.hide()
-
-    def on_transaction_finish(self, transaction, exit_state):
+    def on_apt_install_finished(self, transaction, exit_state):
         # Refresh
         self.restore_pkg_load_from_file()
 
@@ -879,8 +844,10 @@ class MintBackup:
         for row in model:
             if row[0]:
                 packages.append(row[3])
-        ac = aptdaemon.client.AptClient()
-        ac.install_packages(packages, reply_handler=self.apt_simulate_trans, error_handler=self.apt_on_error)
+        client = aptkit.simpleclient.SimpleAPTClient(self.main_window)
+        client.set_cancelled_callback(self.on_apt_install_finished)
+        client.set_finished_callback(self.on_apt_install_finished)
+        client.install_packages(packages)
 
     def set_selection(self, w, treeview, selection, check):
         # Select / deselect all
