@@ -1,3 +1,9 @@
+mintbackup (2.4.5) xia; urgency=medium
+
+  * Switch to aptkit
+
+ -- Clement Lefebvre <root@linuxmint.com>  Mon, 25 Nov 2024 14:39:05 +0000
+
 mintbackup (2.4.4) virginia; urgency=medium
 
   [ Michael Webster ]
