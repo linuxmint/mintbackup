@@ -328,6 +328,7 @@ class MintBackup:
             # Calculate includes
             self.included_dirs = []
             self.included_files = []
+            self.include_hidden = self.builder.get_object("checkbutton_backup_hidden").get_active()
             for row in self.includes_model:
                 item = row[2]
                 if os.path.exists(item):
@@ -426,19 +427,19 @@ class MintBackup:
             if not self.operating:
                 break
             if top == self.home_directory:
-                # Remove hidden dirs in the root of the home directory
-                dirs[:] = [d for d in dirs if (not d.startswith(".") or os.path.join(top, d) in self.included_dirs)]
-
+                if not self.include_hidden:
+                    # Remove hidden dirs in the root of the home directory
+                    dirs[:] = [d for d in dirs if (not d.startswith(".") or os.path.join(top, d) in self.included_dirs)]
             # Remove excluded dirs in the home directory
             dirs[:] = [d for d in dirs if (not os.path.join(top, d) in self.excluded_dirs)]
-
             for f in files:
                 if not self.operating:
                     break
                 if top == self.home_directory:
-                    # Skip hidden files in the root of the home directory, unless included
-                    if f.startswith(".") and os.path.join(top, f) not in self.included_files:
-                        continue
+                    if not self.include_hidden:
+                        # Skip hidden files in the root of the home directory, unless included
+                        if f.startswith(".") and os.path.join(top, f) not in self.included_files:
+                            continue
                 path = os.path.join(top, f)
                 rel_path = os.path.relpath(path)
                 if os.path.exists(path):

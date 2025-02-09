@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.38.2 -->
+<!-- Generated with glade 3.40.0 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkFileFilter" id="filefilter1">
@@ -552,6 +552,21 @@
                             <property name="expand">False</property>
                             <property name="fill">False</property>
                             <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkCheckButton" id="checkbutton_backup_hidden">
+                            <property name="label" translatable="yes">Include hidden</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">False</property>
+                            <property name="halign">center</property>
+                            <property name="draw-indicator">True</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">3</property>
                           </packing>
                         </child>
                       </object>
