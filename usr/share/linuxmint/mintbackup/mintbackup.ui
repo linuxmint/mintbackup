@@ -485,19 +485,12 @@
                         <property name="can-focus">True</property>
                         <property name="shadow-type">out</property>
                         <child>
-                          <object class="GtkViewport" id="viewport1">
+                          <object class="GtkTreeView" id="treeview_includes">
                             <property name="visible">True</property>
-                            <property name="can-focus">False</property>
-                            <property name="resize-mode">queue</property>
-                            <child>
-                              <object class="GtkTreeView" id="treeview_includes">
-                                <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                                <property name="headers-visible">False</property>
-                                <child internal-child="selection">
-                                  <object class="GtkTreeSelection"/>
-                                </child>
-                              </object>
+                            <property name="can-focus">True</property>
+                            <property name="headers-visible">False</property>
+                            <child internal-child="selection">
+                              <object class="GtkTreeSelection"/>
                             </child>
                           </object>
                         </child>
@@ -542,6 +535,19 @@
                           </packing>
                         </child>
                         <child>
+                          <object class="GtkButton" id="button_include_all_hidden">
+                            <property name="label" translatable="yes">Include all</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">True</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
                           <object class="GtkButton" id="button_remove_include">
                             <property name="label" translatable="yes">Remove</property>
                             <property name="visible">True</property>
@@ -551,7 +557,7 @@
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">False</property>
-                            <property name="position">2</property>
+                            <property name="position">3</property>
                           </packing>
                         </child>
                       </object>
