@@ -83,8 +83,8 @@ class MintBackup:
 
         # set up exclusions page
         self.iconTheme = Gtk.IconTheme.get_default()
-        self.dir_icon = self.iconTheme.load_icon("folder-symbolic", 16, 0)
-        self.file_icon = self.iconTheme.load_icon("folder-documents-symbolic", 16, 0)
+        self.dir_icon = self.iconTheme.load_icon("xapp-folder-symbolic", 16, 0)
+        self.file_icon = self.iconTheme.load_icon("xapp-folder-documents-symbolic", 16, 0)
         treeview = self.builder.get_object("treeview_excludes")
         renderer = Gtk.CellRendererPixbuf()
         column = Gtk.TreeViewColumn("", renderer)
@@ -208,12 +208,12 @@ class MintBackup:
         accel_group = Gtk.AccelGroup()
         self.main_window.add_accel_group(accel_group)
         menu = self.builder.get_object("main_menu")
-        item = Gtk.ImageMenuItem(label=_("About"), image=Gtk.Image(icon_name="help-about-symbolic", icon_size=Gtk.IconSize.MENU))
+        item = Gtk.ImageMenuItem(label=_("About"), image=Gtk.Image(icon_name="xapp-help-about-symbolic", icon_size=Gtk.IconSize.MENU))
         item.connect("activate", self.open_about)
         key, mod = Gtk.accelerator_parse("F1")
         item.add_accelerator("activate", accel_group, key, mod, Gtk.AccelFlags.VISIBLE)
         menu.append(item)
-        item = Gtk.ImageMenuItem(label=_("Quit"), image=Gtk.Image(icon_name="application-exit-symbolic", icon_size=Gtk.IconSize.MENU))
+        item = Gtk.ImageMenuItem(label=_("Quit"), image=Gtk.Image(icon_name="xapp-exit-symbolic", icon_size=Gtk.IconSize.MENU))
         item.connect('activate', lambda widget: self.main_window.destroy())
         key, mod = Gtk.accelerator_parse("<Control>Q")
         item.add_accelerator("activate", accel_group, key, mod, Gtk.AccelFlags.VISIBLE)
@@ -485,13 +485,13 @@ class MintBackup:
     def set_widgets_after_backup(self):
         if len(self.errors) > 0:
             self.builder.get_object("label_finished_status").set_markup(_("The following errors occurred:"))
-            self.builder.get_object("image_finished").set_from_icon_name("dialog-error-symbolic", Gtk.IconSize.DIALOG)
+            self.builder.get_object("image_finished").set_from_icon_name("xapp-dialog-error-symbolic", Gtk.IconSize.DIALOG)
             self.builder.get_object("treeview_backup_errors").set_model(self.errors)
             self.builder.get_object("win_errors").show_all()
         else:
             if not self.operating:
                 self.builder.get_object("label_finished_status").set_markup(_("The backup was aborted."))
-                self.builder.get_object("image_finished").set_from_icon_name("dialog-warning-symbolic", Gtk.IconSize.DIALOG)
+                self.builder.get_object("image_finished").set_from_icon_name("xapp-dialog-warning-symbolic", Gtk.IconSize.DIALOG)
             else:
                 self.builder.get_object("image_finished").set_from_icon_name("mintbackup-success-symbolic", Gtk.IconSize.DIALOG)
                 self.builder.get_object("label_finished_status").set_markup(_("Your files were successfully saved in %s.") % self.filename)
@@ -589,13 +589,13 @@ class MintBackup:
     def set_widgets_after_restore(self):
         if len(self.errors) > 0:
             self.builder.get_object("label_finished_status1").set_markup(_("The following errors occurred:"))
-            self.builder.get_object("image_finished1").set_from_icon_name("dialog-error-symbolic", Gtk.IconSize.DIALOG)
+            self.builder.get_object("image_finished1").set_from_icon_name("xapp-dialog-error-symbolic", Gtk.IconSize.DIALOG)
             self.builder.get_object("treeview_restore_errors").set_model(self.errors)
             self.builder.get_object("win_errors1").show_all()
         else:
             if not self.operating:
                 self.builder.get_object("label_finished_status1").set_markup(_("The restoration was aborted."))
-                self.builder.get_object("image_finished1").set_from_icon_name("dialog-warning-symbolic", Gtk.IconSize.DIALOG)
+                self.builder.get_object("image_finished1").set_from_icon_name("xapp-dialog-warning-symbolic", Gtk.IconSize.DIALOG)
             else:
                 self.builder.get_object("image_finished1").set_from_icon_name("mintbackup-success-symbolic", Gtk.IconSize.DIALOG)
                 self.builder.get_object("label_finished_status1").set_markup(_("Your files were successfully restored."))
