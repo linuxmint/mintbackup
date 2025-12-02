@@ -135,6 +135,7 @@ class MintBackup:
                     self.includes_model.append([item[len(self.home_directory) + 1:], self.file_icon, item])
         self.builder.get_object("button_include_hidden_files").connect("clicked", self.add_item_to_treeview, treeview, self.file_icon, Gtk.FileChooserAction.OPEN, True)
         self.builder.get_object("button_include_hidden_dirs").connect("clicked", self.add_item_to_treeview, treeview, self.dir_icon, Gtk.FileChooserAction.SELECT_FOLDER, True)
+        self.builder.get_object("button_include_all_hidden").connect("clicked", self.add_all_hidden_to_treeview, treeview)
         self.builder.get_object("button_remove_include").connect("clicked", self.remove_item_from_treeview, treeview)
 
         # Errors treeview for backup
@@ -254,6 +255,29 @@ class MintBackup:
                 else:
                     self.show_message(_("%s is not located in your home directory.") % filename)
         dialog.destroy()
+
+    def add_all_hidden_to_treeview(self, widget, treeview):
+        directory = self.home_directory
+        model = treeview.get_model()
+
+        existing_paths = {row[2] for row in model}
+
+        new_items = []
+        for item in os.listdir(directory):
+            if item.startswith('.'):
+                full_path = os.path.join(directory, item)
+                if full_path not in existing_paths:
+                    if os.path.isfile(full_path):
+                        new_items.append([item, self.file_icon, full_path])
+                    elif os.path.isdir(full_path):
+                        new_items.append([item, self.dir_icon, full_path])
+
+        for item in new_items:
+            model.append(item)
+    
+    def remove_all_from_treeview(self, button, treeview):
+        model = treeview.get_model()
+        model.clear()
 
     def remove_item_from_treeview(self, button, treeview):
         # Remove the item from the treeview
