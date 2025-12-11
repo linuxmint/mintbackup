@@ -1,3 +1,18 @@
+mintbackup (2.4.7) zena; urgency=medium
+
+  [ Clement Lefebvre ]
+  * Switch to XApp symbolic icons
+  * Switch to XSI
+
+  [ kvassss ]
+  * Added a button to include all files and directories from the home directory (#88)
+
+  [ Clement Lefebvre ]
+  * l10n: Generate files
+  * l10n: Update POT
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu, 11 Dec 2025 14:27:14 +0000
+
 mintbackup (2.4.6) zara; urgency=medium
 
   [ Michael Webster ]
