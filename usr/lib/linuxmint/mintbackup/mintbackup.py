@@ -10,6 +10,7 @@ import threading
 import time
 
 import gi
+
 gi.require_version("Gtk", "3.0")
 gi.require_version("XApp", "1.0")
 from gi.repository import Gtk, GdkPixbuf, Gio, GLib, XApp
@@ -20,6 +21,7 @@ import aptkit.simpleclient
 from mintcommon.installer.cache import PkgCache
 
 import setproctitle
+
 setproctitle.setproctitle("mintbackup")
 
 # i18n
@@ -39,8 +41,10 @@ if not os.path.exists(BACKUP_DIR):
     print("Creating backup directory in %s" % BACKUP_DIR)
     os.makedirs(BACKUP_DIR)
 
-(TAB_START, TAB_FILE_BACKUP_1, TAB_FILE_BACKUP_2, TAB_FILE_BACKUP_3, TAB_FILE_BACKUP_4, TAB_FILE_BACKUP_5, TAB_FILE_RESTORE_1, TAB_FILE_RESTORE_3, TAB_FILE_RESTORE_4,
-TAB_PKG_BACKUP_1, TAB_PKG_BACKUP_2, TAB_PKG_RESTORE_1, TAB_PKG_RESTORE_2, TAB_PKG_RESTORE_3) = range(14)
+(TAB_START, TAB_FILE_BACKUP_1, TAB_FILE_BACKUP_2, TAB_FILE_BACKUP_3, TAB_FILE_BACKUP_4, TAB_FILE_BACKUP_5,
+ TAB_FILE_RESTORE_1, TAB_FILE_RESTORE_3, TAB_FILE_RESTORE_4,
+ TAB_PKG_BACKUP_1, TAB_PKG_BACKUP_2, TAB_PKG_RESTORE_1, TAB_PKG_RESTORE_2, TAB_PKG_RESTORE_3) = range(14)
+
 
 def print_timing(func):
     def wrapper(*arg):
@@ -49,7 +53,9 @@ def print_timing(func):
         t2 = time.time()
         print('%s took %0.3f ms' % (func.__name__, (t2 - t1) * 1000.0))
         return res
+
     return wrapper
+
 
 class MintBackup:
 
@@ -108,10 +114,13 @@ class MintBackup:
                     self.excludes_model.append([item[len(self.home_directory) + 1:], self.dir_icon, item])
                 else:
                     self.excludes_model.append([item[len(self.home_directory) + 1:], self.file_icon, item])
-        self.builder.get_object("button_add_file").connect("clicked", self.add_item_to_treeview, treeview, self.file_icon, Gtk.FileChooserAction.OPEN, False)
-        self.builder.get_object("button_add_folder").connect("clicked", self.add_item_to_treeview, treeview, self.dir_icon, Gtk.FileChooserAction.SELECT_FOLDER, False)
+        self.builder.get_object("button_add_file").connect("clicked", self.add_item_to_treeview, treeview,
+                                                           self.file_icon, Gtk.FileChooserAction.OPEN, False)
+        self.builder.get_object("button_add_folder").connect("clicked", self.add_item_to_treeview, treeview,
+                                                             self.dir_icon, Gtk.FileChooserAction.SELECT_FOLDER, False)
         self.builder.get_object("button_remove_exclude").connect("clicked", self.remove_item_from_treeview, treeview)
-        self.builder.get_object("treeview_excludes_selection").connect("changed", self.on_treeview_excludes_selection_changed)
+        self.builder.get_object("treeview_excludes_selection").connect("changed",
+                                                                       self.on_treeview_excludes_selection_changed)
 
         # set up inclusions page
         treeview = self.builder.get_object("treeview_includes")
@@ -133,9 +142,13 @@ class MintBackup:
                     self.includes_model.append([item[len(self.home_directory) + 1:], self.dir_icon, item])
                 else:
                     self.includes_model.append([item[len(self.home_directory) + 1:], self.file_icon, item])
-        self.builder.get_object("button_include_hidden_files").connect("clicked", self.add_item_to_treeview, treeview, self.file_icon, Gtk.FileChooserAction.OPEN, True)
-        self.builder.get_object("button_include_hidden_dirs").connect("clicked", self.add_item_to_treeview, treeview, self.dir_icon, Gtk.FileChooserAction.SELECT_FOLDER, True)
-        self.builder.get_object("button_include_all_hidden").connect("clicked", self.add_all_hidden_to_treeview, treeview)
+        self.builder.get_object("button_include_hidden_files").connect("clicked", self.add_item_to_treeview, treeview,
+                                                                       self.file_icon, Gtk.FileChooserAction.OPEN, True)
+        self.builder.get_object("button_include_hidden_dirs").connect("clicked", self.add_item_to_treeview, treeview,
+                                                                      self.dir_icon,
+                                                                      Gtk.FileChooserAction.SELECT_FOLDER, True)
+        self.builder.get_object("button_include_all_hidden").connect("clicked", self.add_all_hidden_to_treeview,
+                                                                     treeview)
         self.builder.get_object("button_remove_include").connect("clicked", self.remove_item_from_treeview, treeview)
 
         # Errors treeview for backup
@@ -184,8 +197,10 @@ class MintBackup:
 
         # choose a package list
         self.treeview_package_list = self.builder.get_object("treeview_package_list")
-        self.builder.get_object("button_select_list").connect("clicked", self.set_selection, self.treeview_package_list, True, True)
-        self.builder.get_object("button_deselect_list").connect("clicked", self.set_selection, self.treeview_package_list, False, True)
+        self.builder.get_object("button_select_list").connect("clicked", self.set_selection, self.treeview_package_list,
+                                                              True, True)
+        self.builder.get_object("button_deselect_list").connect("clicked", self.set_selection,
+                                                                self.treeview_package_list, False, True)
         self.builder.get_object("button_refresh").connect("clicked", self.restore_pkg_load_from_file)
         tog = Gtk.CellRendererToggle()
         tog.connect("toggled", self.toggled_cb, self.treeview_package_list)
@@ -196,7 +211,7 @@ class MintBackup:
         self.treeview_package_list.append_column(c2)
 
         file_filter = Gtk.FileFilter()
-        file_filter.add_pattern ("*.list")
+        file_filter.add_pattern("*.list")
         filechooser = self.builder.get_object("filechooserbutton_package_source")
         filechooser.connect("file-set", self.restore_pkg_validate_file)
         filechooser.set_filter(file_filter)
@@ -209,12 +224,14 @@ class MintBackup:
         accel_group = Gtk.AccelGroup()
         self.main_window.add_accel_group(accel_group)
         menu = self.builder.get_object("main_menu")
-        item = Gtk.ImageMenuItem(label=_("About"), image=Gtk.Image(icon_name="xsi-help-about-symbolic", icon_size=Gtk.IconSize.MENU))
+        item = Gtk.ImageMenuItem(label=_("About"),
+                                 image=Gtk.Image(icon_name="xsi-help-about-symbolic", icon_size=Gtk.IconSize.MENU))
         item.connect("activate", self.open_about)
         key, mod = Gtk.accelerator_parse("F1")
         item.add_accelerator("activate", accel_group, key, mod, Gtk.AccelFlags.VISIBLE)
         menu.append(item)
-        item = Gtk.ImageMenuItem(label=_("Quit"), image=Gtk.Image(icon_name="xsi-exit-symbolic", icon_size=Gtk.IconSize.MENU))
+        item = Gtk.ImageMenuItem(label=_("Quit"),
+                                 image=Gtk.Image(icon_name="xsi-exit-symbolic", icon_size=Gtk.IconSize.MENU))
         item.connect('activate', lambda widget: self.main_window.destroy())
         key, mod = Gtk.accelerator_parse("<Control>Q")
         item.add_accelerator("activate", accel_group, key, mod, Gtk.AccelFlags.VISIBLE)
@@ -225,10 +242,12 @@ class MintBackup:
 
     def on_treeview_excludes_selection_changed(self, selection):
         liststore, treeiter = selection.get_selected()
-        self.builder.get_object("button_remove_exclude").set_sensitive((treeiter and liststore.get_value(treeiter, 2) != BACKUP_DIR))
+        self.builder.get_object("button_remove_exclude").set_sensitive(
+            (treeiter and liststore.get_value(treeiter, 2) != BACKUP_DIR))
 
     def show_message(self, message, message_type=Gtk.MessageType.WARNING):
-        dialog = Gtk.MessageDialog(self.main_window, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT, message_type, Gtk.ButtonsType.OK, message)
+        dialog = Gtk.MessageDialog(self.main_window, Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                                   message_type, Gtk.ButtonsType.OK, message)
         dialog.set_title(_("Backup Tool"))
         dialog.set_position(Gtk.WindowPosition.CENTER)
         dialog.run()
@@ -274,7 +293,7 @@ class MintBackup:
 
         for item in new_items:
             model.append(item)
-    
+
     def remove_all_from_treeview(self, button, treeview):
         model = treeview.get_model()
         model.clear()
@@ -387,7 +406,8 @@ class MintBackup:
                     # We don't need META INFO but we want to make sure the backup was made with mintbackup (i.e. from and to a home dir, not some random archive.)
                     self.tar_archive.getmember(META_FILE)
                 except Exception as e:
-                    self.show_message(_("This backup file is either too old or it was created with a different tool. Please extract it manually."))
+                    self.show_message(
+                        _("This backup file is either too old or it was created with a different tool. Please extract it manually."))
                     return
                 self.builder.get_object("button_apply").hide()
                 self.builder.get_object("button_back").hide()
@@ -509,16 +529,20 @@ class MintBackup:
     def set_widgets_after_backup(self):
         if len(self.errors) > 0:
             self.builder.get_object("label_finished_status").set_markup(_("The following errors occurred:"))
-            self.builder.get_object("image_finished").set_from_icon_name("xsi-dialog-error-symbolic", Gtk.IconSize.DIALOG)
+            self.builder.get_object("image_finished").set_from_icon_name("xsi-dialog-error-symbolic",
+                                                                         Gtk.IconSize.DIALOG)
             self.builder.get_object("treeview_backup_errors").set_model(self.errors)
             self.builder.get_object("win_errors").show_all()
         else:
             if not self.operating:
                 self.builder.get_object("label_finished_status").set_markup(_("The backup was aborted."))
-                self.builder.get_object("image_finished").set_from_icon_name("xsi-dialog-warning-symbolic", Gtk.IconSize.DIALOG)
+                self.builder.get_object("image_finished").set_from_icon_name("xsi-dialog-warning-symbolic",
+                                                                             Gtk.IconSize.DIALOG)
             else:
-                self.builder.get_object("image_finished").set_from_icon_name("mintbackup-success-symbolic", Gtk.IconSize.DIALOG)
-                self.builder.get_object("label_finished_status").set_markup(_("Your files were successfully saved in %s.") % self.filename)
+                self.builder.get_object("image_finished").set_from_icon_name("mintbackup-success-symbolic",
+                                                                             Gtk.IconSize.DIALOG)
+                self.builder.get_object("label_finished_status").set_markup(
+                    _("Your files were successfully saved in %s.") % self.filename)
         self.notebook.next_page()
         self.operating = False
         XApp.set_window_progress(self.main_window, 0)
@@ -559,7 +583,9 @@ class MintBackup:
                     out.writelines(lines)
             except Exception as detail:
                 print(detail)
-                self.errors.append([_("Warning: The meta file could not be saved. This backup will not be accepted for restoration."), None])
+                self.errors.append(
+                    [_("Warning: The meta file could not be saved. This backup will not be accepted for restoration."),
+                     None])
 
             self.tar_archive = None
             timestamp = time.strftime("%Y-%m-%d-%H%M-backup", time.localtime())
@@ -567,7 +593,8 @@ class MintBackup:
             self.filename = os.path.join(self.backup_dest, "%s.%s" % (timestamp, backup_format))
 
             try:
-                self.tar_archive = tarfile.open(name=self.temp_filename, dereference=self.follow_links, mode=backup_mode, bufsize=1024)
+                self.tar_archive = tarfile.open(name=self.temp_filename, dereference=self.follow_links,
+                                                mode=backup_mode, bufsize=1024)
                 mintfile = os.path.join(self.backup_dest, META_FILE)
                 self.tar_archive.add(mintfile, arcname=META_FILE, recursive=False)
             except Exception as detail:
@@ -586,7 +613,9 @@ class MintBackup:
                 self.errors.append([str(detail), None])
 
             if self.archived_files < self.num_files:
-                self.errors.append([_("Warning: Some files were not saved. Only %(archived)d files were backed up out of %(total)d.") % {'archived': self.archived_files, 'total': self.num_files}, None])
+                self.errors.append(
+                    [_("Warning: Some files were not saved. Only %(archived)d files were backed up out of %(total)d.") % {
+                        'archived': self.archived_files, 'total': self.num_files}, None])
 
             GLib.idle_add(self.set_widgets_after_backup)
 
@@ -613,16 +642,20 @@ class MintBackup:
     def set_widgets_after_restore(self):
         if len(self.errors) > 0:
             self.builder.get_object("label_finished_status1").set_markup(_("The following errors occurred:"))
-            self.builder.get_object("image_finished1").set_from_icon_name("xsi-dialog-error-symbolic", Gtk.IconSize.DIALOG)
+            self.builder.get_object("image_finished1").set_from_icon_name("xsi-dialog-error-symbolic",
+                                                                          Gtk.IconSize.DIALOG)
             self.builder.get_object("treeview_restore_errors").set_model(self.errors)
             self.builder.get_object("win_errors1").show_all()
         else:
             if not self.operating:
                 self.builder.get_object("label_finished_status1").set_markup(_("The restoration was aborted."))
-                self.builder.get_object("image_finished1").set_from_icon_name("xsi-dialog-warning-symbolic", Gtk.IconSize.DIALOG)
+                self.builder.get_object("image_finished1").set_from_icon_name("xsi-dialog-warning-symbolic",
+                                                                              Gtk.IconSize.DIALOG)
             else:
-                self.builder.get_object("image_finished1").set_from_icon_name("mintbackup-success-symbolic", Gtk.IconSize.DIALOG)
-                self.builder.get_object("label_finished_status1").set_markup(_("Your files were successfully restored."))
+                self.builder.get_object("image_finished1").set_from_icon_name("mintbackup-success-symbolic",
+                                                                              Gtk.IconSize.DIALOG)
+                self.builder.get_object("label_finished_status1").set_markup(
+                    _("Your files were successfully restored."))
         self.notebook.next_page()
         self.operating = False
         XApp.set_window_progress(self.main_window, 0)
@@ -653,7 +686,7 @@ class MintBackup:
             # restore from archive
             self.restored_files = 0
             members = self.tar_archive.getmembers()
-            self.num_files = len(members) - 1 # Don't count the META file
+            self.num_files = len(members) - 1  # Don't count the META file
             for member in self.tar_archive.getmembers():
                 if not self.operating:
                     break
@@ -709,8 +742,9 @@ class MintBackup:
             except:
                 pass
 
-            if self.restored_files <  self.num_files:
-                self.errors.append([_("Warning: Only %(number)d files were restored out of %(total)d.") % {'number': self.restored_files, 'total':  self.num_files}, None])
+            if self.restored_files < self.num_files:
+                self.errors.append([_("Warning: Only %(number)d files were restored out of %(total)d.") % {
+                    'number': self.restored_files, 'total': self.num_files}, None])
 
             GLib.idle_add(self.set_widgets_after_restore)
         except Exception as e:
@@ -735,7 +769,8 @@ class MintBackup:
             settings = Gio.Settings("com.linuxmint.install")
             installed_packages = settings.get_strv("installed-apps")
         else:
-            self.builder.get_object("label_caption_software_backup2").set_text(_("The list below shows the applications you installed."))
+            self.builder.get_object("label_caption_software_backup2").set_text(
+                _("The list below shows the applications you installed."))
 
         apt_pkg.init()
         cache = apt_pkg.Cache()
@@ -779,7 +814,8 @@ class MintBackup:
                 if row[0]:
                     f.write("%s\t%s\n" % (row[1], "install"))
 
-        self.builder.get_object("label_packages_done_value").set_label(_("Your software selection was saved in %s") % file_path)
+        self.builder.get_object("label_packages_done_value").set_label(
+            _("Your software selection was saved in %s") % file_path)
         self.notebook.set_current_page(TAB_PKG_BACKUP_2)
         self.builder.get_object("button_apply").hide()
         self.builder.get_object("button_back").hide()
@@ -801,7 +837,7 @@ class MintBackup:
             self.builder.get_object("button_forward").set_sensitive(True)
         except Exception as detail:
             self.show_message(_("An error occurred while reading the file."))
-            print (detail)
+            print(detail)
 
     @print_timing
     def restore_pkg_load_from_file(self, widget=None):
@@ -844,7 +880,7 @@ class MintBackup:
                     print(inner_detail)
         except Exception as detail:
             self.show_message(_("An error occurred while reading the file."))
-            print (detail)
+            print(detail)
         if len(model) == 0:
             self.builder.get_object("button_forward").hide()
             self.builder.get_object("button_back").hide()
@@ -894,17 +930,20 @@ class MintBackup:
             h.close()
             dlg.set_license(gpl)
         except Exception as e:
-            print (e)
+            print(e)
 
         dlg.set_version("__DEB_VERSION__")
         dlg.set_icon_name("mintbackup")
         dlg.set_logo_icon_name("mintbackup")
         dlg.set_website("https://www.github.com/linuxmint/mintbackup")
+
         def close(w, res):
             if res == Gtk.ResponseType.CANCEL or res == Gtk.ResponseType.DELETE_EVENT:
                 w.destroy()
+
         dlg.connect("response", close)
         dlg.show()
+
 
 if __name__ == "__main__":
     MintBackup()
