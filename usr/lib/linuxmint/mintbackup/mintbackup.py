@@ -8,6 +8,8 @@ import sys
 import tarfile
 import threading
 import time
+import subprocess
+import json
 
 import gi
 
@@ -19,6 +21,7 @@ import apt_pkg
 import aptkit.simpleclient
 
 from mintcommon.installer.cache import PkgCache
+from flatpak_handler import FlatpakHandler
 
 import setproctitle
 
@@ -793,6 +796,29 @@ class MintBackup:
             except Exception as e:
                 print(e)
         self.builder.get_object("treeview_packages").set_model(model)
+        # Add flatpaks to same list output
+        try:
+            output = subprocess.check_output(
+                ['flatpak', 'list', '--app', '--columns=application,origin,branch'],
+                universal_newlines=True
+            )
+
+            for line in output.strip().split('\n'):
+                if not line:
+                    continue
+
+                app_id, origin, branch = line.split('\t')
+
+                desc = "%s\n<small>Flatpak (%s)</small>" % (app_id, origin)
+
+                model.append([
+                    True,
+                    f"flatpak:{app_id}//{branch}",
+                    desc
+                ])
+
+        except Exception as e:
+            print(f"Flatpak load error: {e}")
 
     def toggled_cb(self, ren, path, treeview):
         model = treeview.get_model()
@@ -814,12 +840,19 @@ class MintBackup:
                 if row[0]:
                     f.write("%s\t%s\n" % (row[1], "install"))
 
+        # Backup Flatpaks in same directory
+        flatpak_handler = FlatpakHandler(BACKUP_DIR)
+        flatpak_handler.backup()
+
         self.builder.get_object("label_packages_done_value").set_label(
             _("Your software selection was saved in %s") % file_path)
         self.notebook.set_current_page(TAB_PKG_BACKUP_2)
         self.builder.get_object("button_apply").hide()
         self.builder.get_object("button_back").hide()
         self.builder.get_object("button_forward").hide()
+
+
+
 
     def restore_pkg_validate_file(self, filechooser):
         # Check the file validity
@@ -862,6 +895,11 @@ class MintBackup:
                     if not name:
                         continue
                     error = "%s\n<small>%s</small>" % (name, _("Could not locate the package."))
+                    if name.startswith("flatpak:"):
+                        flatpak_ref = name.replace("flatpak:", "")
+                        status = "%s\n<small>Flatpak application</small>" % flatpak_ref
+                        model.append([True, status, True, flatpak_ref])
+                        continue
                     if name in cache:
                         pkg = cache[name]
                         if not pkg.current_ver:
@@ -891,19 +929,29 @@ class MintBackup:
             self.builder.get_object("button_forward").set_sensitive(True)
 
     def on_apt_install_finished(self, transaction, exit_state):
+        # Restore flatpaks after apt finishes
+        flatpak_handler = FlatpakHandler(BACKUP_DIR)
+        flatpak_handler.restore()
+
         # Refresh
         self.restore_pkg_load_from_file()
 
     def restore_pkg_install_packages(self):
-        packages = []
         model = self.builder.get_object("treeview_package_list").get_model()
+        apt_packages = []
+        flatpak_packages = []
+
         for row in model:
             if row[0]:
-                packages.append(row[3])
+                if row[3].startswith("flatpak:"):
+                    flatpak_packages.append(row[3].replace("flatpak:", ""))
+                else:
+                    apt_packages.append(row[3])
+
         client = aptkit.simpleclient.SimpleAPTClient(self.main_window)
         client.set_cancelled_callback(self.on_apt_install_finished)
         client.set_finished_callback(self.on_apt_install_finished)
-        client.install_packages(packages)
+        client.install_packages(apt_packages)
 
     def set_selection(self, w, treeview, selection, check):
         # Select / deselect all

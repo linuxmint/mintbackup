@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d4ad1a1e-4b72-4829-b176-eb89f84fe98d" name="Changes" comment="" />
+    <list default="true" id="d4ad1a1e-4b72-4829-b176-eb89f84fe98d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/usr/lib/linuxmint/mintbackup/flatpak_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/usr/lib/linuxmint/mintbackup/flatpak_handler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/usr/lib/linuxmint/mintbackup/mintbackup.py" beforeDir="false" afterPath="$PROJECT_DIR$/usr/lib/linuxmint/mintbackup/mintbackup.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -76,6 +80,8 @@
       <workItem from="1770645100947" duration="1355000" />
       <workItem from="1770649464009" duration="97000" />
       <workItem from="1770775773997" duration="2192000" />
+      <workItem from="1770777993188" duration="1987000" />
+      <workItem from="1770780039362" duration="316000" />
     </task>
     <servers />
   </component>
@@ -83,7 +89,7 @@
     <option name="version" value="3" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/mintbackup$mintbackup.coverage" NAME="mintbackup Coverage Results" MODIFIED="1770777736456" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/usr/lib/linuxmint/mintbackup" />
+    <SUITE FILE_PATH="coverage/mintbackup$mintbackup.coverage" NAME="mintbackup Coverage Results" MODIFIED="1770780354439" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/usr/lib/linuxmint/mintbackup" />
     <SUITE FILE_PATH="coverage/mintbackup$flatpak_handler.coverage" NAME="flatpak_handler Coverage Results" MODIFIED="1770649526687" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/usr/lib/linuxmint/mintbackup" />
   </component>
   <component name="github-copilot-workspace">

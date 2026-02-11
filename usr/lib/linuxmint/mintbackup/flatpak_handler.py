@@ -1,52 +1,99 @@
-# Backup and restore flatpaks on top of system packages
-
 import subprocess
 import os
-import sys
-import re
-import tempfile
-import shutil
 import json
 
 class FlatpakHandler:
 
-    def __init__(self, backup_path):
-        self.backup_path = backup_path
-        self.flatpak_list = []
-        self.flatpak_info = {}
+    def __init__(self, backup_dir):
+        self.backup_dir = backup_dir
+        self.file_path = os.path.join(self.backup_dir, "flatpaks.json")
 
-    def get_flatpak_list(self):
+    # -----------------------------
+    # BACKUP
+    # -----------------------------
+
+    def backup(self):
+        data = {
+            "apps": [],
+            "remotes": []
+        }
+
+        # Get remotes
         try:
-            output = subprocess.check_output(['flatpak', 'list', '--app', '--columns=application'], universal_newlines=True)
-            self.flatpak_list = output.strip().split('\n')
-        except subprocess.CalledProcessError as e:
-            print(f"Error getting flatpak list: {e}")
-            self.flatpak_list = []
+            output = subprocess.check_output(
+                ['flatpak', 'remotes', '--columns=name,url'],
+                universal_newlines=True
+            )
+            for line in output.strip().split('\n'):
+                if not line:
+                    continue
+                name, url = line.split('\t')
+                data["remotes"].append({
+                    "name": name,
+                    "url": url
+                })
+        except Exception as e:
+            print(f"Flatpak remote error: {e}")
 
-    def get_flatpak_info(self):
-        for app in self.flatpak_list:
-            try:
-                output = subprocess.check_output(['flatpak', 'info', app, '--show-details', '--json'], universal_newlines=True)
-                info = json.loads(output)
-                self.flatpak_info[app] = info
-            except subprocess.CalledProcessError as e:
-                print(f"Error getting info for {app}: {e}")
+        # Get apps
+        try:
+            output = subprocess.check_output(
+                ['flatpak', 'list', '--app',
+                 '--columns=application,origin,branch,arch,installation'],
+                universal_newlines=True
+            )
 
-    def backup_flatpaks(self):
-        if not os.path.exists(self.backup_path):
-            os.makedirs(self.backup_path)
-        with open(os.path.join(self.backup_path, 'flatpaks.json'), 'w') as f:
-            json.dump(self.flatpak_info, f, indent=4)
+            for line in output.strip().split('\n'):
+                if not line:
+                    continue
 
-    def restore_flatpaks(self):
-        flatpaks_file = os.path.join(self.backup_path, 'flatpaks.json')
-        if not os.path.exists(flatpaks_file):
-            print("No flatpaks backup found.")
+                app_id, origin, branch, arch, installation = line.split('\t')
+
+                data["apps"].append({
+                    "app_id": app_id,
+                    "origin": origin,
+                    "branch": branch,
+                    "arch": arch,
+                    "installation": installation
+                })
+
+        except Exception as e:
+            print(f"Flatpak list error: {e}")
+
+        os.makedirs(self.backup_dir, exist_ok=True)
+
+        with open(self.file_path, "w") as f:
+            json.dump(data, f, indent=4)
+
+    # -----------------------------
+    # RESTORE
+    # -----------------------------
+
+    def restore(self):
+        if not os.path.exists(self.file_path):
             return
-        with open(flatpaks_file, 'r') as f:
-            flatpak_info = json.load(f)
-        for app, info in flatpak_info.items():
-            try:
-                subprocess.check_call(['flatpak', 'install', '-y', info['ref']])
-            except subprocess.CalledProcessError as e:
-                print(f"Error restoring {app}: {e}")
+
+        with open(self.file_path, "r") as f:
+            data = json.load(f)
+
+        # Restore remotes first
+        for remote in data.get("remotes", []):
+            subprocess.call([
+                "flatpak", "remote-add",
+                "--if-not-exists",
+                remote["name"],
+                remote["url"]
+            ])
+
+        # Restore apps
+        for app in data.get("apps", []):
+            cmd = [
+                "flatpak", "install", "-y",
+                app["origin"],
+                f"{app['app_id']}//{app['branch']}"
+            ]
+
+            if app["installation"] == "user":
+                cmd.insert(2, "--user")
+
+            subprocess.call(cmd)
