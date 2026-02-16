@@ -851,9 +851,6 @@ class MintBackup:
         self.builder.get_object("button_back").hide()
         self.builder.get_object("button_forward").hide()
 
-
-
-
     def restore_pkg_validate_file(self, filechooser):
         # Check the file validity
         self.package_source = filechooser.get_filename()

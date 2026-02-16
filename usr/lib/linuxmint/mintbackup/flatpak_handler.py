@@ -8,10 +8,6 @@ class FlatpakHandler:
         self.backup_dir = backup_dir
         self.file_path = os.path.join(self.backup_dir, "flatpaks.json")
 
-    # -----------------------------
-    # BACKUP
-    # -----------------------------
-
     def backup(self):
         data = {
             "apps": [],
@@ -60,21 +56,19 @@ class FlatpakHandler:
         except Exception as e:
             print(f"Flatpak list error: {e}")
 
+        # Write to files
+
         os.makedirs(self.backup_dir, exist_ok=True)
 
         with open(self.file_path, "w") as f:
             json.dump(data, f, indent=4)
 
-    # -----------------------------
-    # RESTORE
-    # -----------------------------
-
     def restore(self):
         if not os.path.exists(self.file_path):
             return
 
-        with open(self.file_path, "r") as f:
-            data = json.load(f)
+        with open(self.file_path, "r") as file:
+            data = json.load(file)
 
         # Restore remotes first
         for remote in data.get("remotes", []):
