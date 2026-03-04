@@ -9,7 +9,6 @@ import tarfile
 import threading
 import time
 import subprocess
-import json
 
 import gi
 
@@ -895,7 +894,7 @@ class MintBackup:
                     if name.startswith("flatpak:"):
                         flatpak_ref = name.replace("flatpak:", "")
                         status = "%s\n<small>Flatpak application</small>" % flatpak_ref
-                        model.append([True, status, True, flatpak_ref])
+                        model.append([True, status, True, name])
                         continue
                     if name in cache:
                         pkg = cache[name]

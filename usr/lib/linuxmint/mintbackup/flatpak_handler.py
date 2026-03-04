@@ -82,12 +82,27 @@ class FlatpakHandler:
         # Restore apps
         for app in data.get("apps", []):
             cmd = [
-                "flatpak", "install", "-y",
-                app["origin"],
-                f"{app['app_id']}//{app['branch']}"
+                "flatpak", "install", "-y"
             ]
 
-            if app["installation"] == "user":
-                cmd.insert(2, "--user")
+            # Use the same installation scope as in the backup
+            installation = app.get("installation")
+            if installation == "user":
+                cmd.append("--user")
+            elif installation == "system":
+                cmd.append("--system")
+            elif installation:
+                # Named installation (as returned by flatpak list --columns=...,installation)
+                cmd.append("--installation")
+                cmd.append(installation)
+
+            # If an architecture was recorded, pass it through to flatpak
+            arch = app.get("arch")
+            if arch:
+                cmd.append(f"--arch={arch}")
+
+            cmd.extend([
+                app["origin"],
+                f"{app['app_id']}//{app['branch']}"])
 
             subprocess.call(cmd)
