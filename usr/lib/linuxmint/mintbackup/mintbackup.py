@@ -742,14 +742,14 @@ class MintBackup:
         package_records = apt_pkg.PackageRecords(cache)
         for item in installed_packages:
             try:
-                if item.startswith(("apt:", "fp:")):
+                if item.startswith(("apt:", "fp:", "a:", "f:", "e:", "s:", "w:")):
                     # Split package hash at first ':' since some packages have ':i386' suffixes
                     (prefix, name) = item.split(':', 1)
                 else:
                     # Assume packages are from APT if not specified
                     prefix = "apt"
                     name = item
-                if prefix == "apt" and name in cache:
+                if prefix in ("apt", "a") and name in cache:
                     pkg = cache[name]
                     if pkg.current_ver:
                         package_records.lookup(pkg.version_list[0].translated_description.file_list[0])
