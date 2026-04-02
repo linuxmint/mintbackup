@@ -1,8 +1,3 @@
-mintbackup (2.4.8) zena; urgency=medium
-
-  [ Loc Huynh ]
-  * Added Flatpak support.
-
 mintbackup (2.4.7) zena; urgency=medium
 
   [ Clement Lefebvre ]
