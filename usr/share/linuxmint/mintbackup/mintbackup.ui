@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.38.2 -->
+<!-- Generated with glade 3.40.0 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkFileFilter" id="filefilter1">
@@ -405,6 +405,19 @@
                           </packing>
                         </child>
                         <child>
+                          <object class="GtkButton" id="button_add_wildcard_exclude">
+                            <property name="label" translatable="yes">Exclude wildcard</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">True</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
                           <object class="GtkButton" id="button_remove_exclude">
                             <property name="label" translatable="yes">Remove</property>
                             <property name="visible">True</property>
@@ -415,7 +428,7 @@
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">False</property>
-                            <property name="position">2</property>
+                            <property name="position">3</property>
                           </packing>
                         </child>
                       </object>
@@ -535,6 +548,19 @@
                           </packing>
                         </child>
                         <child>
+                          <object class="GtkButton" id="button_add_wildcard_include">
+                            <property name="label" translatable="yes">Include wildcard</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">True</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
                           <object class="GtkButton" id="button_include_all_hidden">
                             <property name="label" translatable="yes">Include all</property>
                             <property name="visible">True</property>
@@ -544,7 +570,7 @@
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">False</property>
-                            <property name="position">2</property>
+                            <property name="position">3</property>
                           </packing>
                         </child>
                         <child>
@@ -1503,6 +1529,186 @@
               </object>
             </child>
           </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkWindow" id="wildcard_filter">
+    <property name="transient-for">main_window</property>
+    <property name="modal">True</property>
+    <property name="destroy-with-parent">True</property>
+    <property name="skip-taskbar-hint">True</property>
+    <child>
+      <object class="GtkBox" id="vbox">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="border-width">12</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">6</property>
+        <child>
+          <object class="GtkLabel" id="label_wildcard_include">
+            <property name="visible">False</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Please add files or directories to the list below to include them in the backup.</property>
+            <property name="xalign">0</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label_wildcard_exclude">
+            <property name="visible">False</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Please add files or directories to the list below to exclude them from the backup.</property>
+            <property name="xalign">0</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="hbox4">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="orientation">horizontal</property>
+            <property name="spacing">12</property>
+            <child>
+              <object class="GtkBox" id="vbox25">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="orientation">vertical</property>
+                <property name="expand">True</property>
+                <child>
+                  <object class="GtkEntry" id="wildcard_entry">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="truncate-multiline">True</property>
+                    <property name="secondary-icon-tooltip-markup" translatable="yes" comments="good luck">Use '*' to match multiple characters,
+'?' to match a single character,
+'[' and ']' to match a set of characters.
+Use '!' to exclude a set of characters.
+
+Usage examples:
+- '*.png' matches all files ending with '.png'
+- 'image1?.png' matches files like 'image14.png' or 'image1a.png', but not 'image1ab.png'
+- '[abc].jpg' matches files 'a.jpg', 'b.jpg', 'c.jpg'
+- '[a-z].png' matches files 'a.png', 'b.png', 'c.png', ..., 'z.png'
+- '[!cd].png' matches files like 'a.png', '1.png', but not  'c.png' or ' 'd.png''
+- '[abc]*.jpg' matches all files starting with either 'a', 'b', and 'c' and ending with '.jpg', like 'apple.jpg'</property>
+                    <property name="placeholder-text" translatable="yes">Enter a path wildcard (eg. Pictures/Important/*.png)</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow" id="scrolledwindow_wildcard">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="shadow-type">out</property>
+                    <child>
+                      <object class="GtkViewport" id="viewport1">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="resize-mode">queue</property>
+                        <child>
+                          <object class="GtkTreeView" id="treeview_wildcard">
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="headers-visible">False</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="padding">6</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox" id="vbox24">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="orientation">vertical</property>
+                <property name="spacing">6</property>
+                <child>
+                  <object class="GtkButton" id="button_wildcard_cancel">
+                    <property name="label" translatable="yes">Cancel</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
+                  </object>
+                  <packing>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="button_wildcard_submit">
+                    <property name="label" translatable="yes">Use wildcard</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
+                  </object>
+                  <packing>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <child type="titlebar">
+      <object class="GtkHeaderBar" id="titlebar_wildcard">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="title" translatable="yes">Exclude Filter</property>
+        <property name="spacing">2</property>
+      </object>
+    </child>
+  </object>
+  <object class="GtkPopover" id="wildcard_warn_nonmatch_popover">
+    <property name="relative-to">button_wildcard_submit</property>
+    <child>
+      <object class="GtkBox" id="vbox9">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="margin">4</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="label" translatable="yes">The entered wildcard does not match any files. Click again to proceed.</property>
+            <property name="visible">True</property>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+          </packing>
         </child>
       </object>
     </child>
