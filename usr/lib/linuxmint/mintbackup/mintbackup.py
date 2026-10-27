@@ -5,6 +5,7 @@ import locale
 import os
 import stat
 import sys
+import subprocess
 import tarfile
 import threading
 import time
@@ -757,6 +758,40 @@ class MintBackup:
                         model.append([True, pkg.name, desc])
             except Exception as e:
                 print(e)
+
+        # Add installed Flatpak applications
+        try:
+            result = subprocess.run(["flatpak", "list", "--app", "--columns=application,name,description"],
+                                   capture_output=True, text=True)
+            if result.returncode == 0:
+                fp_installed = {}
+                for line in result.stdout.strip().split('\n'):
+                    if line.strip():
+                        parts = line.split('\t')
+                        app_id = parts[0].strip()
+                        fp_name = parts[1].strip() if len(parts) >= 2 else app_id
+                        fp_desc = parts[2].strip() if len(parts) >= 3 else ""
+                        fp_installed[app_id] = (fp_name, fp_desc)
+
+                fp_added = set()
+                # Add fp: items from mintinstall list first
+                for item in installed_packages:
+                    if item.startswith("fp:"):
+                        app_id = item[3:]
+                        if app_id in fp_installed and app_id not in fp_added:
+                            fp_name, fp_desc = fp_installed[app_id]
+                            desc = "%s\n<small>%s</small>" % (GLib.markup_escape_text(fp_name), GLib.markup_escape_text(fp_desc))
+                            model.append([True, "fp:" + app_id, desc])
+                            fp_added.add(app_id)
+
+                # Add remaining installed Flatpak apps not from mintinstall
+                for app_id, (fp_name, fp_desc) in fp_installed.items():
+                    if app_id not in fp_added:
+                        desc = "%s\n<small>%s</small>" % (GLib.markup_escape_text(fp_name), GLib.markup_escape_text(fp_desc))
+                        model.append([True, "fp:" + app_id, desc])
+        except FileNotFoundError:
+            pass  # flatpak is not installed
+
         self.builder.get_object("treeview_packages").set_model(model)
 
     def toggled_cb(self, ren, path, treeview):
@@ -818,6 +853,18 @@ class MintBackup:
             cache = apt_pkg.Cache()
             package_records = apt_pkg.PackageRecords(cache)
             depcache = apt_pkg.DepCache(cache)
+            # Get list of installed Flatpak apps for checking
+            fp_installed_set = set()
+            try:
+                fp_result = subprocess.run(["flatpak", "list", "--app", "--columns=application"],
+                                          capture_output=True, text=True)
+                if fp_result.returncode == 0:
+                    for fp_line in fp_result.stdout.strip().split('\n'):
+                        if fp_line.strip():
+                            fp_installed_set.add(fp_line.strip())
+            except FileNotFoundError:
+                pass
+
             for line in source:
                 try:
                     if not line.strip() or line.startswith("#"):
@@ -825,6 +872,15 @@ class MintBackup:
                     name = line.strip().replace(" install", "").replace("\tinstall", "")
                     if not name:
                         continue
+
+                    # Handle Flatpak packages
+                    if name.startswith("fp:"):
+                        app_id = name[3:]
+                        if app_id not in fp_installed_set:
+                            desc = "%s\n<small>%s</small>" % (app_id, _("Flatpak application"))
+                            model.append([True, desc, True, name])
+                        continue
+
                     error = "%s\n<small>%s</small>" % (name, _("Could not locate the package."))
                     if name in cache:
                         pkg = cache[name]
@@ -860,10 +916,34 @@ class MintBackup:
 
     def restore_pkg_install_packages(self):
         packages = []
+        fp_packages = []
         model = self.builder.get_object("treeview_package_list").get_model()
         for row in model:
             if row[0]:
-                packages.append(row[3])
+                if row[3].startswith("fp:"):
+                    fp_packages.append(row[3][3:])
+                else:
+                    packages.append(row[3])
+
+        if fp_packages:
+            thread = threading.Thread(target=self._install_flatpaks, args=(fp_packages, packages))
+            thread.daemon = True
+            thread.start()
+        elif packages:
+            self._install_apt_packages(packages)
+
+    def _install_flatpaks(self, fp_packages, apt_packages):
+        for fp_pkg in fp_packages:
+            try:
+                subprocess.run(["flatpak", "install", "-y", fp_pkg])
+            except Exception as e:
+                print(e)
+        if apt_packages:
+            GLib.idle_add(self._install_apt_packages, apt_packages)
+        else:
+            GLib.idle_add(self.restore_pkg_load_from_file)
+
+    def _install_apt_packages(self, packages):
         client = aptkit.simpleclient.SimpleAPTClient(self.main_window)
         client.set_cancelled_callback(self.on_apt_install_finished)
         client.set_finished_callback(self.on_apt_install_finished)
