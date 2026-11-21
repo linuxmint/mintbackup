@@ -205,6 +205,11 @@ class MintBackup:
         self.builder.get_object("filechooserbutton_backup_dest").set_current_folder(BACKUP_DIR)
         self.builder.get_object("filechooserbutton_package_source").set_current_folder(BACKUP_DIR)
 
+        widget = self.builder.get_object("backup_format")
+        widget.connect("changed", self.on_backup_format_changed)
+        backup_format = self.settings.get_string("backup-format")
+        widget.set_active_id(backup_format)
+
         # Menubar
         accel_group = Gtk.AccelGroup()
         self.main_window.add_accel_group(accel_group)
@@ -222,6 +227,10 @@ class MintBackup:
         item.add_accelerator("activate", accel_group, key, mod, Gtk.AccelFlags.VISIBLE)
         menu.append(item)
         menu.show_all()
+
+    def on_backup_format_changed(self, widget):
+        backup_format = widget.get_active_id()
+        self.settings.set_string("backup-format", backup_format)
 
     def on_treeview_excludes_selection_changed(self, selection):
         liststore, treeiter = selection.get_selected()
@@ -274,7 +283,7 @@ class MintBackup:
 
         for item in new_items:
             model.append(item)
-    
+
     def remove_all_from_treeview(self, button, treeview):
         model = treeview.get_model()
         model.clear()
