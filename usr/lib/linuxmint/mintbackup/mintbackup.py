@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+from bz2 import compress
 import gettext
 import hashlib
 import locale
@@ -539,18 +540,26 @@ class MintBackup:
             self.operating = True
 
             backup_format = self.settings.get_string("backup-format")
-            if backup_format == "tar":
-                backup_mode = "w"
-            elif backup_format == "tar.gz":
-                backup_mode = "w:gz"
-            elif backup_format == "tar.bz2":
-                backup_mode = "w:bz2"
-            elif backup_format == "tar.xz":
-                backup_mode = "w:xz"
-            else:
-                print("Invalid format %s. Please choose between tar, tar.gz, tar.bz2 or tar.xz." % backup_format)
-                self.operating = False
-                sys.exit(1)
+            match backup_format:
+                case "tar":
+                    backup_mode = "w"
+                    backup_kwargs = {}
+                case "tar.gz":
+                    backup_mode = "w:gz"
+                    # defalt compress level of gzip command
+                    backup_kwargs = {"compresslevel": 6}
+                case "tar.bz2":
+                    backup_mode = "w:bz2"
+                    # defalt compress level of bzip2 command
+                    backup_kwargs = {"compresslevel": 9}
+                case "tar.xz":
+                    backup_mode = "w:xz"
+                    # default compress level of xz command
+                    backup_kwargs = {"preset": 6}
+                case backup_format:
+                    print("Invalid format %s. Please choose between tar, tar.gz, tar.bz2 or tar.xz." % backup_format)
+                    self.operating = False
+                    sys.exit(1)
 
             GLib.idle_add(self.set_widgets_before_backup)
 
@@ -576,7 +585,7 @@ class MintBackup:
             self.filename = os.path.join(self.backup_dest, "%s.%s" % (timestamp, backup_format))
 
             try:
-                self.tar_archive = tarfile.open(name=self.temp_filename, dereference=self.follow_links, mode=backup_mode, bufsize=1024)
+                self.tar_archive = tarfile.open(name=self.temp_filename, dereference=self.follow_links, mode=backup_mode, bufsize=1024, **backup_kwargs)
                 mintfile = os.path.join(self.backup_dest, META_FILE)
                 self.tar_archive.add(mintfile, arcname=META_FILE, recursive=False)
             except Exception as detail:
