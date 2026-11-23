@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import fnmatch
 import gettext
 import hashlib
 import locale
@@ -101,17 +102,48 @@ class MintBackup:
         self.excludes_model.append([BACKUP_DIR[len(self.home_directory) + 1:], self.dir_icon, BACKUP_DIR])
         excluded_paths.append(BACKUP_DIR)
         for item in self.settings.get_strv("excluded-paths"):
+            is_wildcard = item.startswith("wc:")
+            if is_wildcard:
+                item = item[3:]
+                item = os.path.expanduser(item)
+                self.excludes_model.append([f"{_("Wildcard")}: {item[len(self.home_directory) + 1:]}", self.dir_icon, item])
+                continue
             item = os.path.expanduser(item)
-            if os.path.exists(item) and item not in excluded_paths:
+            if os.path.exists(item) and item not in excluded_paths and not is_wildcard:
                 excluded_paths.append(item)
                 if os.path.isdir(item):
                     self.excludes_model.append([item[len(self.home_directory) + 1:], self.dir_icon, item])
                 else:
                     self.excludes_model.append([item[len(self.home_directory) + 1:], self.file_icon, item])
+
+        wildcard_window = self.builder.get_object("wildcard_filter")
         self.builder.get_object("button_add_file").connect("clicked", self.add_item_to_treeview, treeview, self.file_icon, Gtk.FileChooserAction.OPEN, False)
         self.builder.get_object("button_add_folder").connect("clicked", self.add_item_to_treeview, treeview, self.dir_icon, Gtk.FileChooserAction.SELECT_FOLDER, False)
+        self.builder.get_object("button_add_wildcard_exclude").connect("clicked", self.wildcard_window_show, "exclude", wildcard_window)
         self.builder.get_object("button_remove_exclude").connect("clicked", self.remove_item_from_treeview, treeview)
         self.builder.get_object("treeview_excludes_selection").connect("changed", self.on_treeview_excludes_selection_changed)
+
+        # set up wildcards window
+        treeview = self.builder.get_object("treeview_wildcard")
+        renderer = Gtk.CellRendererPixbuf()
+        column = Gtk.TreeViewColumn("", renderer)
+        column.add_attribute(renderer, "pixbuf", 1)
+        treeview.append_column(column)
+        renderer = Gtk.CellRendererText()
+        column = Gtk.TreeViewColumn("", renderer)
+        column.add_attribute(renderer, "text", 0)
+        treeview.append_column(column)
+        excludes_model = Gtk.ListStore(str, GdkPixbuf.Pixbuf, str)
+        excludes_model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
+        treeview.set_model(excludes_model)
+
+        wildcard_submit_button = self.builder.get_object("button_wildcard_submit")
+        wildcard_entry = self.builder.get_object("wildcard_entry")
+        wildcard_help_icon = self.iconTheme.load_icon("xsi-dialog-question-symbolic", 16, 0)
+        wildcard_entry.set_icon_from_gicon(Gtk.EntryIconPosition.SECONDARY, wildcard_help_icon)
+        wildcard_entry.connect("changed", self.try_add_wildcard_to_treeview, treeview, None, wildcard_submit_button, True)
+        self.builder.get_object("button_wildcard_submit").connect("clicked", self.try_add_wildcard_to_treeview, None, wildcard_entry, None, False)
+        self.builder.get_object("button_wildcard_cancel").connect("clicked", lambda _: self.wildcard_window_hide(wildcard_window, wildcard_entry, wildcard_submit_button))
 
         # set up inclusions page
         treeview = self.builder.get_object("treeview_includes")
@@ -127,14 +159,22 @@ class MintBackup:
         self.includes_model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         treeview.set_model(self.includes_model)
         for item in self.settings.get_strv("included-hidden-paths"):
-            item = os.path.expanduser(item)
-            if os.path.exists(item):
-                if os.path.isdir(item):
+            is_wildcard = item.startswith("wc:")
+            if is_wildcard:
+                item = item[3:]
+                item = os.path.expanduser(item)
+                self.includes_model.append([f"{_("Wildcard")}: {item[len(self.home_directory) + 1:]}", self.dir_icon, item])
+                continue
+            os.path.expanduser(item)
+            if os.path.exists(item) or is_wildcard:
+                if os.path.isdir(item) or is_wildcard:
                     self.includes_model.append([item[len(self.home_directory) + 1:], self.dir_icon, item])
                 else:
                     self.includes_model.append([item[len(self.home_directory) + 1:], self.file_icon, item])
+
         self.builder.get_object("button_include_hidden_files").connect("clicked", self.add_item_to_treeview, treeview, self.file_icon, Gtk.FileChooserAction.OPEN, True)
         self.builder.get_object("button_include_hidden_dirs").connect("clicked", self.add_item_to_treeview, treeview, self.dir_icon, Gtk.FileChooserAction.SELECT_FOLDER, True)
+        self.builder.get_object("button_add_wildcard_include").connect("clicked", self.wildcard_window_show, "include", wildcard_window)
         self.builder.get_object("button_include_all_hidden").connect("clicked", self.add_all_hidden_to_treeview, treeview)
         self.builder.get_object("button_remove_include").connect("clicked", self.remove_item_from_treeview, treeview)
 
@@ -337,7 +377,11 @@ class MintBackup:
             self.excluded_files = []
             for row in self.excludes_model:
                 item = row[2]
-                if os.path.exists(item):
+                if row[0].startswith(_("Wildcard")):
+                    wildcard, excluded_dirs, excluded_files = self.get_expanded_paths(item)
+                    self.excluded_dirs.extend(excluded_dirs)
+                    self.excluded_files.extend(excluded_files)
+                elif os.path.exists(item):
                     if os.path.isdir(item):
                         self.excluded_dirs.append(item)
                     else:
@@ -347,14 +391,22 @@ class MintBackup:
             for row in self.excludes_model:
                 path = row[2]
                 path = path.replace(self.home_directory, "~")
-                excludes.append(path)
+                if row[0].startswith(_("Wildcard")):
+                    # insert prefix to separate from normal paths during gsettings load
+                    excludes.append("wc:" + path)
+                else:
+                    excludes.append(path)
             self.settings.set_strv("excluded-paths", excludes)
             # Calculate includes
             self.included_dirs = []
             self.included_files = []
             for row in self.includes_model:
                 item = row[2]
-                if os.path.exists(item):
+                if row[0].startswith("Wildcard"):
+                    wildcard, included_dirs, included_files = self.get_expanded_paths(item)
+                    self.included_dirs.extend(included_dirs)
+                    self.included_files.extend(included_files)
+                elif os.path.exists(item):
                     if os.path.isdir(item):
                         self.included_dirs.append(item)
                     else:
@@ -364,7 +416,11 @@ class MintBackup:
             for row in self.includes_model:
                 path = row[2]
                 path = path.replace(self.home_directory, "~")
-                includes.append(path)
+                if row[0].startswith(_("Wildcard")):
+                    # insert prefix to separate from normal paths during gsettings load
+                    includes.append("wc:" + path)
+                else:
+                    includes.append(path)
             self.settings.set_strv("included-hidden-paths", includes)
             thread = threading.Thread(target=self.backup)
             thread.daemon = True
@@ -441,6 +497,155 @@ class MintBackup:
                 self.builder.get_object("button_back").hide()
                 self.builder.get_object("button_forward").hide()
             self.notebook.set_current_page(sel)
+
+    def get_expanded_paths(self, wildcard):
+        home_dir = self.home_directory
+        # remove home
+        if wildcard.startswith("~/"):
+            wildcard = wildcard[2:]
+        elif wildcard.startswith(home_dir):
+            wildcard = wildcard[len(home_dir) + 1:]
+
+        # validate user input
+        if not self.wildcard_is_valid(wildcard):
+            return None
+
+        # match wildcards
+        structure = wildcard.split("/")
+        scan_directories = [home_dir]
+        stored_directories = []
+        stored_files = []
+        # completions = []
+        depth = 0
+        # this loop builds the wildcard files upwards, selecting the next entries to scan from the previous iteration
+        while depth < len(structure):
+            stored_files = []
+            parent_pattern = "/".join(structure[:depth])
+            if depth > 0:
+                parent_pattern += "/"
+            pattern = structure[depth]
+            for path in scan_directories:
+                entries = list(os.scandir(path))
+                # matches files in `path` with patterns of the same depth
+                filtered = fnmatch.filter(map(lambda entry: entry.name, entries), pattern)
+                # same as above, but matches all entries which starts with a matching sequence of the pattern
+                # filtered_completions = fnmatch.filter(map(lambda entry: entry.name, entries), pattern + "*" if pattern[-1] != "*" else pattern + "/*")
+
+                # insert file/pattern prefixes
+                # completions = [parent_pattern + entry.name for entry in entries if entry.is_dir() and entry.name in filtered_completions]
+                stored_directories.extend([entry.path for entry in entries if entry.is_dir() and entry.name in filtered])
+                stored_files.extend([entry.path for entry in entries if entry.is_file() and entry.name in filtered])
+            scan_directories.clear()
+            scan_directories.extend(stored_directories)
+            stored_directories.clear()
+            depth += 1
+
+        # i tried i cant add autocompletion
+        # if anyone wants to attempt this, code to generate completions is commented out above
+        wildcard = os.path.join(self.home_directory, wildcard)
+
+        return wildcard, scan_directories, stored_files
+
+    def wildcard_is_valid(self, path):
+        home_dir = self.home_directory
+        # remove home
+        is_home = False
+        if path.startswith("~/"):
+            path = path[2:]
+            is_home = True
+        elif path.startswith(home_dir):
+            path = path[len(home_dir) + 1:]
+            is_home = True
+
+        # validate user input
+        has_null = "\0" in path
+        is_root = path.startswith("/") and not is_home
+        is_valid = (not has_null) and (not is_root)
+
+        return is_valid
+
+    def try_add_wildcard_to_treeview(self, widget, treeview, entry, submit_button, expanded):
+        if expanded:
+            home_dir = self.home_directory
+            entry_path = widget.get_text()
+            paths = self.get_expanded_paths(entry_path)
+            if paths is None:
+                widget.get_style_context().add_class("error")
+                return
+            widget.get_style_context().remove_class("error")
+            wildcard, directories, files = paths
+
+            is_confirm = submit_button.get_label() == _("Confirm?")
+            if is_confirm:
+                submit_button.set_label(_("Use wildcard"))
+
+            # add paths to treeview
+            model = treeview.get_model()
+
+            new_items = []
+            for full_path in directories:
+                item = full_path[len(home_dir) + 1:]
+                new_items.append([item, self.dir_icon, full_path])
+
+            for full_path in files:
+                item = full_path[len(home_dir) + 1:]
+                new_items.append([item, self.file_icon, full_path])
+
+            model.clear()
+            for item in new_items:
+                model.append(item)
+        else:
+            entry_path = entry.get_text()
+            paths = self.get_expanded_paths(entry_path)
+            if paths is None or entry_path == "":
+                widget.get_style_context().add_class("error")
+                return
+            widget.get_style_context().remove_class("error")
+            wildcard, directories, files = paths
+            
+            is_confirm = widget.get_label() == _("Confirm?")
+            if len(directories + files) == 0 and not is_confirm:
+                popover = self.builder.get_object("wildcard_warn_nonmatch_popover")
+                popover.popup()
+                widget.set_label(_("Confirm?"))
+                return
+
+            treeview = None
+            if self.builder.get_object("label_wildcard_exclude").is_visible():
+                treeview = self.builder.get_object("treeview_excludes")
+            elif self.builder.get_object("label_wildcard_include").is_visible():
+                treeview = self.builder.get_object("treeview_includes")
+            else:
+                print("No mode selected", file=sys.stderr)
+                return
+
+            model = treeview.get_model()
+
+            existing_paths = {row[2] for row in model}
+            if entry not in existing_paths:
+                treeview.get_model().append([f"{_("Wildcard")}: {entry_path}", self.dir_icon, wildcard])
+
+            window = self.builder.get_object("wildcard_filter")
+            self.wildcard_window_hide(window, entry, widget)
+
+    def wildcard_window_show(self, widget, mode, window):
+        if mode == "exclude":
+            self.builder.get_object("titlebar_wildcard").set_title(_("Exclude wildcard"))
+            self.builder.get_object("label_wildcard_exclude").show()
+            self.builder.get_object("label_wildcard_include").hide()
+        elif mode == "include":
+            self.builder.get_object("titlebar_wildcard").set_title(("Include wildcard"))
+            self.builder.get_object("label_wildcard_exclude").hide()
+            self.builder.get_object("label_wildcard_include").show()
+        else:
+            raise ValueError(f"Invalid mode: {mode}")
+        window.present()
+
+    def wildcard_window_hide(self, window, entry, submit_button):
+        window.hide()
+        entry.set_text("")
+        self.builder.get_object("treeview_wildcard").get_model().clear()
+        submit_button.set_label(_("Use wildcard"))
 
     # FILE BACKUP FUNCTIONS
     #############################################################################################################################
