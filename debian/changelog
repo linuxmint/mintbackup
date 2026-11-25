@@ -1,3 +1,11 @@
+mintbackup (2.4.8) adrien; urgency=medium
+
+  [ Michael Webster ]
+  * .github/workflows: Add generate-test-packages trigger.
+  * Run generate_desktop_files
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 25 Nov 2026 10:31:37 +0000
+
 mintbackup (2.4.7) zena; urgency=medium
 
   [ Clement Lefebvre ]
