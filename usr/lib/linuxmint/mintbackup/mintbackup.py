@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+from bz2 import compress
 import gettext
 import hashlib
 import locale
@@ -205,6 +206,11 @@ class MintBackup:
         self.builder.get_object("filechooserbutton_backup_dest").set_current_folder(BACKUP_DIR)
         self.builder.get_object("filechooserbutton_package_source").set_current_folder(BACKUP_DIR)
 
+        widget = self.builder.get_object("backup_format")
+        widget.connect("changed", self.on_backup_format_changed)
+        backup_format = self.settings.get_string("backup-format")
+        widget.set_active_id(backup_format)
+
         # Menubar
         accel_group = Gtk.AccelGroup()
         self.main_window.add_accel_group(accel_group)
@@ -222,6 +228,10 @@ class MintBackup:
         item.add_accelerator("activate", accel_group, key, mod, Gtk.AccelFlags.VISIBLE)
         menu.append(item)
         menu.show_all()
+
+    def on_backup_format_changed(self, widget):
+        backup_format = widget.get_active_id()
+        self.settings.set_string("backup-format", backup_format)
 
     def on_treeview_excludes_selection_changed(self, selection):
         liststore, treeiter = selection.get_selected()
@@ -274,7 +284,7 @@ class MintBackup:
 
         for item in new_items:
             model.append(item)
-    
+
     def remove_all_from_treeview(self, button, treeview):
         model = treeview.get_model()
         model.clear()
@@ -530,18 +540,26 @@ class MintBackup:
             self.operating = True
 
             backup_format = self.settings.get_string("backup-format")
-            if backup_format == "tar":
-                backup_mode = "w"
-            elif backup_format == "tar.gz":
-                backup_mode = "w:gz"
-            elif backup_format == "tar.bz2":
-                backup_mode = "w:bz2"
-            elif backup_format == "tar.xz":
-                backup_mode = "w:xz"
-            else:
-                print("Invalid format %s. Please choose between tar, tar.gz, tar.bz2 or tar.xz." % backup_format)
-                self.operating = False
-                sys.exit(1)
+            match backup_format:
+                case "tar":
+                    backup_mode = "w"
+                    backup_kwargs = {}
+                case "tar.gz":
+                    backup_mode = "w:gz"
+                    # defalt compress level of gzip command
+                    backup_kwargs = {"compresslevel": 6}
+                case "tar.bz2":
+                    backup_mode = "w:bz2"
+                    # defalt compress level of bzip2 command
+                    backup_kwargs = {"compresslevel": 9}
+                case "tar.xz":
+                    backup_mode = "w:xz"
+                    # default compress level of xz command
+                    backup_kwargs = {"preset": 6}
+                case backup_format:
+                    print("Invalid format %s. Please choose between tar, tar.gz, tar.bz2 or tar.xz." % backup_format)
+                    self.operating = False
+                    sys.exit(1)
 
             GLib.idle_add(self.set_widgets_before_backup)
 
@@ -567,7 +585,7 @@ class MintBackup:
             self.filename = os.path.join(self.backup_dest, "%s.%s" % (timestamp, backup_format))
 
             try:
-                self.tar_archive = tarfile.open(name=self.temp_filename, dereference=self.follow_links, mode=backup_mode, bufsize=1024)
+                self.tar_archive = tarfile.open(name=self.temp_filename, dereference=self.follow_links, mode=backup_mode, bufsize=1024, **backup_kwargs)
                 mintfile = os.path.join(self.backup_dest, META_FILE)
                 self.tar_archive.add(mintfile, arcname=META_FILE, recursive=False)
             except Exception as detail:
