@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import errno
 import gettext
 import hashlib
 import locale
@@ -490,6 +491,9 @@ class MintBackup:
         except Exception as detail:
             print(detail)
             self.errors.append([path, str(detail)])
+            if isinstance(detail, OSError) and detail.errno in (errno.ENOSPC, errno.EDQUOT):
+                self.operating = False
+                self.archive_failed = True
 
     def set_progress(self, path):
         fraction = float(self.archived_files) / float(self.num_files)
@@ -528,6 +532,7 @@ class MintBackup:
         # Does the actual copying
         try:
             self.operating = True
+            self.archive_failed = False
 
             backup_format = self.settings.get_string("backup-format")
             if backup_format == "tar":
@@ -566,21 +571,25 @@ class MintBackup:
             self.temp_filename = os.path.join(self.backup_dest, "%s.%s.part" % (timestamp, backup_format))
             self.filename = os.path.join(self.backup_dest, "%s.%s" % (timestamp, backup_format))
 
+            mintfile = os.path.join(self.backup_dest, META_FILE)
             try:
                 self.tar_archive = tarfile.open(name=self.temp_filename, dereference=self.follow_links, mode=backup_mode, bufsize=1024)
-                mintfile = os.path.join(self.backup_dest, META_FILE)
                 self.tar_archive.add(mintfile, arcname=META_FILE, recursive=False)
             except Exception as detail:
                 print(detail)
                 self.errors.append([str(detail), None])
+                self.operating = False
+                self.archive_failed = True
 
             self.archived_files = 0
             self.scan_dirs(self.callback_add_to_tar)
 
             try:
-                self.tar_archive.close()
+                if self.tar_archive is not None:
+                    self.tar_archive.close()
                 os.remove(mintfile)
-                os.rename(self.temp_filename, self.filename)
+                if not self.archive_failed:
+                    os.rename(self.temp_filename, self.filename)
             except Exception as detail:
                 print(detail)
                 self.errors.append([str(detail), None])
